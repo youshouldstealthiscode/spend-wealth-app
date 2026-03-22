@@ -1,0 +1,46 @@
+{
+  "last_updated": "2026-03-22T00:00:00Z",
+  "source": "manual_seed",
+  "people": [
+    {
+      "id": "elon_musk",
+      "rank": 1,
+      "name": "Elon Musk",
+      "net_worth": 839000000000,
+      "company": "Tesla, SpaceX",
+      "country": "USA"
+    },
+    {
+      "id": "bernard_arnault",
+      "rank": 2,
+      "name": "Bernard Arnault",
+      "net_worth": 230000000000,
+      "company": "LVMH",
+      "country": "France"
+    },
+    {
+      "id": "jeff_bezos",
+      "rank": 3,
+      "name": "Jeff Bezos",
+      "net_worth": 210000000000,
+      "company": "Amazon",
+      "country": "USA"
+    },
+    {
+      "id": "larry_ellison",
+      "rank": 4,
+      "name": "Larry Ellison",
+      "net_worth": 180000000000,
+      "company": "Oracle",
+      "country": "USA"
+    },
+    {
+      "id": "mark_zuckerberg",
+      "rank": 5,
+      "name": "Mark Zuckerberg",
+      "net_worth": 170000000000,
+      "company": "Meta",
+      "country": "USA"
+    }
+  ]
+}

@@ -1,0 +1,54 @@
+{
+  "last_updated": "2026-03-01",
+  "source": "mixed_cpi_seed",
+  "items": [
+    {
+      "id": "milk",
+      "name": "Gallon of Milk",
+      "price": 4.2,
+      "category": "essentials"
+    },
+    {
+      "id": "bread",
+      "name": "Loaf of Bread",
+      "price": 3.5,
+      "category": "essentials"
+    },
+    {
+      "id": "eggs",
+      "name": "Dozen Eggs",
+      "price": 3.8,
+      "category": "essentials"
+    },
+    {
+      "id": "rent_month",
+      "name": "One Month Rent",
+      "price": 1800,
+      "category": "housing"
+    },
+    {
+      "id": "used_car",
+      "name": "Used Reliable Car",
+      "price": 12000,
+      "category": "stability"
+    },
+    {
+      "id": "doctor_visit",
+      "name": "Doctor Visit",
+      "price": 150,
+      "category": "health"
+    },
+    {
+      "id": "college_semester",
+      "name": "College Semester",
+      "price": 12000,
+      "category": "education"
+    },
+    {
+      "id": "private_jet",
+      "name": "Private Jet",
+      "price": 40000000,
+      "category": "luxury"
+    }
+  ]
+}

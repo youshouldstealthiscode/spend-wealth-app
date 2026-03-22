@@ -1,0 +1,274 @@
+// FILE: app/js/app.js
+
+const statusEl = document.querySelector("#status");
+const metaEl = document.querySelector("#meta");
+const personSelectEl = document.querySelector("#personSelect");
+const personDetailsEl = document.querySelector("#personDetails");
+const itemsCountEl = document.querySelector("#itemsCount");
+const itemsGridEl = document.querySelector("#itemsGrid");
+const totalBarEl = document.querySelector("#totalBar");
+const wealthStatsEl = document.querySelector("#wealthStats");
+const wageInputEl = document.querySelector("#wage");
+const workTimeEl = document.querySelector("#workTime");
+
+const moneyFormatter = new Intl.NumberFormat("en-US", {
+	style: "currency",
+	currency: "USD",
+	maximumFractionDigits: 0,
+});
+
+const numberFormatter = new Intl.NumberFormat("en-US", {
+	maximumFractionDigits: 0,
+});
+
+let STATE = {
+	people: [],
+	items: [],
+	selectedPerson: null,
+	cart: {},
+};
+
+async function fetchJson(path) {
+	const response = await fetch(path, { cache: "no-store" });
+
+	if (!response.ok) {
+		throw new Error(`Failed to load ${path}: ${response.status} ${response.statusText}`);
+	}
+
+	return response.json();
+}
+
+function getCartTotal() {
+	let total = 0;
+
+	for (const item of STATE.items) {
+		const quantity = STATE.cart[item.id] || 0;
+		total += quantity * item.price;
+	}
+
+	return total;
+}
+
+function renderPersonOptions() {
+	personSelectEl.innerHTML = "";
+
+	for (const person of STATE.people) {
+		const option = document.createElement("option");
+		option.value = person.id;
+		option.textContent = `#${person.rank} ${person.name} — ${moneyFormatter.format(person.net_worth)}`;
+		personSelectEl.appendChild(option);
+	}
+
+	if (STATE.selectedPerson) {
+		personSelectEl.value = STATE.selectedPerson.id;
+	}
+}
+
+function renderPersonDetails() {
+	if (!STATE.selectedPerson) {
+		personDetailsEl.innerHTML = "<div>No person selected.</div>";
+		return;
+	}
+
+	const person = STATE.selectedPerson;
+
+	personDetailsEl.innerHTML = `
+    <div><strong>Name:</strong> ${person.name}</div>
+    <div><strong>Rank:</strong> #${person.rank}</div>
+    <div><strong>Net worth:</strong> ${moneyFormatter.format(person.net_worth)}</div>
+    <div><strong>Company:</strong> ${person.company}</div>
+    <div><strong>Country:</strong> ${person.country}</div>
+  `;
+}
+
+function renderItems() {
+	itemsGridEl.innerHTML = "";
+	itemsCountEl.textContent = `${STATE.items.length} items loaded`;
+
+	for (const item of STATE.items) {
+		const quantity = STATE.cart[item.id] || 0;
+
+		const card = document.createElement("div");
+		card.className = "item";
+
+		card.innerHTML = `
+      <div><strong>${item.name}</strong></div>
+      <div>Price: ${moneyFormatter.format(item.price)}</div>
+      <div>Category: ${item.category}</div>
+
+      <div style="margin-top: 8px;">
+	<button type="button" data-id="${item.id}" class="minus">-</button>
+	<input
+	  type="number"
+	  min="0"
+	  step="1"
+	  data-id="${item.id}"
+	  class="qty"
+	  value="${quantity}"
+	  style="width: 70px; text-align: center;"
+	/>
+	<button type="button" data-id="${item.id}" class="plus">+</button>
+      </div>
+    `;
+
+		itemsGridEl.appendChild(card);
+	}
+}
+
+function renderTotal() {
+	const total = getCartTotal();
+
+	totalBarEl.innerHTML = `
+    <strong>Total Spent:</strong> ${moneyFormatter.format(total)}
+  `;
+}
+
+function renderWealthStats() {
+	const total = getCartTotal();
+	const wealth = STATE.selectedPerson.net_worth;
+
+	const percent = (total / wealth) * 100;
+	const remaining = wealth - total;
+	const fraction = total > 0 ? Math.round(wealth / total) : 0;
+
+	const households = total / 30000;
+
+	document.getElementById("wealthStats").innerHTML = `
+    <div><strong>Percent of wealth:</strong> ${
+	    percent < 0.000001 ? "<0.000001" : percent.toFixed(6)
+    }%</div>
+
+    <div><strong>Remaining:</strong> ${moneyFormatter.format(remaining)}</div>
+
+    <div><strong>1 in X:</strong> 1 / ${fraction.toLocaleString()}</div>
+
+    <div style="margin-top:10px;">
+      <div style="height:20px;background:#ddd;border-radius:10px;overflow:hidden;">
+	<div style="height:100%;width:${Math.min(percent,100)}%;background:#4caf50;"></div>
+      </div>
+    </div>
+
+    <div style="margin-top:10px;">
+      <strong>Impact:</strong><br>
+      Could support ${Math.floor(households).toLocaleString()} people for a year
+    </div>
+  `;
+}
+
+
+function renderWorkTime() {
+	const wage = parseFloat(wageInputEl.value);
+	const total = getCartTotal();
+
+	if (!Number.isFinite(wage) || wage <= 0) {
+		workTimeEl.innerHTML = "--";
+		return;
+	}
+
+	const hours = total / wage;
+	const years = hours / (40 * 52);
+
+	workTimeEl.innerHTML = `
+    <div><strong>Work required:</strong></div>
+    <div>${numberFormatter.format(hours)} hours</div>
+    <div>${years.toFixed(2)} years (full-time at 40 hrs/week)</div>
+  `;
+}
+
+function updateUI() {
+	renderPersonDetails();
+	renderItems();
+	renderTotal();
+	renderWealthStats();
+	renderWorkTime();
+}
+
+function attachEvents() {
+	itemsGridEl.addEventListener("click", (event) => {
+		const target = event.target;
+
+		if (!(target instanceof HTMLElement)) return;
+
+		const id = target.dataset.id;
+		if (!id) return;
+
+		if (target.classList.contains("plus")) {
+			STATE.cart[id] = (STATE.cart[id] || 0) + 1;
+			updateUI();
+			return;
+		}
+
+		if (target.classList.contains("minus")) {
+			STATE.cart[id] = Math.max(0, (STATE.cart[id] || 0) - 1);
+			updateUI();
+		}
+	});
+
+	itemsGridEl.addEventListener("input", (event) => {
+		const target = event.target;
+
+		if (!(target instanceof HTMLInputElement)) return;
+		if (!target.classList.contains("qty")) return;
+
+		const id = target.dataset.id;
+		if (!id) return;
+
+		let value = parseInt(target.value, 10);
+
+		if (!Number.isFinite(value) || value < 0) {
+			value = 0;
+		}
+
+		STATE.cart[id] = value;
+		updateUI();
+	});
+
+	personSelectEl.addEventListener("change", () => {
+		const selected = STATE.people.find((person) => person.id === personSelectEl.value);
+
+		if (selected) {
+			STATE.selectedPerson = selected;
+			updateUI();
+		}
+	});
+
+	wageInputEl.addEventListener("input", () => {
+		renderWorkTime();
+	});
+}
+
+async function init() {
+	try {
+		const [peopleData, itemsData] = await Promise.all([
+			fetchJson("./data/richest_people.json"),
+			fetchJson("./data/cpi_items.json"),
+		]);
+
+		if (!Array.isArray(peopleData.people) || peopleData.people.length === 0) {
+			throw new Error("People dataset is empty or invalid.");
+		}
+
+		if (!Array.isArray(itemsData.items) || itemsData.items.length === 0) {
+			throw new Error("Items dataset is empty or invalid.");
+		}
+
+		STATE.people = peopleData.people;
+		STATE.items = itemsData.items;
+		STATE.selectedPerson = STATE.people[0];
+
+		statusEl.textContent = "Loaded successfully.";
+		metaEl.textContent =
+			`People source: ${peopleData.source} | People updated: ${peopleData.last_updated} | ` +
+			`Items source: ${itemsData.source} | Items updated: ${itemsData.last_updated}`;
+
+		renderPersonOptions();
+		attachEvents();
+		updateUI();
+	} catch (error) {
+		console.error(error);
+		statusEl.textContent = `Error: ${error.message}`;
+		metaEl.textContent = "Open the browser console if needed.";
+	}
+}
+
+init();
