@@ -1,5 +1,5 @@
 {
-  "last_updated": "2026-03-23T05:18:05.919Z",
+  "last_updated": "2026-03-23T05:20:50.673Z",
   "source": "Hybrid dataset: BLS food prices + EIA/AAA energy estimates + curated essentials",
   "source_url": "https://www.bls.gov/regions/mid-atlantic/data/AverageRetailFoodAndEnergyPrices_USandWest_Table.htm",
   "freshness": "monthly | estimated | market",
