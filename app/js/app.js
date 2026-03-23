@@ -9,7 +9,17 @@ const itemsGridEl = document.querySelector("#itemsGrid");
 const totalBarEl = document.querySelector("#totalBar");
 const wealthStatsEl = document.querySelector("#wealthStats");
 const wageInputEl = document.querySelector("#wage");
+const hoursPerWeekInputEl = document.querySelector("#hoursPerWeek");
+const weeksPerYearInputEl = document.querySelector("#weeksPerYear");
+const savingsInputEl = document.querySelector("#savings");
 const workTimeEl = document.querySelector("#workTime");
+const annualIncomeDisplayEl = document.querySelector("#annualIncomeDisplay");
+const yearsToWealthDisplayEl = document.querySelector("#yearsToWealthDisplay");
+const savingsComparisonDisplayEl = document.querySelector("#savingsComparisonDisplay");
+const cartAfterSavingsDisplayEl = document.querySelector("#cartAfterSavingsDisplay");
+const resetAppBtnEl = document.querySelector("#resetAppBtn");
+const shareResultsBtnEl = document.querySelector("#shareResultsBtn");
+const shareStatusEl = document.querySelector("#shareStatus");
 
 const moneyFormatter = new Intl.NumberFormat("en-US", {
 	style: "currency",
@@ -21,11 +31,22 @@ const numberFormatter = new Intl.NumberFormat("en-US", {
 	maximumFractionDigits: 0,
 });
 
+function getDefaultUserFinance() {
+	return {
+		hourlyWage: 0,
+		hoursPerWeek: 40,
+		weeksPerYear: 52,
+		savings: 0,
+	};
+}
+
 let STATE = {
 	people: [],
 	items: [],
 	selectedPerson: null,
 	cart: {},
+	activeCategory: "all",
+	userFinance: getDefaultUserFinance(),
 };
 
 async function fetchJson(path) {
@@ -38,6 +59,127 @@ async function fetchJson(path) {
 	return response.json();
 }
 
+function saveState() {
+	try {
+		localStorage.setItem("spendWealthState", JSON.stringify(STATE));
+	} catch (e) {
+		console.warn("Failed to save state", e);
+	}
+}
+
+function loadState() {
+	try {
+		const raw = localStorage.getItem("spendWealthState");
+		if (!raw) return;
+
+		const parsed = JSON.parse(raw);
+
+		if (parsed.cart) STATE.cart = parsed.cart;
+		if (parsed.activeCategory) STATE.activeCategory = parsed.activeCategory;
+		if (parsed.userFinance) STATE.userFinance = parsed.userFinance;
+	} catch (e) {
+		console.warn("Failed to load state", e);
+	}
+}
+
+function encodeShareState() {
+	const payload = {
+		selectedPersonId: STATE.selectedPerson ? STATE.selectedPerson.id : null,
+		cart: STATE.cart,
+		activeCategory: STATE.activeCategory,
+		userFinance: STATE.userFinance,
+	};
+
+	return btoa(encodeURIComponent(JSON.stringify(payload)));
+}
+
+function applySharedState(encoded) {
+	try {
+		const decoded = JSON.parse(decodeURIComponent(atob(encoded)));
+
+		if (decoded.cart) STATE.cart = decoded.cart;
+		if (decoded.activeCategory) STATE.activeCategory = decoded.activeCategory;
+		if (decoded.userFinance) STATE.userFinance = decoded.userFinance;
+
+		if (decoded.selectedPersonId && Array.isArray(STATE.people)) {
+			const matched = STATE.people.find((person) => person.id === decoded.selectedPersonId);
+			if (matched) {
+				STATE.selectedPerson = matched;
+			}
+		}
+	} catch (e) {
+		console.warn("Failed to apply shared state", e);
+	}
+}
+
+function setShareStatus(message) {
+	if (!shareStatusEl) return;
+	shareStatusEl.textContent = message;
+	window.clearTimeout(setShareStatus.timeoutId);
+	setShareStatus.timeoutId = window.setTimeout(() => {
+		shareStatusEl.textContent = "";
+	}, 2500);
+}
+
+function resetAppState() {
+	STATE.cart = {};
+	STATE.activeCategory = "all";
+	STATE.userFinance = getDefaultUserFinance();
+	STATE.selectedPerson = STATE.people[0] || null;
+
+	try {
+		localStorage.removeItem("spendWealthState");
+	} catch (e) {
+		console.warn("Failed to clear saved state", e);
+	}
+
+	syncFinanceInputsFromState();
+	renderPersonOptions();
+	updateUI();
+	setShareStatus("App reset.");
+}
+
+async function shareResults() {
+	const shareUrl = `${window.location.origin}${window.location.pathname}?state=${encodeShareState()}`;
+
+	try {
+		if (navigator.share) {
+			await navigator.share({
+				title: "Spend Wealth App Results",
+				text: "Check out this billionaire wealth comparison.",
+				url: shareUrl,
+			});
+			setShareStatus("Shared.");
+			return;
+		}
+
+		await navigator.clipboard.writeText(shareUrl);
+		setShareStatus("Share link copied.");
+	} catch (e) {
+		console.warn("Failed to share results", e);
+		setShareStatus("Share failed.");
+	}
+}
+
+function getVisibleItems() {
+	if (STATE.activeCategory === "all") {
+		return STATE.items;
+	}
+
+	return STATE.items.filter((item) => item.category === STATE.activeCategory);
+}
+
+function renderCategoryFilters() {
+	const filterButtons = document.querySelectorAll(".filterBtn");
+
+	for (const button of filterButtons) {
+		const isActive = button.dataset.category === STATE.activeCategory;
+		button.style.fontWeight = isActive ? "700" : "400";
+		button.style.outline = isActive ? "2px solid currentColor" : "none";
+		button.setAttribute("aria-pressed", isActive ? "true" : "false");
+	}
+}
+
 function getCartTotal() {
 	let total = 0;
 
@@ -47,6 +189,51 @@ function getCartTotal() {
 	}
 
 	return total;
+}
+
+function getDerivedMetrics() {
+	const total = getCartTotal();
+	const person = STATE.selectedPerson;
+	const wealth = person ? person.net_worth : 0;
+	const { hourlyWage, hoursPerWeek, weeksPerYear, savings } = STATE.userFinance;
+
+	const yearlyHours = hoursPerWeek * weeksPerYear;
+	const yearlyIncome = hourlyWage > 0 && yearlyHours > 0 ? hourlyWage * yearlyHours : 0;
+
+	const percent = wealth > 0 ? (total / wealth) * 100 : 0;
+	const remaining = wealth - total;
+	const fraction = total > 0 ? Math.round(wealth / total) : 0;
+	const households = total / 30000;
+	const savingsMultiple = savings > 0 ? total / savings : null;
+
+	const hoursToAffordCart = hourlyWage > 0 ? total / hourlyWage : 0;
+	const yearsToAffordCart = yearlyIncome > 0 ? total / yearlyIncome : 0;
+
+	const yearsToReachWealth = yearlyIncome > 0 && wealth > 0 ? wealth / yearlyIncome : null;
+	const lifetimesToReachWealth = yearsToReachWealth ? yearsToReachWealth / 80 : null;
+	const workingLifetimesToReachWealth = yearsToReachWealth ? yearsToReachWealth / 40 : null;
+
+	const remainingAfterSavings = Math.max(0, total - savings);
+	const yearsToAffordCartWithSavings = yearlyIncome > 0 ? remainingAfterSavings / yearlyIncome : 0;
+
+	return {
+		total,
+		wealth,
+		yearlyHours,
+		yearlyIncome,
+		percent,
+		remaining,
+		fraction,
+		households,
+		savingsMultiple,
+		hoursToAffordCart,
+		yearsToAffordCart,
+		yearsToReachWealth,
+		lifetimesToReachWealth,
+		workingLifetimesToReachWealth,
+		yearsToAffordCartWithSavings,
+		remainingAfterSavings,
+	};
 }
 
 function renderPersonOptions() {
@@ -83,9 +270,11 @@ function renderPersonDetails() {
 
 function renderItems() {
 	itemsGridEl.innerHTML = "";
-	itemsCountEl.textContent = `${STATE.items.length} items loaded`;
 
-	for (const item of STATE.items) {
+	const visibleItems = getVisibleItems();
+	itemsCountEl.textContent = `${visibleItems.length} items shown`;
+
+	for (const item of visibleItems) {
 		const quantity = STATE.cart[item.id] || 0;
 
 		const card = document.createElement("div");
@@ -116,7 +305,7 @@ function renderItems() {
 }
 
 function renderTotal() {
-	const total = getCartTotal();
+	const { total } = getDerivedMetrics();
 
 	totalBarEl.innerHTML = `
     <strong>Total Spent:</strong> ${moneyFormatter.format(total)}
@@ -124,19 +313,22 @@ function renderTotal() {
 }
 
 function renderWealthStats() {
-	const total = getCartTotal();
-	const wealth = STATE.selectedPerson.net_worth;
+	const metrics = getDerivedMetrics();
+	const {
+		percent,
+		remaining,
+		fraction,
+		households,
+		savingsMultiple,
+		yearsToReachWealth,
+		yearsToAffordCartWithSavings,
+		remainingAfterSavings,
+	} = metrics;
 
-	const percent = (total / wealth) * 100;
-	const remaining = wealth - total;
-	const fraction = total > 0 ? Math.round(wealth / total) : 0;
-
-	const households = total / 30000;
-
-	document.getElementById("wealthStats").innerHTML = `
+	wealthStatsEl.innerHTML = `
     <div><strong>Percent of wealth:</strong> ${
-	    percent < 0.000001 ? "<0.000001" : percent.toFixed(6)
-    }%</div>
+			percent < 0.000001 ? "<0.000001" : percent.toFixed(6)
+		}%</div>
 
     <div><strong>Remaining:</strong> ${moneyFormatter.format(remaining)}</div>
 
@@ -144,7 +336,7 @@ function renderWealthStats() {
 
     <div style="margin-top:10px;">
       <div style="height:20px;background:#ddd;border-radius:10px;overflow:hidden;">
-	<div style="height:100%;width:${Math.min(percent,100)}%;background:#4caf50;"></div>
+		<div style="height:100%;width:${Math.min(percent, 100)}%;background:#4caf50;"></div>
       </div>
     </div>
 
@@ -152,52 +344,146 @@ function renderWealthStats() {
       <strong>Impact:</strong><br>
       Could support ${Math.floor(households).toLocaleString()} people for a year
     </div>
+
+    <div style="margin-top:10px;">
+      <strong>Compared to your savings:</strong><br>
+      ${savingsMultiple ? `${savingsMultiple.toFixed(2)}x your current savings` : "Add your savings to compare"}
+    </div>
+
+    <div style="margin-top:10px;">
+      <strong>Time to reach this billionaire's wealth:</strong><br>
+      ${yearsToReachWealth ? `${numberFormatter.format(yearsToReachWealth)} years at your current income` : "Add income details to compare"}
+    </div>
+
+    <div style="margin-top:10px;">
+      <strong>Time to afford this cart using savings first:</strong><br>
+      ${STATE.userFinance.hourlyWage > 0 ? `${yearsToAffordCartWithSavings.toFixed(2)} years after using ${moneyFormatter.format(STATE.userFinance.savings)} in savings` : "Add income details to compare"}
+      <br>
+      <span style="opacity:0.8;">Remaining after savings: ${moneyFormatter.format(remainingAfterSavings)}</span>
+    </div>
   `;
 }
 
 
 function renderWorkTime() {
-  const wageInput = document.getElementById("wage");
-  const wage = parseFloat(wageInput.value);
-  const total = getCartTotal();
-  const timeEquivalentsEl = document.getElementById("timeEquivalents");
+	const timeEquivalentsEl = document.getElementById("timeEquivalents");
+	if (!workTimeEl || !timeEquivalentsEl) return;
+	const metrics = getDerivedMetrics();
+	const { hoursToAffordCart, yearsToAffordCart } = metrics;
+	const { hourlyWage } = STATE.userFinance;
 
-  if (!wage || wage <= 0) {
-    document.getElementById("workTime").textContent = "--";
-    timeEquivalentsEl.textContent = "--";
-    return;
-  }
+	if (!hourlyWage || hourlyWage <= 0) {
+		workTimeEl.textContent = "--";
+		timeEquivalentsEl.textContent = "--";
+		return;
+	}
 
-  const hours = total / wage;
-  const years = hours / (40 * 52);
-  const workdays = hours / 8;
-  const lifetimes = years / 80;
-  const generations = years / 25;
-  const romanEmpires = years / 500;
-  const oliveTreeLifetimes = years / 1000;
+	const workdays = hoursToAffordCart / 8;
+	const lifetimes = yearsToAffordCart / 80;
+	const generations = yearsToAffordCart / 25;
+	const romanEmpires = yearsToAffordCart / 500;
+	const oliveTreeLifetimes = yearsToAffordCart / 1000;
 
-  document.getElementById("workTime").innerHTML = `
-    <div><strong>Work required:</strong></div>
-    <div>${hours.toLocaleString(undefined, { maximumFractionDigits: 0 })} hours</div>
-    <div>${years.toFixed(2)} years (full-time)</div>
-  `;
+	workTimeEl.innerHTML = `
+		<div><strong>Work required:</strong></div>
+		<div>${numberFormatter.format(hoursToAffordCart)} hours</div>
+		<div>${yearsToAffordCart.toFixed(2)} years</div>
+	`;
 
-  timeEquivalentsEl.innerHTML = `
-    <div><strong>Equivalent to:</strong></div>
-    <div>${workdays.toLocaleString(undefined, { maximumFractionDigits: 0 })} workdays</div>
-    <div>${lifetimes.toFixed(2)} human lifetimes</div>
-    <div>${generations.toFixed(2)} human generations</div>
-    <div>${romanEmpires.toFixed(3)} Roman Empires</div>
-    <div>${oliveTreeLifetimes.toFixed(3)} olive tree lifetimes</div>
-  `;
+	timeEquivalentsEl.innerHTML = `
+		<div><strong>Equivalent to:</strong></div>
+		<div>${numberFormatter.format(workdays)} workdays</div>
+		<div>${lifetimes.toFixed(2)} human lifetimes</div>
+		<div>${generations.toFixed(2)} generations</div>
+		<div>${romanEmpires.toFixed(3)} Roman Empires</div>
+		<div>${oliveTreeLifetimes.toFixed(3)} olive tree lifetimes</div>
+	`;
+}
+
+function renderStickySummary() {
+	const person = STATE.selectedPerson;
+	const metrics = getDerivedMetrics();
+	const { total, percent } = metrics;
+
+	document.getElementById("stickyPerson").textContent = person ? person.name : "--";
+	document.getElementById("stickyTotal").textContent = moneyFormatter.format(total);
+	document.getElementById("stickyPercent").textContent =
+		percent < 0.000001 ? "<0.000001%" : percent.toFixed(6) + "%";
+
+	renderStickyWorkTime();
+}
+
+function renderStickyWorkTime() {
+	const { hourlyWage } = STATE.userFinance;
+	const { yearsToAffordCart } = getDerivedMetrics();
+
+	if (!hourlyWage || hourlyWage <= 0) {
+		document.getElementById("stickyWorkTime").textContent = "--";
+		return;
+	}
+
+	document.getElementById("stickyWorkTime").textContent = `${yearsToAffordCart.toFixed(2)} yrs`;
+}
+
+function syncFinanceInputsFromState() {
+	if (wageInputEl) {
+		wageInputEl.value = STATE.userFinance.hourlyWage || "";
+	}
+	if (hoursPerWeekInputEl) {
+		hoursPerWeekInputEl.value = STATE.userFinance.hoursPerWeek || 40;
+	}
+	if (weeksPerYearInputEl) {
+		weeksPerYearInputEl.value = STATE.userFinance.weeksPerYear || 52;
+	}
+	if (savingsInputEl) {
+		savingsInputEl.value = STATE.userFinance.savings || "";
+	}
+}
+
+function renderPositionComparison() {
+	const metrics = getDerivedMetrics();
+	const {
+		yearlyIncome,
+		yearsToReachWealth,
+		lifetimesToReachWealth,
+		workingLifetimesToReachWealth,
+		savingsMultiple,
+		yearsToAffordCartWithSavings,
+		remainingAfterSavings,
+	} = metrics;
+
+	annualIncomeDisplayEl.textContent =
+		yearlyIncome > 0 ? moneyFormatter.format(yearlyIncome) : "Add income details";
+
+	yearsToWealthDisplayEl.innerHTML =
+		yearsToReachWealth
+			? `
+				${numberFormatter.format(yearsToReachWealth)} years<br>
+				<span style="opacity:0.8;">
+					≈ ${lifetimesToReachWealth.toFixed(2)} lifetimes<br>
+					≈ ${workingLifetimesToReachWealth.toFixed(2)} full working lives
+				</span>
+			`
+			: "Add income details";
+
+	savingsComparisonDisplayEl.textContent =
+		savingsMultiple ? `${savingsMultiple.toFixed(2)}x your current savings` : "Add your savings";
+
+	cartAfterSavingsDisplayEl.textContent =
+		STATE.userFinance.hourlyWage > 0
+			? `${yearsToAffordCartWithSavings.toFixed(2)} years (${moneyFormatter.format(remainingAfterSavings)} remaining after savings)`
+			: "Add income details";
 }
 
 function updateUI() {
-	renderPersonDetails();
-	renderItems();
-	renderTotal();
-	renderWealthStats();
-	renderWorkTime();
+  renderPersonDetails();
+  renderCategoryFilters();
+  renderItems();
+  renderTotal();
+  renderWealthStats();
+  renderWorkTime();
+  renderStickySummary();
+  renderPositionComparison();
 }
 
 function attachEvents() {
@@ -211,12 +497,14 @@ function attachEvents() {
 
 		if (target.classList.contains("plus")) {
 			STATE.cart[id] = (STATE.cart[id] || 0) + 1;
+			saveState();
 			updateUI();
 			return;
 		}
 
 		if (target.classList.contains("minus")) {
 			STATE.cart[id] = Math.max(0, (STATE.cart[id] || 0) - 1);
+			saveState();
 			updateUI();
 		}
 	});
@@ -237,8 +525,27 @@ function attachEvents() {
 		}
 
 		STATE.cart[id] = value;
+		saveState();
 		updateUI();
 	});
+
+	const categoryFiltersEl = document.getElementById("categoryFilters");
+
+	if (categoryFiltersEl) {
+		categoryFiltersEl.addEventListener("click", (event) => {
+			const target = event.target;
+
+			if (!(target instanceof HTMLElement)) return;
+			if (!target.classList.contains("filterBtn")) return;
+
+			const nextCategory = target.dataset.category;
+			if (!nextCategory) return;
+
+			STATE.activeCategory = nextCategory;
+			saveState();
+			updateUI();
+		});
+	}
 
 	personSelectEl.addEventListener("change", () => {
 		const selected = STATE.people.find((person) => person.id === personSelectEl.value);
@@ -249,13 +556,58 @@ function attachEvents() {
 		}
 	});
 
-	wageInputEl.addEventListener("input", () => {
-		renderWorkTime();
-	});
+	if (wageInputEl) {
+		wageInputEl.addEventListener("input", () => {
+			const val = parseFloat(wageInputEl.value);
+			STATE.userFinance.hourlyWage = Number.isFinite(val) ? val : 0;
+			saveState();
+			updateUI();
+		});
+	}
+
+	if (hoursPerWeekInputEl) {
+		hoursPerWeekInputEl.addEventListener("input", () => {
+			const val = parseFloat(hoursPerWeekInputEl.value);
+			STATE.userFinance.hoursPerWeek = Number.isFinite(val) ? val : 0;
+			saveState();
+			updateUI();
+		});
+	}
+
+	if (weeksPerYearInputEl) {
+		weeksPerYearInputEl.addEventListener("input", () => {
+			const val = parseFloat(weeksPerYearInputEl.value);
+			STATE.userFinance.weeksPerYear = Number.isFinite(val) ? val : 0;
+			saveState();
+			updateUI();
+		});
+	}
+
+	if (savingsInputEl) {
+		savingsInputEl.addEventListener("input", () => {
+			const val = parseFloat(savingsInputEl.value);
+			STATE.userFinance.savings = Number.isFinite(val) ? val : 0;
+			saveState();
+			updateUI();
+		});
+	}
+
+	if (resetAppBtnEl) {
+		resetAppBtnEl.addEventListener("click", () => {
+		resetAppState();
+		});
+	}
+
+	if (shareResultsBtnEl) {
+		shareResultsBtnEl.addEventListener("click", async () => {
+			await shareResults();
+		});
+	}
 }
 
 async function init() {
 	try {
+		loadState();
 		const [peopleData, itemsData] = await Promise.all([
 			fetchJson("./data/richest_people.json"),
 			fetchJson("./data/cpi_items.json"),
@@ -273,12 +625,19 @@ async function init() {
 		STATE.items = itemsData.items;
 		STATE.selectedPerson = STATE.people[0];
 
+		const urlParams = new URLSearchParams(window.location.search);
+		const sharedState = urlParams.get("state");
+		if (sharedState) {
+			applySharedState(sharedState);
+		}
+
 		statusEl.textContent = "Loaded successfully.";
 		metaEl.textContent =
 			`People source: ${peopleData.source} | People updated: ${peopleData.last_updated} | ` +
 			`Items source: ${itemsData.source} | Items updated: ${itemsData.last_updated}`;
 
 		renderPersonOptions();
+		syncFinanceInputsFromState();
 		attachEvents();
 		updateUI();
 	} catch (error) {

@@ -5,65 +5,22 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Wealth Engine Rebuild</title>
-    <style>
-      :root {
-        color-scheme: light dark;
-        font-family: Arial, sans-serif;
-      }
-
-      body {
-        margin: 0;
-        padding: 2rem;
-        line-height: 1.5;
-      }
-
-      .wrap {
-        max-width: 1000px;
-        margin: 0 auto;
-      }
-
-      h1, h2 {
-        margin-top: 0;
-      }
-
-      .panel {
-        border: 1px solid #8884;
-        border-radius: 12px;
-        padding: 1rem;
-        margin-bottom: 1rem;
-      }
-
-      .grid {
-        display: grid;
-        gap: 1rem;
-        grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-      }
-
-      .item {
-        border: 1px solid #8884;
-        border-radius: 12px;
-        padding: 0.75rem;
-      }
-
-      .muted {
-        opacity: 0.75;
-        font-size: 0.95rem;
-      }
-
-      select {
-        padding: 0.5rem;
-        font: inherit;
-        min-width: 280px;
-      }
-
-      code {
-        font-size: 0.95rem;
-      }
-    </style>
+    <link rel="stylesheet" href="./style.css" />
   </head>
   <body>
     <div class="wrap">
-      <h1>Wealth Engine Rebuild</h1>
+    <div id="stickySummary" class="panel sticky-summary">
+  <div><strong>Selected:</strong> <span id="stickyPerson">--</span></div>
+  <div><strong>Total:</strong> <span id="stickyTotal">$0</span></div>
+  <div><strong>Percent:</strong> <span id="stickyPercent">--</span></div>
+  <div><strong>Work Time:</strong> <span id="stickyWorkTime">--</span></div>
+</div>
+    <div class="panel action-bar">
+      <button type="button" id="resetAppBtn">Reset</button>
+      <button type="button" id="shareResultsBtn">Share Results</button>
+      <span id="shareStatus" class="muted">&nbsp;</span>
+    </div>
+      <h1 class="hero-title">Spend Wealth App</h1>
 
       <div class="panel">
         <h2>Data status</h2>
@@ -78,12 +35,14 @@
         <select id="personSelect"></select>
         <div id="personDetails" style="margin-top: 1rem;"></div>
       </div>
-      <div class="panel">
-        <h2>Items</h2>
-	<div id="totalBar" class="panel">
+      <div class="dashboard-grid">
+        <div class="stack">
+          <div class="panel">
+            <h2>Items</h2>
+	<div id="totalBar" class="panel panel-subtle">
   	Total Spent: $0
 	</div>
-<div id="wealthStats" class="panel">
+<div id="wealthStats" class="panel panel-subtle">
   <div><strong>Percent of wealth:</strong> --</div>
   <div><strong>Remaining:</strong> --</div>
   <div><strong>Fraction:</strong> --</div>
@@ -94,17 +53,79 @@
     </div>
   </div>
 </div>
-<div class="panel">
-  <h2>Your Income</h2>
-  <input id="wage" placeholder="Hourly wage (e.g. 20)" />
-  <div id="workTime" style="margin-top:10px;">--</div>
-  <div id="timeEquivalents" style="margin-top:12px;">
-  --
-</div>
-</div>
+        <div class="panel panel-subtle">
+          <h2>Filters</h2>
+          <div id="categoryFilters" class="filters-row">
+            <button type="button" class="filterBtn" data-category="all">All</button>
+            <button type="button" class="filterBtn" data-category="essentials">Essentials</button>
+            <button type="button" class="filterBtn" data-category="housing">Housing</button>
+            <button type="button" class="filterBtn" data-category="health">Health</button>
+            <button type="button" class="filterBtn" data-category="education">Education</button>
+            <button type="button" class="filterBtn" data-category="stability">Stability</button>
+            <button type="button" class="filterBtn" data-category="luxury">Luxury</button>
+          </div>
+        </div>
         <div id="itemsCount" class="muted"></div>
         <div id="itemsGrid" class="grid" style="margin-top: 1rem;"></div>
+          </div>
+        </div>
+
+        <div class="stack">
+<div class="panel">
+  <h2>Your Income</h2>
+
+  <div class="grid" style="grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));">
+    <label>
+      Hourly wage
+      <input id="wage" type="number" min="0" step="0.01" placeholder="20" style="width: 100%; margin-top: 0.35rem;" />
+    </label>
+
+    <label>
+      Hours per week
+      <input id="hoursPerWeek" type="number" min="0" step="1" value="40" style="width: 100%; margin-top: 0.35rem;" />
+    </label>
+
+    <label>
+      Weeks per year
+      <input id="weeksPerYear" type="number" min="0" step="1" value="52" style="width: 100%; margin-top: 0.35rem;" />
+    </label>
+
+    <label>
+      Current savings
+      <input id="savings" type="number" min="0" step="0.01" placeholder="0" style="width: 100%; margin-top: 0.35rem;" />
+    </label>
+  </div>
+
+  <div id="workTime" style="margin-top: 1rem;">--</div>
+  <div id="timeEquivalents" style="margin-top: 0.75rem;">--</div>
+</div>
+<div class="panel">
+  <h2>Your Position vs This Billionaire</h2>
+  <div class="grid" style="grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));">
+    <div>
+      <strong>Your annual income</strong>
+      <div id="annualIncomeDisplay" style="margin-top: 0.35rem;">--</div>
+    </div>
+
+    <div>
+      <strong>Years to reach their wealth</strong>
+      <div id="yearsToWealthDisplay" style="margin-top: 0.35rem;">--</div>
+    </div>
+
+    <div>
+      <strong>Cart cost vs your savings</strong>
+      <div id="savingsComparisonDisplay" style="margin-top: 0.35rem;">--</div>
+    </div>
+
+    <div>
+      <strong>Years to afford this cart after savings</strong>
+      <div id="cartAfterSavingsDisplay" style="margin-top: 0.35rem;">--</div>
+    </div>
+  </div>
+</div>
+        </div>
       </div>
+    </div>
     </div>
 
     <script type="module" src="./js/app.js"></script>
