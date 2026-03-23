@@ -1,6 +1,6 @@
 {
-  "last_updated": "2026-02-28T00:00:00-05:00",
-  "source": "Hybrid dataset: BLS monthly average prices for selected food and energy items, plus curated supplemental estimates for housing, health, education, stability, and luxury items",
+  "last_updated": "2026-03-23T05:18:05.919Z",
+  "source": "Hybrid dataset: BLS food prices + EIA/AAA energy estimates + curated essentials",
   "source_url": "https://www.bls.gov/regions/mid-atlantic/data/AverageRetailFoodAndEnergyPrices_USandWest_Table.htm",
   "freshness": "monthly | estimated | market",
   "items": [
@@ -61,27 +61,36 @@
       "unit": "per lb"
     },
     {
-    "id": "gas_regular_gallon",
-    "price": 3.65,
-    "source_type": "market_estimate"
-    },  
-    {
-    "id": "electricity_kwh",
-    "price": 0.23,
-    "source_type": "market_estimate"
+      "id": "gas_regular_gallon",
+      "name": "Gasoline, Regular (1 gallon)",
+      "price": 3.65,
+      "category": "transportation",
+      "source_type": "market_estimate",
+      "unit": "per gallon"
     },
     {
-    "id": "natural_gas_therm",
-    "price": 2.40,
-    "source_type": "market_estimate"
+      "id": "electricity_kwh",
+      "name": "Electricity (1 kWh)",
+      "price": 0.23,
+      "category": "housing",
+      "source_type": "market_estimate",
+      "unit": "per kWh"
     },
     {
-    "id": "rent_month",
-    "name": "One Month Rent",
-    "price": 1800,
-    "category": "housing",
-    "source_type": "curated_estimate",
-    "unit": "monthly"
+      "id": "natural_gas_therm",
+      "name": "Natural Gas (1 therm)",
+      "price": 2.4,
+      "category": "housing",
+      "source_type": "market_estimate",
+      "unit": "per therm"
+    },
+    {
+      "id": "rent_month",
+      "name": "One Month Rent",
+      "price": 2200,
+      "category": "housing",
+      "source_type": "curated_estimate",
+      "unit": "monthly"
     },
     {
       "id": "doctor_visit",
