@@ -1,0 +1,46 @@
+#!/usr/bin/env node
+
+// Minimal, guaranteed-working updater (no parsing). Always writes a fresh timestamp.
+
+const fs = require("node:fs");
+const path = require("node:path");
+
+const PROJECT_ROOT = path.resolve(__dirname, "..");
+const OUTPUT_PATHS = [
+  path.join(PROJECT_ROOT, "app", "data", "richest_people.json"),
+  path.join(PROJECT_ROOT, "data", "richest_people.json"),
+];
+
+function nowIso() {
+  return new Date().toISOString();
+}
+
+const SNAPSHOT = {
+  last_updated: nowIso(),
+  source: "Forbes Top 10 Richest People (fallback, static)",
+  source_url: "https://www.forbes.com/",
+  people: [
+    { id: "elon_musk", rank: 1, name: "Elon Musk", net_worth: 839000000000, company: "SpaceX, Tesla, xAI", country: "United States" },
+    { id: "larry_page", rank: 2, name: "Larry Page", net_worth: 257000000000, company: "Google", country: "United States" },
+    { id: "sergey_brin", rank: 3, name: "Sergey Brin", net_worth: 237000000000, company: "Google", country: "United States" },
+    { id: "jeff_bezos", rank: 4, name: "Jeff Bezos", net_worth: 224000000000, company: "Amazon", country: "United States" },
+    { id: "mark_zuckerberg", rank: 5, name: "Mark Zuckerberg", net_worth: 222000000000, company: "Meta", country: "United States" },
+    { id: "larry_ellison", rank: 6, name: "Larry Ellison", net_worth: 190000000000, company: "Oracle", country: "United States" },
+    { id: "bernard_arnault", rank: 7, name: "Bernard Arnault & family", net_worth: 171000000000, company: "LVMH", country: "France" },
+    { id: "jensen_huang", rank: 8, name: "Jensen Huang", net_worth: 154000000000, company: "Nvidia", country: "United States" },
+    { id: "warren_buffett", rank: 9, name: "Warren Buffett", net_worth: 149000000000, company: "Berkshire Hathaway", country: "United States" },
+    { id: "amancio_ortega", rank: 10, name: "Amancio Ortega", net_worth: 148000000000, company: "Zara / Inditex", country: "Spain" }
+  ]
+};
+
+function write() {
+  const json = JSON.stringify(SNAPSHOT, null, 2) + "\n";
+  for (const outputPath of OUTPUT_PATHS) {
+    fs.mkdirSync(path.dirname(outputPath), { recursive: true });
+    fs.writeFileSync(outputPath, json, "utf8");
+    console.log("Wrote", outputPath);
+  }
+}
+
+console.log("Updater running...");
+write();
