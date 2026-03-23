@@ -1,54 +1,128 @@
 {
-  "last_updated": "2026-03-01",
-  "source": "mixed_cpi_seed",
+  "last_updated": "2026-02-28T00:00:00-05:00",
+  "source": "Hybrid dataset: BLS food prices + EIA/AAA energy estimates + curated essentials",
+  "source_url": "https://www.bls.gov/regions/mid-atlantic/data/AverageRetailFoodAndEnergyPrices_USandWest_Table.htm",
+  "freshness": "monthly | estimated | market",
   "items": [
     {
-      "id": "milk",
-      "name": "Gallon of Milk",
-      "price": 4.2,
-      "category": "essentials"
+      "id": "bread_white_pan",
+      "name": "White Bread (1 lb)",
+      "price": 1.85,
+      "category": "essentials",
+      "source_type": "bls_average_price",
+      "unit": "per lb"
     },
     {
-      "id": "bread",
-      "name": "Loaf of Bread",
-      "price": 3.5,
-      "category": "essentials"
+      "id": "eggs_dozen",
+      "name": "Eggs, Grade A Large (1 dozen)",
+      "price": 2.5,
+      "category": "essentials",
+      "source_type": "bls_average_price",
+      "unit": "per dozen"
     },
     {
-      "id": "eggs",
-      "name": "Dozen Eggs",
-      "price": 3.8,
-      "category": "essentials"
+      "id": "milk_gallon",
+      "name": "Whole Milk (1 gallon)",
+      "price": 4.03,
+      "category": "essentials",
+      "source_type": "bls_average_price",
+      "unit": "per gallon"
     },
+    {
+      "id": "rice_long_grain",
+      "name": "White Rice (1 lb)",
+      "price": 1.07,
+      "category": "essentials",
+      "source_type": "bls_average_price",
+      "unit": "per lb"
+    },
+    {
+      "id": "bananas_lb",
+      "name": "Bananas (1 lb)",
+      "price": 0.65,
+      "category": "essentials",
+      "source_type": "bls_average_price",
+      "unit": "per lb"
+    },
+    {
+      "id": "potatoes_lb",
+      "name": "Potatoes (1 lb)",
+      "price": 0.87,
+      "category": "essentials",
+      "source_type": "bls_average_price",
+      "unit": "per lb"
+    },
+    {
+      "id": "chicken_whole_lb",
+      "name": "Whole Chicken (1 lb)",
+      "price": 2.05,
+      "category": "essentials",
+      "source_type": "bls_average_price",
+      "unit": "per lb"
+    },
+ {
+  "id": "gas_regular_gallon",
+  "name": "Gasoline, Regular (1 gallon)",
+  "price": 3.65,
+  "category": "transportation",
+  "source_type": "market_estimate",
+  "unit": "per gallon"
+},
+{
+  "id": "electricity_kwh",
+  "name": "Electricity (1 kWh)",
+  "price": 0.23,
+  "category": "housing",
+  "source_type": "market_estimate",
+  "unit": "per kWh"
+},
+{
+  "id": "natural_gas_therm",
+  "name": "Natural Gas (1 therm)",
+  "price": 2.40,
+  "category": "housing",
+  "source_type": "market_estimate",
+  "unit": "per therm"
+},
     {
       "id": "rent_month",
       "name": "One Month Rent",
-      "price": 1800,
-      "category": "housing"
-    },
-    {
-      "id": "used_car",
-      "name": "Used Reliable Car",
-      "price": 12000,
-      "category": "stability"
+      "price": 2200,
+      "category": "housing",
+      "source_type": "curated_estimate",
+      "unit": "monthly"
     },
     {
       "id": "doctor_visit",
       "name": "Doctor Visit",
       "price": 150,
-      "category": "health"
+      "category": "health",
+      "source_type": "curated_estimate",
+      "unit": "visit"
+    },
+    {
+      "id": "used_car",
+      "name": "Used Reliable Car",
+      "price": 12000,
+      "category": "stability",
+      "source_type": "curated_estimate",
+      "unit": "one-time"
     },
     {
       "id": "college_semester",
       "name": "College Semester",
       "price": 12000,
-      "category": "education"
+      "category": "education",
+      "source_type": "curated_estimate",
+      "unit": "semester"
     },
     {
       "id": "private_jet",
       "name": "Private Jet",
       "price": 40000000,
-      "category": "luxury"
+      "category": "luxury",
+      "source_type": "curated_estimate",
+      "unit": "one-time"
     }
   ]
 }

@@ -20,6 +20,9 @@ const cartAfterSavingsDisplayEl = document.querySelector("#cartAfterSavingsDispl
 const resetAppBtnEl = document.querySelector("#resetAppBtn");
 const shareResultsBtnEl = document.querySelector("#shareResultsBtn");
 const shareStatusEl = document.querySelector("#shareStatus");
+const presetStatusEl = document.querySelector("#presetStatus");
+const wealthSourceDisplayEl = document.querySelector("#wealthSourceDisplay");
+const itemSourceDisplayEl = document.querySelector("#itemSourceDisplay");
 
 const moneyFormatter = new Intl.NumberFormat("en-US", {
 	style: "currency",
@@ -47,6 +50,10 @@ let STATE = {
 	cart: {},
 	activeCategory: "all",
 	userFinance: getDefaultUserFinance(),
+	dataMeta: {
+		wealth: null,
+		items: null,
+	},
 };
 
 async function fetchJson(path) {
@@ -167,6 +174,78 @@ function getVisibleItems() {
 	}
 
 	return STATE.items.filter((item) => item.category === STATE.activeCategory);
+}
+
+function setPresetStatus(message) {
+	if (!presetStatusEl) return;
+	presetStatusEl.textContent = message;
+}
+
+function applyPresetBundle(presetKey) {
+	const nextCart = { ...STATE.cart };
+
+	const addQuantity = (itemId, quantity) => {
+		nextCart[itemId] = (nextCart[itemId] || 0) + quantity;
+	};
+
+	switch (presetKey) {
+		case "survive_month":
+			addQuantity("rent_month", 1);
+			addQuantity("bread_white_pan", 8);
+			addQuantity("milk_gallon", 4);
+			addQuantity("eggs_dozen", 4);
+			addQuantity("rice_long_grain", 10);
+			addQuantity("bananas_lb", 8);
+			addQuantity("potatoes_lb", 10);
+			addQuantity("chicken_whole_lb", 8);
+			addQuantity("electricity_kwh", 300);
+			addQuantity("natural_gas_therm", 40);
+			setPresetStatus("Applied preset: Survive One Month.");
+			break;
+		case "stabilize_household":
+			addQuantity("rent_month", 2);
+			addQuantity("used_car", 1);
+			addQuantity("doctor_visit", 2);
+			addQuantity("bread_white_pan", 8);
+			addQuantity("milk_gallon", 4);
+			addQuantity("eggs_dozen", 4);
+			setPresetStatus("Applied preset: Stabilize Household.");
+			break;
+		case "fix_car_and_rent":
+			addQuantity("rent_month", 1);
+			addQuantity("used_car", 1);
+			setPresetStatus("Applied preset: Fix Car + Rent.");
+			break;
+		case "college_start":
+			addQuantity("college_semester", 1);
+			addQuantity("rent_month", 1);
+			addQuantity("doctor_visit", 1);
+			setPresetStatus("Applied preset: College Start.");
+			break;
+		default:
+			setPresetStatus("Unknown preset.");
+			return;
+	}
+
+	STATE.cart = nextCart;
+	saveState();
+	updateUI();
+}
+
+function renderSourceDisplays() {
+	if (wealthSourceDisplayEl && STATE.dataMeta.wealth) {
+		wealthSourceDisplayEl.innerHTML = `
+			<div>${STATE.dataMeta.wealth.source}</div>
+			<div style="margin-top:0.35rem;">Updated: ${STATE.dataMeta.wealth.last_updated}</div>
+		`;
+	}
+
+	if (itemSourceDisplayEl && STATE.dataMeta.items) {
+		itemSourceDisplayEl.innerHTML = `
+			<div>${STATE.dataMeta.items.source}</div>
+			<div style="margin-top:0.35rem;">Updated: ${STATE.dataMeta.items.last_updated}</div>
+		`;
+	}
 }
 
 function renderCategoryFilters() {
@@ -484,6 +563,7 @@ function updateUI() {
   renderWorkTime();
   renderStickySummary();
   renderPositionComparison();
+  renderSourceDisplays();
 }
 
 function attachEvents() {
@@ -547,11 +627,28 @@ function attachEvents() {
 		});
 	}
 
+	const presetBundlesEl = document.getElementById("presetBundles");
+
+	if (presetBundlesEl) {
+		presetBundlesEl.addEventListener("click", (event) => {
+			const target = event.target;
+
+			if (!(target instanceof HTMLElement)) return;
+			if (!target.classList.contains("presetBtn")) return;
+
+			const presetKey = target.dataset.preset;
+			if (!presetKey) return;
+
+			applyPresetBundle(presetKey);
+		});
+	}
+
 	personSelectEl.addEventListener("change", () => {
 		const selected = STATE.people.find((person) => person.id === personSelectEl.value);
 
 		if (selected) {
 			STATE.selectedPerson = selected;
+			saveState();
 			updateUI();
 		}
 	});
@@ -624,6 +721,18 @@ async function init() {
 		STATE.people = peopleData.people;
 		STATE.items = itemsData.items;
 		STATE.selectedPerson = STATE.people[0];
+
+		STATE.dataMeta.wealth = {
+			source: peopleData.source,
+			last_updated: peopleData.last_updated,
+			source_url: peopleData.source_url || "",
+		};
+
+		STATE.dataMeta.items = {
+			source: itemsData.source,
+			last_updated: itemsData.last_updated,
+			source_url: itemsData.source_url || "",
+		};
 
 		const urlParams = new URLSearchParams(window.location.search);
 		const sharedState = urlParams.get("state");
