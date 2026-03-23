@@ -1,0 +1,10 @@
+{
+  "name": "spend-wealth-app",
+  "private": true,
+  "version": "0.1.0",
+  "scripts": {
+    "update:billionaires": "node scripts/update_billionaires.js",
+    "update:items": "node scripts/update_items.js",
+    "update:data": "npm run update:billionaires && npm run update:items"
+  }
+}
