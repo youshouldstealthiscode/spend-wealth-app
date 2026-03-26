@@ -18,6 +18,8 @@
     <div class="panel action-bar">
       <button type="button" id="resetAppBtn">Reset</button>
       <button type="button" id="shareResultsBtn">Share Results</button>
+      <button type="button" id="printReceiptBtn">Print Receipt</button>
+      <button type="button" id="soundToggleBtn" title="Toggle purchase sounds">🔊</button>
       <span id="shareStatus" class="muted">&nbsp;</span>
     </div>
       <h1 class="hero-title">Spend Wealth App</h1>
@@ -62,8 +64,17 @@
             <button type="button" class="filterBtn" data-category="health">Health</button>
             <button type="button" class="filterBtn" data-category="education">Education</button>
             <button type="button" class="filterBtn" data-category="stability">Stability</button>
+            <button type="button" class="filterBtn" data-category="transportation">Transportation</button>
+            <button type="button" class="filterBtn" data-category="entertainment">Entertainment</button>
+            <button type="button" class="filterBtn" data-category="tech">Tech</button>
+            <button type="button" class="filterBtn" data-category="clothing">Clothing</button>
             <button type="button" class="filterBtn" data-category="luxury">Luxury</button>
+            <button type="button" class="filterBtn" data-category="social_impact">🌍 Social Impact</button>
           </div>
+        </div>
+        <div class="panel panel-subtle" style="padding: 0.5rem 0.7rem;">
+          <input id="searchInput" type="text" placeholder="Search items..." autocomplete="off" style="margin: 0;" />
+          <div id="searchSuggestions" class="search-suggestions" style="display: none;"></div>
         </div>
         <div id="itemsCount" class="muted"></div>
         <div id="itemsGrid" class="grid" style="margin-top: 1rem;"></div>
@@ -134,6 +145,8 @@
   </div>
   <p id="presetStatus" class="muted" style="margin-top: 0.75rem;">Apply a preset bundle to quickly populate the cart.</p>
 </div>
+
+<div id="receipt" class="panel receipt-panel"></div>
 
 <div class="panel">
   <h2>Sources</h2>

@@ -1,20 +1,20 @@
 {
-  "last_updated": "2026-03-23T05:20:50.673Z",
-  "source": "Hybrid dataset: BLS food prices + EIA/AAA energy estimates + curated essentials",
+  "last_updated": "2026-03-26T20:09:41.597Z",
+  "source": "Hybrid dataset: BLS food prices + curated market estimates + NGO/public cost data",
   "source_url": "https://www.bls.gov/regions/mid-atlantic/data/AverageRetailFoodAndEnergyPrices_USandWest_Table.htm",
   "freshness": "monthly | estimated | market",
   "items": [
     {
       "id": "bread_white_pan",
-      "name": "White Bread (1 lb)",
+      "name": "White Bread (1 loaf)",
       "price": 1.85,
       "category": "essentials",
       "source_type": "bls_average_price",
-      "unit": "per lb"
+      "unit": "per loaf"
     },
     {
       "id": "eggs_dozen",
-      "name": "Eggs, Grade A Large (1 dozen)",
+      "name": "Eggs, Grade A (1 dozen)",
       "price": 2.5,
       "category": "essentials",
       "source_type": "bls_average_price",
@@ -61,67 +61,747 @@
       "unit": "per lb"
     },
     {
-      "id": "gas_regular_gallon",
-      "name": "Gasoline, Regular (1 gallon)",
-      "price": 3.65,
-      "category": "transportation",
-      "source_type": "market_estimate",
-      "unit": "per gallon"
+      "id": "ground_beef_lb",
+      "name": "Ground Beef (1 lb)",
+      "price": 5.5,
+      "category": "essentials",
+      "source_type": "bls_average_price",
+      "unit": "per lb"
     },
     {
-      "id": "electricity_kwh",
-      "name": "Electricity (1 kWh)",
-      "price": 0.23,
-      "category": "housing",
-      "source_type": "market_estimate",
-      "unit": "per kWh"
+      "id": "coffee_grounds_lb",
+      "name": "Coffee (1 lb)",
+      "price": 6.15,
+      "category": "essentials",
+      "source_type": "bls_average_price",
+      "unit": "per lb"
     },
     {
-      "id": "natural_gas_therm",
-      "name": "Natural Gas (1 therm)",
-      "price": 2.4,
-      "category": "housing",
+      "id": "butter_lb",
+      "name": "Butter (1 lb)",
+      "price": 4.5,
+      "category": "essentials",
+      "source_type": "bls_average_price",
+      "unit": "per lb"
+    },
+    {
+      "id": "apple_lb",
+      "name": "Apples (1 lb)",
+      "price": 1.9,
+      "category": "essentials",
+      "source_type": "bls_average_price",
+      "unit": "per lb"
+    },
+    {
+      "id": "cheese_lb",
+      "name": "Cheddar Cheese (1 lb)",
+      "price": 5.3,
+      "category": "essentials",
+      "source_type": "bls_average_price",
+      "unit": "per lb"
+    },
+    {
+      "id": "cereal_box",
+      "name": "Box of Cereal",
+      "price": 4.5,
+      "category": "essentials",
       "source_type": "market_estimate",
-      "unit": "per therm"
+      "unit": "per box"
+    },
+    {
+      "id": "peanut_butter_jar",
+      "name": "Peanut Butter (16 oz)",
+      "price": 3.5,
+      "category": "essentials",
+      "source_type": "market_estimate",
+      "unit": "per jar"
+    },
+    {
+      "id": "water_bottle_case",
+      "name": "Bottled Water (24 pack)",
+      "price": 5,
+      "category": "essentials",
+      "source_type": "market_estimate",
+      "unit": "per case"
+    },
+    {
+      "id": "toilet_paper_12",
+      "name": "Toilet Paper (12 rolls)",
+      "price": 8,
+      "category": "essentials",
+      "source_type": "market_estimate",
+      "unit": "per pack"
+    },
+    {
+      "id": "toothpaste",
+      "name": "Toothpaste (tube)",
+      "price": 4,
+      "category": "essentials",
+      "source_type": "market_estimate",
+      "unit": "each"
+    },
+    {
+      "id": "soap_bar",
+      "name": "Bar of Soap",
+      "price": 1.5,
+      "category": "essentials",
+      "source_type": "market_estimate",
+      "unit": "each"
+    },
+    {
+      "id": "shampoo_bottle",
+      "name": "Shampoo (12 oz)",
+      "price": 6,
+      "category": "essentials",
+      "source_type": "market_estimate",
+      "unit": "per bottle"
     },
     {
       "id": "rent_month",
-      "name": "One Month Rent",
+      "name": "One Month Rent (avg US)",
       "price": 2200,
       "category": "housing",
       "source_type": "curated_estimate",
       "unit": "monthly"
     },
     {
+      "id": "electricity_kwh",
+      "name": "Electricity (1 kWh)",
+      "price": 0.17,
+      "category": "housing",
+      "source_type": "eia_estimate",
+      "unit": "per kWh"
+    },
+    {
+      "id": "natural_gas_therm",
+      "name": "Natural Gas (1 therm)",
+      "price": 1.5,
+      "category": "housing",
+      "source_type": "eia_estimate",
+      "unit": "per therm"
+    },
+    {
+      "id": "internet_monthly",
+      "name": "Home Internet (monthly)",
+      "price": 75,
+      "category": "housing",
+      "source_type": "market_estimate",
+      "unit": "monthly"
+    },
+    {
+      "id": "phone_plan_monthly",
+      "name": "Phone Plan (monthly)",
+      "price": 75,
+      "category": "housing",
+      "source_type": "market_estimate",
+      "unit": "monthly"
+    },
+    {
+      "id": "mattress_queen",
+      "name": "Queen Mattress",
+      "price": 800,
+      "category": "housing",
+      "source_type": "market_estimate",
+      "unit": "each"
+    },
+    {
+      "id": "couch",
+      "name": "Couch",
+      "price": 1200,
+      "category": "housing",
+      "source_type": "market_estimate",
+      "unit": "each"
+    },
+    {
+      "id": "washer_dryer",
+      "name": "Washer & Dryer Set",
+      "price": 1500,
+      "category": "housing",
+      "source_type": "market_estimate",
+      "unit": "per set"
+    },
+    {
       "id": "doctor_visit",
-      "name": "Doctor Visit",
+      "name": "Doctor Visit (copay)",
       "price": 150,
       "category": "health",
       "source_type": "curated_estimate",
-      "unit": "visit"
+      "unit": "per visit"
+    },
+    {
+      "id": "dentist_visit",
+      "name": "Dentist Cleaning",
+      "price": 200,
+      "category": "health",
+      "source_type": "curated_estimate",
+      "unit": "per visit"
+    },
+    {
+      "id": "er_visit",
+      "name": "ER Visit (avg)",
+      "price": 2200,
+      "category": "health",
+      "source_type": "curated_estimate",
+      "unit": "per visit"
+    },
+    {
+      "id": "prescription_monthly",
+      "name": "Monthly Prescription",
+      "price": 50,
+      "category": "health",
+      "source_type": "curated_estimate",
+      "unit": "monthly"
+    },
+    {
+      "id": "health_insurance_monthly",
+      "name": "Health Insurance (monthly)",
+      "price": 560,
+      "category": "health",
+      "source_type": "kff_estimate",
+      "unit": "monthly"
+    },
+    {
+      "id": "glasses_pair",
+      "name": "Prescription Glasses",
+      "price": 200,
+      "category": "health",
+      "source_type": "market_estimate",
+      "unit": "per pair"
+    },
+    {
+      "id": "therapy_session",
+      "name": "Therapy Session",
+      "price": 150,
+      "category": "health",
+      "source_type": "curated_estimate",
+      "unit": "per session"
+    },
+    {
+      "id": "college_semester",
+      "name": "College Semester (in-state)",
+      "price": 12000,
+      "category": "education",
+      "source_type": "curated_estimate",
+      "unit": "per semester"
+    },
+    {
+      "id": "textbook",
+      "name": "College Textbook",
+      "price": 120,
+      "category": "education",
+      "source_type": "market_estimate",
+      "unit": "per book"
+    },
+    {
+      "id": "student_loan_avg",
+      "name": "Avg Student Loan Payment (monthly)",
+      "price": 500,
+      "category": "education",
+      "source_type": "curated_estimate",
+      "unit": "monthly"
+    },
+    {
+      "id": "community_college_course",
+      "name": "Community College Course",
+      "price": 1500,
+      "category": "education",
+      "source_type": "curated_estimate",
+      "unit": "per course"
+    },
+    {
+      "id": "coding_bootcamp",
+      "name": "Coding Bootcamp",
+      "price": 15000,
+      "category": "education",
+      "source_type": "market_estimate",
+      "unit": "total"
+    },
+    {
+      "id": "kindergarten_year",
+      "name": "Private Kindergarten (1 year)",
+      "price": 12000,
+      "category": "education",
+      "source_type": "curated_estimate",
+      "unit": "per year"
+    },
+    {
+      "id": "gas_regular_gallon",
+      "name": "Gasoline, Regular (1 gallon)",
+      "price": 3.65,
+      "category": "transportation",
+      "source_type": "aaa_estimate",
+      "unit": "per gallon"
+    },
+    {
+      "id": "car_payment_monthly",
+      "name": "Avg Car Payment (monthly)",
+      "price": 730,
+      "category": "transportation",
+      "source_type": "curated_estimate",
+      "unit": "monthly"
+    },
+    {
+      "id": "car_insurance_monthly",
+      "name": "Car Insurance (monthly)",
+      "price": 200,
+      "category": "transportation",
+      "source_type": "curated_estimate",
+      "unit": "monthly"
+    },
+    {
+      "id": "uber_ride",
+      "name": "Uber Ride (avg 5 mi)",
+      "price": 20,
+      "category": "transportation",
+      "source_type": "market_estimate",
+      "unit": "per ride"
+    },
+    {
+      "id": "domestic_flight",
+      "name": "Domestic Flight (avg)",
+      "price": 350,
+      "category": "transportation",
+      "source_type": "market_estimate",
+      "unit": "one-way"
+    },
+    {
+      "id": "train_pass_monthly",
+      "name": "Monthly Train Pass",
+      "price": 150,
+      "category": "transportation",
+      "source_type": "market_estimate",
+      "unit": "monthly"
     },
     {
       "id": "used_car",
       "name": "Used Reliable Car",
-      "price": 12000,
+      "price": 15000,
       "category": "stability",
       "source_type": "curated_estimate",
       "unit": "one-time"
     },
     {
-      "id": "college_semester",
-      "name": "College Semester",
-      "price": 12000,
-      "category": "education",
+      "id": "new_car",
+      "name": "New Mid-Range Car",
+      "price": 38000,
+      "category": "stability",
       "source_type": "curated_estimate",
-      "unit": "semester"
+      "unit": "one-time"
+    },
+    {
+      "id": "emergency_fund",
+      "name": "Emergency Fund (3 months)",
+      "price": 9000,
+      "category": "stability",
+      "source_type": "curated_estimate",
+      "unit": "one-time"
+    },
+    {
+      "id": "down_payment_house",
+      "name": "House Down Payment (20%)",
+      "price": 80000,
+      "category": "stability",
+      "source_type": "curated_estimate",
+      "unit": "one-time"
+    },
+    {
+      "id": "movie_ticket",
+      "name": "Movie Ticket",
+      "price": 15,
+      "category": "entertainment",
+      "source_type": "market_estimate",
+      "unit": "per ticket"
+    },
+    {
+      "id": "netflix_monthly",
+      "name": "Netflix (monthly)",
+      "price": 15.5,
+      "category": "entertainment",
+      "source_type": "market_estimate",
+      "unit": "monthly"
+    },
+    {
+      "id": "spotify_monthly",
+      "name": "Spotify (monthly)",
+      "price": 11,
+      "category": "entertainment",
+      "source_type": "market_estimate",
+      "unit": "monthly"
+    },
+    {
+      "id": "video_game",
+      "name": "Video Game (new release)",
+      "price": 70,
+      "category": "entertainment",
+      "source_type": "market_estimate",
+      "unit": "per game"
+    },
+    {
+      "id": "concert_ticket",
+      "name": "Concert Ticket (avg)",
+      "price": 120,
+      "category": "entertainment",
+      "source_type": "market_estimate",
+      "unit": "per ticket"
+    },
+    {
+      "id": "disney_family",
+      "name": "Disney World (family of 4)",
+      "price": 6000,
+      "category": "entertainment",
+      "source_type": "market_estimate",
+      "unit": "per trip"
+    },
+    {
+      "id": "gym_membership_monthly",
+      "name": "Gym Membership (monthly)",
+      "price": 50,
+      "category": "entertainment",
+      "source_type": "market_estimate",
+      "unit": "monthly"
+    },
+    {
+      "id": "iphone_16",
+      "name": "iPhone 16",
+      "price": 800,
+      "category": "tech",
+      "source_type": "market_price",
+      "unit": "each"
+    },
+    {
+      "id": "macbook_air",
+      "name": "MacBook Air",
+      "price": 1100,
+      "category": "tech",
+      "source_type": "market_price",
+      "unit": "each"
+    },
+    {
+      "id": "ps5_console",
+      "name": "PlayStation 5",
+      "price": 500,
+      "category": "tech",
+      "source_type": "market_price",
+      "unit": "each"
+    },
+    {
+      "id": "samsung_tv_65",
+      "name": "Samsung 65\" 4K TV",
+      "price": 800,
+      "category": "tech",
+      "source_type": "market_price",
+      "unit": "each"
+    },
+    {
+      "id": "airpods_pro",
+      "name": "AirPods Pro",
+      "price": 250,
+      "category": "tech",
+      "source_type": "market_price",
+      "unit": "per pair"
+    },
+    {
+      "id": "ipad",
+      "name": "iPad (base)",
+      "price": 350,
+      "category": "tech",
+      "source_type": "market_price",
+      "unit": "each"
+    },
+    {
+      "id": "jeans",
+      "name": "Pair of Jeans",
+      "price": 50,
+      "category": "clothing",
+      "source_type": "market_estimate",
+      "unit": "per pair"
+    },
+    {
+      "id": "sneakers",
+      "name": "Running Sneakers",
+      "price": 130,
+      "category": "clothing",
+      "source_type": "market_estimate",
+      "unit": "per pair"
+    },
+    {
+      "id": "winter_coat",
+      "name": "Winter Coat",
+      "price": 150,
+      "category": "clothing",
+      "source_type": "market_estimate",
+      "unit": "each"
+    },
+    {
+      "id": "dress_shirt",
+      "name": "Dress Shirt",
+      "price": 60,
+      "category": "clothing",
+      "source_type": "market_estimate",
+      "unit": "each"
+    },
+    {
+      "id": "nikes",
+      "name": "Nike Air Jordans",
+      "price": 200,
+      "category": "clothing",
+      "source_type": "market_estimate",
+      "unit": "per pair"
+    },
+    {
+      "id": "luxury_watch",
+      "name": "Rolex Submariner",
+      "price": 10000,
+      "category": "clothing",
+      "source_type": "market_estimate",
+      "unit": "each"
+    },
+    {
+      "id": "rolex_daydate",
+      "name": "Rolex Day-Date",
+      "price": 40000,
+      "category": "luxury",
+      "source_type": "market_price",
+      "unit": "each"
+    },
+    {
+      "id": "tesla_model_s",
+      "name": "Tesla Model S",
+      "price": 80000,
+      "category": "luxury",
+      "source_type": "market_price",
+      "unit": "each"
+    },
+    {
+      "id": "bmw_7series",
+      "name": "BMW 7 Series",
+      "price": 115000,
+      "category": "luxury",
+      "source_type": "market_price",
+      "unit": "each"
+    },
+    {
+      "id": "lamborghini_huracan",
+      "name": "Lamborghini Huracán",
+      "price": 250000,
+      "category": "luxury",
+      "source_type": "market_price",
+      "unit": "each"
+    },
+    {
+      "id": "bugatti_chiron",
+      "name": "Bugatti Chiron",
+      "price": 3000000,
+      "category": "luxury",
+      "source_type": "market_price",
+      "unit": "each"
+    },
+    {
+      "id": "mansion_beverly_hills",
+      "name": "Beverly Hills Mansion",
+      "price": 30000000,
+      "category": "luxury",
+      "source_type": "market_estimate",
+      "unit": "each"
     },
     {
       "id": "private_jet",
-      "name": "Private Jet",
-      "price": 40000000,
+      "name": "Private Jet (Gulfstream)",
+      "price": 65000000,
       "category": "luxury",
+      "source_type": "market_estimate",
+      "unit": "each"
+    },
+    {
+      "id": "superyacht",
+      "name": "Superyacht (150 ft)",
+      "price": 150000000,
+      "category": "luxury",
+      "source_type": "market_estimate",
+      "unit": "each"
+    },
+    {
+      "id": "nba_team",
+      "name": "NBA Team (avg franchise)",
+      "price": 3500000000,
+      "category": "luxury",
+      "source_type": "forbes_estimate",
+      "unit": "each"
+    },
+    {
+      "id": "private_island",
+      "name": "Private Island (Caribbean)",
+      "price": 50000000,
+      "category": "luxury",
+      "source_type": "market_estimate",
+      "unit": "each"
+    },
+    {
+      "id": "art_masterpiece",
+      "name": "Famous Painting (auction avg)",
+      "price": 100000000,
+      "category": "luxury",
+      "source_type": "market_estimate",
+      "unit": "each"
+    },
+    {
+      "id": "skyscraper_nyc",
+      "name": "NYC Skyscraper",
+      "price": 2000000000,
+      "category": "luxury",
+      "source_type": "market_estimate",
+      "unit": "each"
+    },
+    {
+      "id": "meal_for_one",
+      "name": "Meal for One Person",
+      "price": 3,
+      "category": "social_impact",
+      "source_type": "wfp_estimate",
+      "unit": "per meal"
+    },
+    {
+      "id": "end_hunger_1yr",
+      "name": "End World Hunger (1 year est.)",
+      "price": 33000000000,
+      "category": "social_impact",
+      "source_type": "un_estimate",
+      "unit": "one-time"
+    },
+    {
+      "id": "clean_water_africa",
+      "name": "Clean Water Access for All of Africa",
+      "price": 20000000000,
+      "category": "social_impact",
+      "source_type": "who_estimate",
+      "unit": "one-time"
+    },
+    {
+      "id": "end_homelessness_us",
+      "name": "End Homelessness in the US",
+      "price": 20000000000,
+      "category": "social_impact",
+      "source_type": "hud_estimate",
+      "unit": "one-time"
+    },
+    {
+      "id": "universal_prek_us",
+      "name": "Universal Pre-K in the US",
+      "price": 26000000000,
+      "category": "social_impact",
+      "source_type": "brookings_estimate",
+      "unit": "per year"
+    },
+    {
+      "id": "malaria_eradication",
+      "name": "Eradicate Malaria Globally",
+      "price": 5000000000,
+      "category": "social_impact",
+      "source_type": "gates_foundation",
+      "unit": "one-time"
+    },
+    {
+      "id": "reforest_earth",
+      "name": "Reforest 1 Billion Acres",
+      "price": 50000000000,
+      "category": "social_impact",
       "source_type": "curated_estimate",
+      "unit": "one-time"
+    },
+    {
+      "id": "fund_schools_us",
+      "name": "Fully Fund US Public Schools (1 year)",
+      "price": 50000000000,
+      "category": "social_impact",
+      "source_type": "curated_estimate",
+      "unit": "per year"
+    },
+    {
+      "id": "build_hospital",
+      "name": "Build a Modern Hospital",
+      "price": 500000000,
+      "category": "social_impact",
+      "source_type": "curated_estimate",
+      "unit": "each"
+    },
+    {
+      "id": "orphan_care_year",
+      "name": "Fund Global Orphan Care (1 year)",
+      "price": 8000000000,
+      "category": "social_impact",
+      "source_type": "unicef_estimate",
+      "unit": "per year"
+    },
+    {
+      "id": "free_lunch_k12",
+      "name": "Free School Lunch for All US K-12 (1 year)",
+      "price": 26000000000,
+      "category": "social_impact",
+      "source_type": "usda_estimate",
+      "unit": "per year"
+    },
+    {
+      "id": "student_loan_forgiveness",
+      "name": "Forgive All US Student Loans",
+      "price": 1770000000000,
+      "category": "social_impact",
+      "source_type": "federal_reserve",
+      "unit": "one-time"
+    },
+    {
+      "id": "opioid_treatment_us",
+      "name": "Fund Opioid Treatment for All (US 1yr)",
+      "price": 15000000000,
+      "category": "social_impact",
+      "source_type": "curated_estimate",
+      "unit": "per year"
+    },
+    {
+      "id": "lead_pipe_replacement",
+      "name": "Replace All US Lead Pipes",
+      "price": 45000000000,
+      "category": "social_impact",
+      "source_type": "epa_estimate",
+      "unit": "one-time"
+    },
+    {
+      "id": "save_amazon",
+      "name": "Protect the Amazon Rainforest (permanent)",
+      "price": 100000000000,
+      "category": "social_impact",
+      "source_type": "curated_estimate",
+      "unit": "one-time"
+    },
+    {
+      "id": "homeless_housing_us",
+      "name": "Build Housing for Every US Homeless Person",
+      "price": 20000000000,
+      "category": "social_impact",
+      "source_type": "curated_estimate",
+      "unit": "one-time"
+    },
+    {
+      "id": "teacher_raise_us",
+      "name": "Give Every US Teacher a $10K Raise (1 year)",
+      "price": 40000000000,
+      "category": "social_impact",
+      "source_type": "curated_estimate",
+      "unit": "per year"
+    },
+    {
+      "id": "vaccinate_africa",
+      "name": "Fully Vaccinate All African Children (1 year)",
+      "price": 2000000000,
+      "category": "social_impact",
+      "source_type": "who_estimate",
+      "unit": "per year"
+    },
+    {
+      "id": "eliminate_mosquito_disease",
+      "name": "End All Mosquito-Borne Diseases",
+      "price": 12000000000,
+      "category": "social_impact",
+      "source_type": "gates_foundation",
       "unit": "one-time"
     }
   ]

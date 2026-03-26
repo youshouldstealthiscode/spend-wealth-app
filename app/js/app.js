@@ -8,6 +8,9 @@ const itemsCountEl = document.querySelector("#itemsCount");
 const itemsGridEl = document.querySelector("#itemsGrid");
 const totalBarEl = document.querySelector("#totalBar");
 const wealthStatsEl = document.querySelector("#wealthStats");
+const receiptEl = document.querySelector("#receipt");
+const searchInputEl = document.querySelector("#searchInput");
+const searchSuggestionsEl = document.querySelector("#searchSuggestions");
 const wageInputEl = document.querySelector("#wage");
 const hoursPerWeekInputEl = document.querySelector("#hoursPerWeek");
 const weeksPerYearInputEl = document.querySelector("#weeksPerYear");
@@ -19,6 +22,8 @@ const savingsComparisonDisplayEl = document.querySelector("#savingsComparisonDis
 const cartAfterSavingsDisplayEl = document.querySelector("#cartAfterSavingsDisplay");
 const resetAppBtnEl = document.querySelector("#resetAppBtn");
 const shareResultsBtnEl = document.querySelector("#shareResultsBtn");
+const printReceiptBtnEl = document.querySelector("#printReceiptBtn");
+const soundToggleBtnEl = document.querySelector("#soundToggleBtn");
 const shareStatusEl = document.querySelector("#shareStatus");
 const presetStatusEl = document.querySelector("#presetStatus");
 const wealthSourceDisplayEl = document.querySelector("#wealthSourceDisplay");
@@ -54,7 +59,147 @@ let STATE = {
 		wealth: null,
 		items: null,
 	},
+	soundEnabled: true,
+	activePreset: null,
+	searchText: "",
 };
+
+let audioCtx = null;
+
+function getAudioCtx() {
+	if (!audioCtx) {
+		audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+	}
+	return audioCtx;
+}
+
+function playKaching() {
+	if (!STATE.soundEnabled) return;
+	try {
+		const ctx = getAudioCtx();
+		const now = ctx.currentTime;
+
+		// High metallic "ding"
+		const osc1 = ctx.createOscillator();
+		const gain1 = ctx.createGain();
+		osc1.type = "sine";
+		osc1.frequency.setValueAtTime(2200, now);
+		osc1.frequency.exponentialRampToValueAtTime(1800, now + 0.12);
+		gain1.gain.setValueAtTime(0.25, now);
+		gain1.gain.exponentialRampToValueAtTime(0.001, now + 0.18);
+		osc1.connect(gain1);
+		gain1.connect(ctx.destination);
+		osc1.start(now);
+		osc1.stop(now + 0.18);
+
+		// Lower "clunk" body
+		const osc2 = ctx.createOscillator();
+		const gain2 = ctx.createGain();
+		osc2.type = "triangle";
+		osc2.frequency.setValueAtTime(800, now + 0.02);
+		osc2.frequency.exponentialRampToValueAtTime(400, now + 0.1);
+		gain2.gain.setValueAtTime(0.15, now + 0.02);
+		gain2.gain.exponentialRampToValueAtTime(0.001, now + 0.15);
+		osc2.connect(gain2);
+		gain2.connect(ctx.destination);
+		osc2.start(now + 0.02);
+		osc2.stop(now + 0.15);
+
+		// Noise burst (drawer rattle)
+		const bufferSize = ctx.sampleRate * 0.06;
+		const buffer = ctx.createBuffer(1, bufferSize, ctx.sampleRate);
+		const data = buffer.getChannelData(0);
+		for (let i = 0; i < bufferSize; i++) {
+			data[i] = (Math.random() * 2 - 1) * 0.08;
+		}
+		const noise = ctx.createBufferSource();
+		noise.buffer = buffer;
+		const noiseGain = ctx.createGain();
+		noiseGain.gain.setValueAtTime(0.3, now + 0.01);
+		noiseGain.gain.exponentialRampToValueAtTime(0.001, now + 0.08);
+		noise.connect(noiseGain);
+		noiseGain.connect(ctx.destination);
+		noise.start(now + 0.01);
+		noise.stop(now + 0.08);
+	} catch (e) {
+		// Audio not available — fail silently
+	}
+}
+
+function playSubtleTick() {
+	if (!STATE.soundEnabled) return;
+	try {
+		const ctx = getAudioCtx();
+		const now = ctx.currentTime;
+		const osc = ctx.createOscillator();
+		const gain = ctx.createGain();
+		osc.type = "sine";
+		osc.frequency.setValueAtTime(1200, now);
+		gain.gain.setValueAtTime(0.06, now);
+		gain.gain.exponentialRampToValueAtTime(0.001, now + 0.05);
+		osc.connect(gain);
+		gain.connect(ctx.destination);
+		osc.start(now);
+		osc.stop(now + 0.05);
+	} catch (e) {
+		// Audio not available
+	}
+}
+
+function fuzzyMatch(query, text) {
+	if (!query) return true;
+	const q = query.toLowerCase();
+	const t = text.toLowerCase();
+
+	if (t.includes(q)) return true;
+
+	let qi = 0;
+	for (let ti = 0; ti < t.length && qi < q.length; ti++) {
+		if (t[ti] === q[qi]) qi++;
+	}
+	return qi === q.length;
+}
+
+function getSearchResults(query) {
+	if (!query || query.length < 2) return [];
+	const matches = STATE.items.filter((item) => fuzzyMatch(query, item.name));
+	return matches.slice(0, 12);
+}
+
+function renderSearchSuggestions() {
+	if (!searchSuggestionsEl) return;
+	const query = STATE.searchText;
+	const results = getSearchResults(query);
+
+	if (results.length === 0 || query.length < 2) {
+		searchSuggestionsEl.style.display = "none";
+		searchSuggestionsEl.innerHTML = "";
+		return;
+	}
+
+	const lines = results.map((item) => {
+		const qty = STATE.cart[item.id] || 0;
+		const inCart = qty > 0 ? ` (${qty} in cart)` : "";
+		return `<div class="search-suggestion" data-id="${item.id}">
+			<span class="search-suggestion-name">${item.name}${inCart}</span>
+			<span class="search-suggestion-cat">${item.category}</span>
+			<span class="search-suggestion-price">${moneyFormatter.format(item.price)}</span>
+		</div>`;
+	}).join("");
+
+	searchSuggestionsEl.innerHTML = `<div class="search-suggestions-list">${lines}</div>`;
+	searchSuggestionsEl.style.display = "block";
+}
+
+function clearSearch() {
+	STATE.searchText = "";
+	if (searchInputEl) searchInputEl.value = "";
+	if (searchSuggestionsEl) {
+		searchSuggestionsEl.style.display = "none";
+		searchSuggestionsEl.innerHTML = "";
+	}
+	updateUI();
+}
 
 async function fetchJson(path) {
 	const response = await fetch(path, { cache: "no-store" });
@@ -84,6 +229,8 @@ function loadState() {
 		if (parsed.cart) STATE.cart = parsed.cart;
 		if (parsed.activeCategory) STATE.activeCategory = parsed.activeCategory;
 		if (parsed.userFinance) STATE.userFinance = parsed.userFinance;
+		if (typeof parsed.soundEnabled === "boolean") STATE.soundEnabled = parsed.soundEnabled;
+		if (parsed.activePreset) STATE.activePreset = parsed.activePreset;
 	} catch (e) {
 		console.warn("Failed to load state", e);
 	}
@@ -94,6 +241,7 @@ function encodeShareState() {
 		selectedPersonId: STATE.selectedPerson ? STATE.selectedPerson.id : null,
 		cart: STATE.cart,
 		activeCategory: STATE.activeCategory,
+		activePreset: STATE.activePreset,
 		userFinance: STATE.userFinance,
 	};
 
@@ -106,6 +254,7 @@ function applySharedState(encoded) {
 
 		if (decoded.cart) STATE.cart = decoded.cart;
 		if (decoded.activeCategory) STATE.activeCategory = decoded.activeCategory;
+		if (decoded.activePreset) STATE.activePreset = decoded.activePreset;
 		if (decoded.userFinance) STATE.userFinance = decoded.userFinance;
 
 		if (decoded.selectedPersonId && Array.isArray(STATE.people)) {
@@ -131,6 +280,7 @@ function setShareStatus(message) {
 function resetAppState() {
 	STATE.cart = {};
 	STATE.activeCategory = "all";
+	STATE.activePreset = null;
 	STATE.userFinance = getDefaultUserFinance();
 	STATE.selectedPerson = STATE.people[0] || null;
 
@@ -168,12 +318,48 @@ async function shareResults() {
 	}
 }
 
-function getVisibleItems() {
-	if (STATE.activeCategory === "all") {
-		return STATE.items;
+function printReceipt() {
+	if (!receiptEl || receiptEl.innerHTML === "") {
+		setShareStatus("Nothing to print.");
+		return;
 	}
 
-	return STATE.items.filter((item) => item.category === STATE.activeCategory);
+	const printWindow = window.open("", "_blank", "width=480,height=640");
+	if (!printWindow) {
+		setShareStatus("Pop-up blocked.");
+		return;
+	}
+
+	printWindow.document.write(`<!DOCTYPE html><html><head><title>Receipt</title>
+		<style>
+			body { font-family: "Courier New", Courier, monospace; padding: 2rem; color: #000; }
+			.receipt-title { text-align: center; font-size: 1.2rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; }
+			.receipt-person { text-align: center; font-size: 0.85rem; color: #555; margin-top: 0.2rem; }
+			.receipt-divider { border-top: 1px dashed #999; margin: 0.5rem 0; }
+			.receipt-line { display: flex; justify-content: space-between; padding: 0.2rem 0; font-size: 0.9rem; }
+			.receipt-item-name { flex: 1; }
+			.receipt-total { font-weight: 700; border-top: 1px dashed #999; padding-top: 0.4rem; }
+			.receipt-barcode { display: none; }
+			.receipt-body { max-height: none; }
+		</style>
+	</head><body>${receiptEl.innerHTML}</body></html>`);
+	printWindow.document.close();
+	printWindow.focus();
+	printWindow.print();
+}
+
+function getVisibleItems() {
+	let items = STATE.items;
+
+	if (STATE.activeCategory !== "all") {
+		items = items.filter((item) => item.category === STATE.activeCategory);
+	}
+
+	if (STATE.searchText && STATE.searchText.length >= 2) {
+		items = items.filter((item) => fuzzyMatch(STATE.searchText, item.name));
+	}
+
+	return items;
 }
 
 function setPresetStatus(message) {
@@ -181,55 +367,76 @@ function setPresetStatus(message) {
 	presetStatusEl.textContent = message;
 }
 
+const PRESET_DEFINITIONS = {
+	survive_month: {
+		label: "Survive One Month",
+		items: {
+			rent_month: 1, bread_white_pan: 8, milk_gallon: 4, eggs_dozen: 4,
+			rice_long_grain: 10, bananas_lb: 8, potatoes_lb: 10, chicken_whole_lb: 8,
+			electricity_kwh: 300, natural_gas_therm: 40,
+		},
+	},
+	stabilize_household: {
+		label: "Stabilize Household",
+		items: {
+			rent_month: 2, used_car: 1, doctor_visit: 2,
+			bread_white_pan: 8, milk_gallon: 4, eggs_dozen: 4,
+		},
+	},
+	fix_car_and_rent: {
+		label: "Fix Car + Rent",
+		items: { rent_month: 1, used_car: 1 },
+	},
+	college_start: {
+		label: "College Start",
+		items: { college_semester: 1, rent_month: 1, doctor_visit: 1 },
+	},
+};
+
 function applyPresetBundle(presetKey) {
-	const nextCart = { ...STATE.cart };
-
-	const addQuantity = (itemId, quantity) => {
-		nextCart[itemId] = (nextCart[itemId] || 0) + quantity;
-	};
-
-	switch (presetKey) {
-		case "survive_month":
-			addQuantity("rent_month", 1);
-			addQuantity("bread_white_pan", 8);
-			addQuantity("milk_gallon", 4);
-			addQuantity("eggs_dozen", 4);
-			addQuantity("rice_long_grain", 10);
-			addQuantity("bananas_lb", 8);
-			addQuantity("potatoes_lb", 10);
-			addQuantity("chicken_whole_lb", 8);
-			addQuantity("electricity_kwh", 300);
-			addQuantity("natural_gas_therm", 40);
-			setPresetStatus("Applied preset: Survive One Month.");
-			break;
-		case "stabilize_household":
-			addQuantity("rent_month", 2);
-			addQuantity("used_car", 1);
-			addQuantity("doctor_visit", 2);
-			addQuantity("bread_white_pan", 8);
-			addQuantity("milk_gallon", 4);
-			addQuantity("eggs_dozen", 4);
-			setPresetStatus("Applied preset: Stabilize Household.");
-			break;
-		case "fix_car_and_rent":
-			addQuantity("rent_month", 1);
-			addQuantity("used_car", 1);
-			setPresetStatus("Applied preset: Fix Car + Rent.");
-			break;
-		case "college_start":
-			addQuantity("college_semester", 1);
-			addQuantity("rent_month", 1);
-			addQuantity("doctor_visit", 1);
-			setPresetStatus("Applied preset: College Start.");
-			break;
-		default:
-			setPresetStatus("Unknown preset.");
-			return;
+	const preset = PRESET_DEFINITIONS[presetKey];
+	if (!preset) {
+		setPresetStatus("Unknown preset.");
+		return;
 	}
 
-	STATE.cart = nextCart;
+	if (STATE.activePreset === presetKey) {
+		for (const [itemId, qty] of Object.entries(preset.items)) {
+			STATE.cart[itemId] = Math.max(0, (STATE.cart[itemId] || 0) - qty);
+			if (STATE.cart[itemId] === 0) delete STATE.cart[itemId];
+		}
+		STATE.activePreset = null;
+		setPresetStatus("Removed preset: " + preset.label + ".");
+	} else {
+		if (STATE.activePreset) {
+			const oldPreset = PRESET_DEFINITIONS[STATE.activePreset];
+			if (oldPreset) {
+				for (const [itemId, qty] of Object.entries(oldPreset.items)) {
+					STATE.cart[itemId] = Math.max(0, (STATE.cart[itemId] || 0) - qty);
+					if (STATE.cart[itemId] === 0) delete STATE.cart[itemId];
+				}
+			}
+		}
+		for (const [itemId, qty] of Object.entries(preset.items)) {
+			STATE.cart[itemId] = (STATE.cart[itemId] || 0) + qty;
+		}
+		STATE.activePreset = presetKey;
+		setPresetStatus("Applied preset: " + preset.label + ".");
+	}
+
+	renderPresetButtons();
 	saveState();
 	updateUI();
+}
+
+function renderPresetButtons() {
+	const buttons = document.querySelectorAll(".presetBtn");
+	for (const button of buttons) {
+		const isActive = button.dataset.preset === STATE.activePreset;
+		button.style.outline = isActive ? "2px solid currentColor" : "none";
+		button.style.fontWeight = isActive ? "700" : "400";
+		button.setAttribute("aria-pressed", isActive ? "true" : "false");
+	}
 }
 
 function renderSourceDisplays() {
@@ -358,6 +565,7 @@ function renderItems() {
 
 		const card = document.createElement("div");
 		card.className = "item";
+		card.dataset.category = item.category;
 
 		card.innerHTML = `
       <div><strong>${item.name}</strong></div>
@@ -504,6 +712,66 @@ function renderStickyWorkTime() {
 	document.getElementById("stickyWorkTime").textContent = `${yearsToAffordCart.toFixed(2)} yrs`;
 }
 
+function renderReceipt() {
+	if (!receiptEl) return;
+
+	const person = STATE.selectedPerson;
+	const metrics = getDerivedMetrics();
+	const { total, percent, remaining } = metrics;
+
+	const cartItems = STATE.items
+		.filter((item) => (STATE.cart[item.id] || 0) > 0)
+		.map((item) => ({
+			name: item.name,
+			quantity: STATE.cart[item.id],
+			unitPrice: item.price,
+			subtotal: STATE.cart[item.id] * item.price,
+		}))
+		.sort((a, b) => b.subtotal - a.subtotal);
+
+	if (cartItems.length === 0) {
+		receiptEl.innerHTML = "";
+		return;
+	}
+
+	const lines = cartItems.map((entry) => {
+		const qtyLabel = entry.quantity > 1 ? `x${numberFormatter.format(entry.quantity)}` : "";
+		return `
+			<div class="receipt-line">
+				<span class="receipt-item-name">${entry.name} ${qtyLabel}</span>
+				<span class="receipt-item-subtotal">${moneyFormatter.format(entry.subtotal)}</span>
+			</div>
+		`;
+	}).join("");
+
+	receiptEl.innerHTML = `
+		<div class="receipt-header">
+			<div class="receipt-title">Spending Receipt</div>
+			${person ? `<div class="receipt-person">${person.name}'s Fortune</div>` : ""}
+		</div>
+		<div class="receipt-divider"></div>
+		<div class="receipt-body">
+			${lines}
+		</div>
+		<div class="receipt-divider"></div>
+		<div class="receipt-footer">
+			<div class="receipt-line receipt-total">
+				<span>Total Spent</span>
+				<span>${moneyFormatter.format(total)}</span>
+			</div>
+			<div class="receipt-line">
+				<span>Remaining</span>
+				<span>${moneyFormatter.format(remaining)}</span>
+			</div>
+			<div class="receipt-line">
+				<span>Percent Used</span>
+				<span>${percent < 0.000001 ? "<0.000001" : percent.toFixed(6)}%</span>
+			</div>
+		</div>
+		<div class="receipt-barcode"></div>
+	`;
+}
+
 function syncFinanceInputsFromState() {
 	if (wageInputEl) {
 		wageInputEl.value = STATE.userFinance.hourlyWage || "";
@@ -564,6 +832,8 @@ function updateUI() {
   renderStickySummary();
   renderPositionComparison();
   renderSourceDisplays();
+  renderReceipt();
+  renderPresetButtons();
 }
 
 function attachEvents() {
@@ -577,6 +847,14 @@ function attachEvents() {
 
 		if (target.classList.contains("plus")) {
 			STATE.cart[id] = (STATE.cart[id] || 0) + 1;
+			STATE.activePreset = null;
+			playKaching();
+			const itemCard = target.closest(".item");
+			if (itemCard) {
+				itemCard.classList.remove("flash");
+				void itemCard.offsetWidth;
+				itemCard.classList.add("flash");
+			}
 			saveState();
 			updateUI();
 			return;
@@ -584,6 +862,8 @@ function attachEvents() {
 
 		if (target.classList.contains("minus")) {
 			STATE.cart[id] = Math.max(0, (STATE.cart[id] || 0) - 1);
+			STATE.activePreset = null;
+			playSubtleTick();
 			saveState();
 			updateUI();
 		}
@@ -605,6 +885,7 @@ function attachEvents() {
 		}
 
 		STATE.cart[id] = value;
+		STATE.activePreset = null;
 		saveState();
 		updateUI();
 	});
@@ -700,6 +981,62 @@ function attachEvents() {
 			await shareResults();
 		});
 	}
+
+	if (printReceiptBtnEl) {
+		printReceiptBtnEl.addEventListener("click", () => {
+			printReceipt();
+		});
+	}
+
+	if (soundToggleBtnEl) {
+		soundToggleBtnEl.addEventListener("click", () => {
+			STATE.soundEnabled = !STATE.soundEnabled;
+			soundToggleBtnEl.textContent = STATE.soundEnabled ? "🔊" : "🔇";
+			saveState();
+		});
+		soundToggleBtnEl.textContent = STATE.soundEnabled ? "🔊" : "🔇";
+	}
+
+	if (searchInputEl) {
+		searchInputEl.addEventListener("input", () => {
+			STATE.searchText = searchInputEl.value.trim();
+			renderSearchSuggestions();
+			updateUI();
+		});
+
+		searchInputEl.addEventListener("keydown", (e) => {
+			if (e.key === "Escape") {
+				clearSearch();
+			}
+		});
+	}
+
+	if (searchSuggestionsEl) {
+		searchSuggestionsEl.addEventListener("click", (event) => {
+			const target = event.target;
+			if (!(target instanceof HTMLElement)) return;
+			const suggestion = target.closest(".search-suggestion");
+			if (!suggestion || !(suggestion instanceof HTMLElement)) return;
+			const id = suggestion.dataset.id;
+			if (!id) return;
+			STATE.cart[id] = (STATE.cart[id] || 0) + 1;
+			STATE.activePreset = null;
+			playKaching();
+			clearSearch();
+			saveState();
+			updateUI();
+		});
+	}
+
+	document.addEventListener("click", (e) => {
+		const target = e.target;
+		if (!(target instanceof HTMLElement)) return;
+		if (!target.closest(".panel") || !target.closest(".panel").querySelector("#searchInput")) {
+			if (searchSuggestionsEl) {
+				searchSuggestionsEl.style.display = "none";
+			}
+		}
+	});
 }
 
 async function init() {
