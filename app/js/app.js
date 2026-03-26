@@ -24,16 +24,12 @@ const resetAppBtnEl = document.querySelector("#resetAppBtn");
 const shareResultsBtnEl = document.querySelector("#shareResultsBtn");
 const printReceiptBtnEl = document.querySelector("#printReceiptBtn");
 const soundToggleBtnEl = document.querySelector("#soundToggleBtn");
+const currencySelectEl = document.querySelector("#currencySelect");
+const locationBtnEl = document.querySelector("#locationBtn");
 const shareStatusEl = document.querySelector("#shareStatus");
 const presetStatusEl = document.querySelector("#presetStatus");
 const wealthSourceDisplayEl = document.querySelector("#wealthSourceDisplay");
 const itemSourceDisplayEl = document.querySelector("#itemSourceDisplay");
-
-const moneyFormatter = new Intl.NumberFormat("en-US", {
-	style: "currency",
-	currency: "USD",
-	maximumFractionDigits: 0,
-});
 
 const numberFormatter = new Intl.NumberFormat("en-US", {
 	maximumFractionDigits: 0,
@@ -62,6 +58,9 @@ let STATE = {
 	soundEnabled: true,
 	activePreset: null,
 	searchText: "",
+	selectedCurrency: "USD",
+	exchangeRates: { USD: 1 },
+	ratesLoaded: false,
 };
 
 let audioCtx = null;
@@ -73,54 +72,15 @@ function getAudioCtx() {
 	return audioCtx;
 }
 
+const kachingAudio = new Audio("./sfx/kaching.mp3");
+kachingAudio.preload = "auto";
+kachingAudio.volume = 0.7;
+
 function playKaching() {
 	if (!STATE.soundEnabled) return;
 	try {
-		const ctx = getAudioCtx();
-		const now = ctx.currentTime;
-
-		// High metallic "ding"
-		const osc1 = ctx.createOscillator();
-		const gain1 = ctx.createGain();
-		osc1.type = "sine";
-		osc1.frequency.setValueAtTime(2200, now);
-		osc1.frequency.exponentialRampToValueAtTime(1800, now + 0.12);
-		gain1.gain.setValueAtTime(0.25, now);
-		gain1.gain.exponentialRampToValueAtTime(0.001, now + 0.18);
-		osc1.connect(gain1);
-		gain1.connect(ctx.destination);
-		osc1.start(now);
-		osc1.stop(now + 0.18);
-
-		// Lower "clunk" body
-		const osc2 = ctx.createOscillator();
-		const gain2 = ctx.createGain();
-		osc2.type = "triangle";
-		osc2.frequency.setValueAtTime(800, now + 0.02);
-		osc2.frequency.exponentialRampToValueAtTime(400, now + 0.1);
-		gain2.gain.setValueAtTime(0.15, now + 0.02);
-		gain2.gain.exponentialRampToValueAtTime(0.001, now + 0.15);
-		osc2.connect(gain2);
-		gain2.connect(ctx.destination);
-		osc2.start(now + 0.02);
-		osc2.stop(now + 0.15);
-
-		// Noise burst (drawer rattle)
-		const bufferSize = ctx.sampleRate * 0.06;
-		const buffer = ctx.createBuffer(1, bufferSize, ctx.sampleRate);
-		const data = buffer.getChannelData(0);
-		for (let i = 0; i < bufferSize; i++) {
-			data[i] = (Math.random() * 2 - 1) * 0.08;
-		}
-		const noise = ctx.createBufferSource();
-		noise.buffer = buffer;
-		const noiseGain = ctx.createGain();
-		noiseGain.gain.setValueAtTime(0.3, now + 0.01);
-		noiseGain.gain.exponentialRampToValueAtTime(0.001, now + 0.08);
-		noise.connect(noiseGain);
-		noiseGain.connect(ctx.destination);
-		noise.start(now + 0.01);
-		noise.stop(now + 0.08);
+		kachingAudio.currentTime = 0;
+		kachingAudio.play().catch(() => {});
 	} catch (e) {
 		// Audio not available — fail silently
 	}
@@ -131,20 +91,107 @@ function playSubtleTick() {
 	try {
 		const ctx = getAudioCtx();
 		const now = ctx.currentTime;
-		const osc = ctx.createOscillator();
+		const buf = ctx.createBuffer(1, ctx.sampleRate * 0.02, ctx.sampleRate);
+		const data = buf.getChannelData(0);
+		for (let i = 0; i < data.length; i++) {
+			data[i] = (Math.random() * 2 - 1) * Math.exp(-i / (data.length * 0.1));
+		}
+		const src = ctx.createBufferSource();
+		src.buffer = buf;
 		const gain = ctx.createGain();
-		osc.type = "sine";
-		osc.frequency.setValueAtTime(1200, now);
-		gain.gain.setValueAtTime(0.06, now);
-		gain.gain.exponentialRampToValueAtTime(0.001, now + 0.05);
-		osc.connect(gain);
+		gain.gain.setValueAtTime(0.15, now);
+		gain.gain.exponentialRampToValueAtTime(0.001, now + 0.03);
+		const filter = ctx.createBiquadFilter();
+		filter.type = "bandpass";
+		filter.frequency.value = 2500;
+		filter.Q.value = 3;
+		src.connect(filter);
+		filter.connect(gain);
 		gain.connect(ctx.destination);
-		osc.start(now);
-		osc.stop(now + 0.05);
+		src.start(now);
 	} catch (e) {
 		// Audio not available
 	}
 }
+
+function flyBill(sourceEl) {
+	const wallet = document.getElementById("floatingWallet");
+	if (!wallet || !sourceEl) return;
+
+	const srcRect = sourceEl.getBoundingClientRect();
+	const walletRect = wallet.getBoundingClientRect();
+
+	const startX = srcRect.left + srcRect.width / 2;
+	const startY = srcRect.top + srcRect.height / 2;
+	const endX = walletRect.left + walletRect.width / 2;
+	const endY = walletRect.top + walletRect.height / 2;
+
+	const bill = document.createElement("div");
+	bill.className = "flying-bill";
+	bill.textContent = "$";
+	bill.style.left = startX + "px";
+	bill.style.top = startY + "px";
+	bill.style.setProperty("--dx", (endX - startX) + "px");
+	bill.style.setProperty("--dy", (endY - startY) + "px");
+	bill.style.setProperty("--bill-duration", (0.4 + Math.random() * 0.25) + "s");
+
+	document.body.appendChild(bill);
+
+	requestAnimationFrame(() => {
+		bill.classList.add("animate");
+	});
+
+	wallet.classList.remove("bump");
+	void wallet.offsetWidth;
+	wallet.classList.add("bump");
+
+	setTimeout(() => {
+		bill.remove();
+	}, 800);
+}
+
+const CURRENCY_SYMBOLS = {
+	USD: "$", EUR: "€", GBP: "£", JPY: "¥", CAD: "$",
+	AUD: "$", INR: "₹", BRL: "R$", CHF: "CHF ", MXN: "$",
+};
+
+async function fetchExchangeRates() {
+	try {
+		const res = await fetch("https://api.exchangerate.fun/latest?base=USD");
+		if (!res.ok) throw new Error(res.status);
+		const data = await res.json();
+		if (data.rates) {
+			STATE.exchangeRates = data.rates;
+			STATE.ratesLoaded = true;
+		}
+	} catch (e) {
+		console.warn("Exchange rates unavailable, using USD only", e);
+	}
+}
+
+function convertFromUsd(amount) {
+	const rate = STATE.exchangeRates[STATE.selectedCurrency] || 1;
+	return amount * rate;
+}
+
+function formatCurrency(amount) {
+	const cur = STATE.selectedCurrency;
+	const symbol = CURRENCY_SYMBOLS[cur] || cur + " ";
+	const converted = convertFromUsd(amount);
+
+	if (cur === "JPY") {
+		return symbol + Math.round(converted).toLocaleString("en-US");
+	}
+
+	return symbol + converted.toLocaleString("en-US", {
+		minimumFractionDigits: 0,
+		maximumFractionDigits: 0,
+	});
+}
+
+let moneyFormatter = {
+	format: (n) => formatCurrency(n),
+};
 
 function fuzzyMatch(query, text) {
 	if (!query) return true;
@@ -231,6 +278,7 @@ function loadState() {
 		if (parsed.userFinance) STATE.userFinance = parsed.userFinance;
 		if (typeof parsed.soundEnabled === "boolean") STATE.soundEnabled = parsed.soundEnabled;
 		if (parsed.activePreset) STATE.activePreset = parsed.activePreset;
+		if (parsed.selectedCurrency) STATE.selectedCurrency = parsed.selectedCurrency;
 	} catch (e) {
 		console.warn("Failed to load state", e);
 	}
@@ -437,6 +485,68 @@ function renderPresetButtons() {
 		button.style.fontWeight = isActive ? "700" : "400";
 		button.setAttribute("aria-pressed", isActive ? "true" : "false");
 	}
+}
+
+function applyLocationPreset() {
+	if (!navigator.geolocation) {
+		setShareStatus("Geolocation not supported.");
+		return;
+	}
+
+	locationBtnEl.disabled = true;
+	locationBtnEl.textContent = "📍 Locating...";
+
+	navigator.geolocation.getCurrentPosition(
+		(pos) => {
+			locationBtnEl.disabled = false;
+			locationBtnEl.textContent = "📍 My Location";
+			const { latitude, longitude } = pos.coords;
+
+			const region = detectRegion(latitude, longitude);
+			const presetKey = region.preset;
+			const label = region.label;
+
+			if (presetKey && PRESET_DEFINITIONS[presetKey]) {
+				applyPresetBundle(presetKey);
+				setShareStatus("Applied " + label + " preset for your area.");
+			} else {
+				applyPresetBundle("stabilize_household");
+				setShareStatus("Applied general US preset. (" + label + ")");
+			}
+		},
+		(err) => {
+			locationBtnEl.disabled = false;
+			locationBtnEl.textContent = "📍 My Location";
+			setShareStatus("Location denied. Using default preset.");
+			applyPresetBundle("stabilize_household");
+		},
+		{ timeout: 8000 }
+	);
+}
+
+function detectRegion(lat, lng) {
+	if (lat >= 24 && lat <= 50 && lng >= -130 && lng <= -60) {
+		if (lat >= 37 && lat <= 42 && lng >= -124 && lng <= -117) {
+			return { label: "California (high rent)", preset: "survive_month" };
+		}
+		if (lat >= 25 && lat <= 31 && lng >= -88 && lng <= -80) {
+			return { label: "Florida", preset: "fix_car_and_rent" };
+		}
+		if (lat >= 40 && lat <= 45 && lng >= -80 && lng <= -73) {
+			return { label: "Northeast US (high cost)", preset: "survive_month" };
+		}
+		return { label: "United States", preset: "stabilize_household" };
+	}
+	if (lat >= 46 && lat <= 84 && lng >= -141 && lng <= -52) {
+		return { label: "Canada", preset: "fix_car_and_rent" };
+	}
+	if (lat >= 35 && lat <= 72 && lng >= -12 && lng <= 45) {
+		return { label: "Europe", preset: "stabilize_household" };
+	}
+	if (lat >= -45 && lat <= -10 && lng >= 110 && lng <= 155) {
+		return { label: "Australia", preset: "fix_car_and_rent" };
+	}
+	return { label: "International", preset: "stabilize_household" };
 }
 
 function renderSourceDisplays() {
@@ -854,6 +964,7 @@ function attachEvents() {
 				itemCard.classList.remove("flash");
 				void itemCard.offsetWidth;
 				itemCard.classList.add("flash");
+				flyBill(itemCard);
 			}
 			saveState();
 			updateUI();
@@ -1037,6 +1148,21 @@ function attachEvents() {
 			}
 		}
 	});
+
+	if (currencySelectEl) {
+		currencySelectEl.value = STATE.selectedCurrency;
+		currencySelectEl.addEventListener("change", () => {
+			STATE.selectedCurrency = currencySelectEl.value;
+			saveState();
+			updateUI();
+		});
+	}
+
+	if (locationBtnEl) {
+		locationBtnEl.addEventListener("click", () => {
+			applyLocationPreset();
+		});
+	}
 }
 
 async function init() {
@@ -1046,6 +1172,8 @@ async function init() {
 			fetchJson("./data/richest_people.json"),
 			fetchJson("./data/cpi_items.json"),
 		]);
+
+		fetchExchangeRates().catch(() => {});
 
 		if (!Array.isArray(peopleData.people) || peopleData.people.length === 0) {
 			throw new Error("People dataset is empty or invalid.");

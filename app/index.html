@@ -9,6 +9,7 @@
   </head>
   <body>
     <div class="wrap">
+    <div id="floatingWallet" class="floating-wallet" title="Your spending total">💰</div>
     <div id="stickySummary" class="panel sticky-summary">
   <div><strong>Selected:</strong> <span id="stickyPerson">--</span></div>
   <div><strong>Total:</strong> <span id="stickyTotal">$0</span></div>
@@ -20,6 +21,22 @@
       <button type="button" id="shareResultsBtn">Share Results</button>
       <button type="button" id="printReceiptBtn">Print Receipt</button>
       <button type="button" id="soundToggleBtn" title="Toggle purchase sounds">🔊</button>
+      <label style="display: inline-flex; align-items: center; gap: 0.4rem; font-size: 0.85rem; color: var(--muted); margin: 0;">
+        Currency
+        <select id="currencySelect" style="width: auto; padding: 0.4rem 0.5rem; margin: 0;">
+          <option value="USD" selected>$ USD</option>
+          <option value="EUR">€ EUR</option>
+          <option value="GBP">£ GBP</option>
+          <option value="JPY">¥ JPY</option>
+          <option value="CAD">$ CAD</option>
+          <option value="AUD">$ AUD</option>
+          <option value="INR">₹ INR</option>
+          <option value="BRL">R$ BRL</option>
+          <option value="CHF">CHF</option>
+          <option value="MXN">$ MXN</option>
+        </select>
+      </label>
+      <button type="button" id="locationBtn" title="Auto-configure for your area">📍 My Location</button>
       <span id="shareStatus" class="muted">&nbsp;</span>
     </div>
       <h1 class="hero-title">Spend Wealth App</h1>

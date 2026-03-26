@@ -1,87 +1,88 @@
 {
-  "last_updated": "2026-03-26T20:09:41.395Z",
-  "source": "Forbes Top 10 Richest People (fallback, static)",
-  "source_url": "https://www.forbes.com/",
+  "last_updated": "2026-03-26T20:30:46.573Z",
+  "source": "Forbes Real-Time Billionaires (via rtb-api, auto-updated)",
+  "source_url": "https://realtimebillionaires.de",
+  "api_date": "2026-03-02",
   "people": [
     {
-      "id": "elon_musk",
+      "id": "elon-musk",
       "rank": 1,
       "name": "Elon Musk",
-      "net_worth": 839000000000,
-      "company": "SpaceX, Tesla, xAI",
-      "country": "United States"
+      "net_worth": 839618478000,
+      "company": "Tesla, SpaceX",
+      "country": "US"
     },
     {
-      "id": "larry_page",
+      "id": "larry-page",
       "rank": 2,
       "name": "Larry Page",
-      "net_worth": 257000000000,
+      "net_worth": 253048372000,
       "company": "Google",
-      "country": "United States"
+      "country": "US"
     },
     {
-      "id": "sergey_brin",
+      "id": "sergey-brin",
       "rank": 3,
       "name": "Sergey Brin",
-      "net_worth": 237000000000,
+      "net_worth": 233526324000,
       "company": "Google",
-      "country": "United States"
+      "country": "US"
     },
     {
-      "id": "jeff_bezos",
+      "id": "mark-zuckerberg",
       "rank": 4,
-      "name": "Jeff Bezos",
-      "net_worth": 224000000000,
-      "company": "Amazon",
-      "country": "United States"
-    },
-    {
-      "id": "mark_zuckerberg",
-      "rank": 5,
       "name": "Mark Zuckerberg",
-      "net_worth": 222000000000,
-      "company": "Meta",
-      "country": "United States"
+      "net_worth": 224125183000,
+      "company": "Facebook",
+      "country": "US"
     },
     {
-      "id": "larry_ellison",
+      "id": "jeff-bezos",
+      "rank": 5,
+      "name": "Jeff Bezos",
+      "net_worth": 222321675000,
+      "company": "Amazon",
+      "country": "US"
+    },
+    {
+      "id": "larry-ellison",
       "rank": 6,
       "name": "Larry Ellison",
-      "net_worth": 190000000000,
+      "net_worth": 197024201000,
       "company": "Oracle",
-      "country": "United States"
+      "country": "US"
     },
     {
-      "id": "bernard_arnault",
+      "id": "bernard-arnault",
       "rank": 7,
       "name": "Bernard Arnault & family",
-      "net_worth": 171000000000,
+      "net_worth": 164146411000,
       "company": "LVMH",
-      "country": "France"
+      "country": "FR"
     },
     {
-      "id": "jensen_huang",
+      "id": "jensen-huang",
       "rank": 8,
       "name": "Jensen Huang",
-      "net_worth": 154000000000,
-      "company": "Nvidia",
-      "country": "United States"
+      "net_worth": 158061775000,
+      "company": "Semiconductors",
+      "country": "US"
     },
     {
-      "id": "warren_buffett",
+      "id": "rob-walton",
       "rank": 9,
-      "name": "Warren Buffett",
-      "net_worth": 149000000000,
-      "company": "Berkshire Hathaway",
-      "country": "United States"
+      "name": "Rob Walton & family",
+      "net_worth": 145274484000,
+      "company": "Walmart",
+      "country": "US"
     },
     {
-      "id": "amancio_ortega",
+      "id": "jim-walton",
       "rank": 10,
-      "name": "Amancio Ortega",
-      "net_worth": 148000000000,
-      "company": "Zara / Inditex",
-      "country": "Spain"
+      "name": "Jim Walton & family",
+      "net_worth": 142549447000,
+      "company": "Walmart",
+      "country": "US"
     }
   ]
 }
