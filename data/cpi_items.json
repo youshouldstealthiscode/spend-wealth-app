@@ -1,23 +1,23 @@
 {
-  "last_updated": "2026-03-26T20:30:46.769Z",
-  "source": "Hybrid dataset: BLS food prices + curated market estimates + NGO/public cost data",
+  "last_updated": "2026-03-26T21:09:36.477Z",
+  "source": "Live BLS Average Retail Prices + curated estimates",
   "source_url": "https://www.bls.gov/regions/mid-atlantic/data/AverageRetailFoodAndEnergyPrices_USandWest_Table.htm",
-  "freshness": "monthly | estimated | market",
+  "freshness": "live | curated",
   "items": [
     {
       "id": "bread_white_pan",
       "name": "White Bread (1 loaf)",
-      "price": 1.85,
+      "price": 2.5,
       "category": "essentials",
-      "source_type": "bls_average_price",
+      "source_type": "bls_latest",
       "unit": "per loaf"
     },
     {
       "id": "eggs_dozen",
       "name": "Eggs, Grade A (1 dozen)",
-      "price": 2.5,
+      "price": 4.026,
       "category": "essentials",
-      "source_type": "bls_average_price",
+      "source_type": "bls_latest",
       "unit": "per dozen"
     },
     {
@@ -25,23 +25,23 @@
       "name": "Whole Milk (1 gallon)",
       "price": 4.03,
       "category": "essentials",
-      "source_type": "bls_average_price",
+      "source_type": "bls_latest",
       "unit": "per gallon"
     },
     {
       "id": "rice_long_grain",
       "name": "White Rice (1 lb)",
-      "price": 1.07,
+      "price": 1.074,
       "category": "essentials",
-      "source_type": "bls_average_price",
+      "source_type": "bls_latest",
       "unit": "per lb"
     },
     {
       "id": "bananas_lb",
       "name": "Bananas (1 lb)",
-      "price": 0.65,
+      "price": 0.549,
       "category": "essentials",
-      "source_type": "bls_average_price",
+      "source_type": "bls_latest",
       "unit": "per lb"
     },
     {
@@ -49,39 +49,39 @@
       "name": "Potatoes (1 lb)",
       "price": 0.87,
       "category": "essentials",
-      "source_type": "bls_average_price",
+      "source_type": "bls_latest",
       "unit": "per lb"
     },
     {
       "id": "chicken_whole_lb",
       "name": "Whole Chicken (1 lb)",
-      "price": 2.05,
+      "price": 2.049,
       "category": "essentials",
-      "source_type": "bls_average_price",
+      "source_type": "bls_latest",
       "unit": "per lb"
     },
     {
       "id": "ground_beef_lb",
       "name": "Ground Beef (1 lb)",
-      "price": 5.5,
+      "price": 6.739,
       "category": "essentials",
-      "source_type": "bls_average_price",
+      "source_type": "bls_latest",
       "unit": "per lb"
     },
     {
       "id": "coffee_grounds_lb",
       "name": "Coffee (1 lb)",
-      "price": 6.15,
+      "price": 9.459,
       "category": "essentials",
-      "source_type": "bls_average_price",
+      "source_type": "bls_latest",
       "unit": "per lb"
     },
     {
       "id": "butter_lb",
       "name": "Butter (1 lb)",
-      "price": 4.5,
+      "price": 4.564,
       "category": "essentials",
-      "source_type": "bls_average_price",
+      "source_type": "bls_latest",
       "unit": "per lb"
     },
     {
@@ -89,7 +89,7 @@
       "name": "Apples (1 lb)",
       "price": 1.9,
       "category": "essentials",
-      "source_type": "bls_average_price",
+      "source_type": "bls_latest",
       "unit": "per lb"
     },
     {
@@ -97,7 +97,7 @@
       "name": "Cheddar Cheese (1 lb)",
       "price": 5.3,
       "category": "essentials",
-      "source_type": "bls_average_price",
+      "source_type": "bls_latest",
       "unit": "per lb"
     },
     {
@@ -159,9 +159,9 @@
     {
       "id": "rent_month",
       "name": "One Month Rent (avg US)",
-      "price": 2200,
+      "price": 2150,
       "category": "housing",
-      "source_type": "curated_estimate",
+      "source_type": "curated_2026",
       "unit": "monthly"
     },
     {
@@ -169,7 +169,7 @@
       "name": "Electricity (1 kWh)",
       "price": 0.17,
       "category": "housing",
-      "source_type": "eia_estimate",
+      "source_type": "eia_2026",
       "unit": "per kWh"
     },
     {
@@ -177,7 +177,7 @@
       "name": "Natural Gas (1 therm)",
       "price": 1.5,
       "category": "housing",
-      "source_type": "eia_estimate",
+      "source_type": "bls_latest",
       "unit": "per therm"
     },
     {
@@ -225,7 +225,7 @@
       "name": "Doctor Visit (copay)",
       "price": 150,
       "category": "health",
-      "source_type": "curated_estimate",
+      "source_type": "curated_2026",
       "unit": "per visit"
     },
     {
@@ -233,7 +233,7 @@
       "name": "Dentist Cleaning",
       "price": 200,
       "category": "health",
-      "source_type": "curated_estimate",
+      "source_type": "curated_2026",
       "unit": "per visit"
     },
     {
@@ -241,7 +241,7 @@
       "name": "ER Visit (avg)",
       "price": 2200,
       "category": "health",
-      "source_type": "curated_estimate",
+      "source_type": "curated_2026",
       "unit": "per visit"
     },
     {
@@ -249,7 +249,7 @@
       "name": "Monthly Prescription",
       "price": 50,
       "category": "health",
-      "source_type": "curated_estimate",
+      "source_type": "curated_2026",
       "unit": "monthly"
     },
     {
@@ -257,7 +257,7 @@
       "name": "Health Insurance (monthly)",
       "price": 560,
       "category": "health",
-      "source_type": "kff_estimate",
+      "source_type": "kff_2025",
       "unit": "monthly"
     },
     {
@@ -273,7 +273,7 @@
       "name": "Therapy Session",
       "price": 150,
       "category": "health",
-      "source_type": "curated_estimate",
+      "source_type": "curated_2026",
       "unit": "per session"
     },
     {
@@ -281,7 +281,7 @@
       "name": "College Semester (in-state)",
       "price": 12000,
       "category": "education",
-      "source_type": "curated_estimate",
+      "source_type": "curated_2026",
       "unit": "per semester"
     },
     {
@@ -297,7 +297,7 @@
       "name": "Avg Student Loan Payment (monthly)",
       "price": 500,
       "category": "education",
-      "source_type": "curated_estimate",
+      "source_type": "curated_2026",
       "unit": "monthly"
     },
     {
@@ -305,7 +305,7 @@
       "name": "Community College Course",
       "price": 1500,
       "category": "education",
-      "source_type": "curated_estimate",
+      "source_type": "curated_2026",
       "unit": "per course"
     },
     {
@@ -321,15 +321,15 @@
       "name": "Private Kindergarten (1 year)",
       "price": 12000,
       "category": "education",
-      "source_type": "curated_estimate",
+      "source_type": "curated_2026",
       "unit": "per year"
     },
     {
       "id": "gas_regular_gallon",
       "name": "Gasoline, Regular (1 gallon)",
-      "price": 3.65,
+      "price": 3.55,
       "category": "transportation",
-      "source_type": "aaa_estimate",
+      "source_type": "aaa_2026_avg",
       "unit": "per gallon"
     },
     {
@@ -337,7 +337,7 @@
       "name": "Avg Car Payment (monthly)",
       "price": 730,
       "category": "transportation",
-      "source_type": "curated_estimate",
+      "source_type": "curated_2026",
       "unit": "monthly"
     },
     {
@@ -345,7 +345,7 @@
       "name": "Car Insurance (monthly)",
       "price": 200,
       "category": "transportation",
-      "source_type": "curated_estimate",
+      "source_type": "curated_2026",
       "unit": "monthly"
     },
     {
@@ -377,7 +377,7 @@
       "name": "Used Reliable Car",
       "price": 15000,
       "category": "stability",
-      "source_type": "curated_estimate",
+      "source_type": "curated_2026",
       "unit": "one-time"
     },
     {
@@ -385,7 +385,7 @@
       "name": "New Mid-Range Car",
       "price": 38000,
       "category": "stability",
-      "source_type": "curated_estimate",
+      "source_type": "curated_2026",
       "unit": "one-time"
     },
     {
@@ -393,7 +393,7 @@
       "name": "Emergency Fund (3 months)",
       "price": 9000,
       "category": "stability",
-      "source_type": "curated_estimate",
+      "source_type": "curated_2026",
       "unit": "one-time"
     },
     {
@@ -401,7 +401,7 @@
       "name": "House Down Payment (20%)",
       "price": 80000,
       "category": "stability",
-      "source_type": "curated_estimate",
+      "source_type": "curated_2026",
       "unit": "one-time"
     },
     {

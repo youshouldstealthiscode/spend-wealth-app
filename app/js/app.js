@@ -720,19 +720,12 @@ function renderPersonOptions() {
 
 function renderPersonDetails() {
 	if (!STATE.selectedPerson) {
-		personDetailsEl.innerHTML = "<div>No person selected.</div>";
+		personDetailsEl.textContent = "";
 		return;
 	}
 
 	const person = STATE.selectedPerson;
-
-	personDetailsEl.innerHTML = `
-    <div><strong>Name:</strong> ${person.name}</div>
-    <div><strong>Rank:</strong> #${person.rank}</div>
-    <div><strong>Net worth:</strong> ${moneyFormatter.format(person.net_worth)}</div>
-    <div><strong>Company:</strong> ${person.company}</div>
-    <div><strong>Country:</strong> ${person.country}</div>
-  `;
+	personDetailsEl.textContent = `#${person.rank} ${person.name} — ${moneyFormatter.format(person.net_worth)} · ${person.company} · ${person.country}`;
 }
 
 function renderItems() {
@@ -747,11 +740,11 @@ function renderItems() {
 		const card = document.createElement("div");
 		card.className = "item";
 		card.dataset.category = item.category;
+		card.dataset.price = item.price;
 
 		card.innerHTML = `
       <div><strong>${item.name}</strong></div>
-      <div>Price: ${moneyFormatter.format(item.price)}</div>
-      <div>Category: ${item.category}</div>
+      <div>${moneyFormatter.format(item.price)}</div>
 
       <div style="margin-top: 8px;">
 	<button type="button" data-id="${item.id}" class="minus">-</button>
@@ -1036,7 +1029,8 @@ function attachEvents() {
 				itemCard.classList.remove("flash");
 				void itemCard.offsetWidth;
 				itemCard.classList.add("flash");
-				flyBills(itemCard, item.price);
+				const price = parseFloat(itemCard.dataset.price) || 0;
+				flyBills(itemCard, price);
 			}
 			saveState();
 			updateUI();

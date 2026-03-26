@@ -4,88 +4,75 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Wealth Engine Rebuild</title>
+    <title>$pend</title>
     <link rel="stylesheet" href="./style.css" />
   </head>
   <body>
     <div class="wrap">
-    <div id="fortuneStash" class="fortune-stash">
-      <button id="stashToggle" class="stash-toggle" title="Toggle fortune stash">💸</button>
-      <div id="stashPanel" class="stash-panel" style="display: none;">
-        <div class="stash-title">Fortune Remaining</div>
-        <div id="stashRemaining" class="stash-remaining">$0</div>
-        <div id="stashStacks" class="stash-stacks"></div>
-        <div class="stash-labels">
-          <span>$1</span><span>$5</span><span>$10</span><span>$20</span><span>$50</span><span>$100</span>
+
+      <!-- Fortune stash (floating, bottom-right) -->
+      <div id="fortuneStash" class="fortune-stash">
+        <button id="stashToggle" class="stash-toggle" title="Toggle fortune stash">💸</button>
+        <div id="stashPanel" class="stash-panel" style="display: none;">
+          <div class="stash-title">Fortune Remaining</div>
+          <div id="stashRemaining" class="stash-remaining">$0</div>
+          <div id="stashStacks" class="stash-stacks"></div>
+          <div class="stash-labels">
+            <span>$1</span><span>$5</span><span>$10</span><span>$20</span><span>$50</span><span>$100</span>
+          </div>
         </div>
       </div>
-    </div>
-    <div id="stickySummary" class="panel sticky-summary">
-  <div><strong>Selected:</strong> <span id="stickyPerson">--</span></div>
-  <div><strong>Total:</strong> <span id="stickyTotal">$0</span></div>
-  <div><strong>Percent:</strong> <span id="stickyPercent">--</span></div>
-  <div><strong>Work Time:</strong> <span id="stickyWorkTime">--</span></div>
-</div>
-    <div class="panel action-bar">
-      <button type="button" id="resetAppBtn">Reset</button>
-      <button type="button" id="shareResultsBtn">Share Results</button>
-      <button type="button" id="printReceiptBtn">Print Receipt</button>
-      <button type="button" id="soundToggleBtn" title="Toggle purchase sounds on/off">
-        <span id="soundIcon">🔊</span> <span class="btn-label">Sound</span>
-      </button>
-      <label style="display: inline-flex; align-items: center; gap: 0.4rem; font-size: 0.85rem; color: var(--muted); margin: 0;">
-        Currency
-        <select id="currencySelect" style="width: auto; padding: 0.4rem 0.5rem; margin: 0;">
-          <option value="USD" selected>$ USD</option>
-          <option value="EUR">€ EUR</option>
-          <option value="GBP">£ GBP</option>
-          <option value="JPY">¥ JPY</option>
-          <option value="CAD">$ CAD</option>
-          <option value="AUD">$ AUD</option>
-          <option value="INR">₹ INR</option>
-          <option value="BRL">R$ BRL</option>
-          <option value="CHF">CHF</option>
-          <option value="MXN">$ MXN</option>
-        </select>
-      </label>
-      <button type="button" id="locationBtn" title="Auto-configure for your area">📍 My Location</button>
-      <span id="shareStatus" class="muted">&nbsp;</span>
-    </div>
-      <h1 class="hero-title">Spend Wealth App</h1>
 
-      <div class="panel">
-        <h2>Data status</h2>
-        <p id="status">Loading...</p>
-        <p class="muted" id="meta"></p>
+      <!-- Sticky summary bar (always visible) -->
+      <div id="stickySummary" class="panel sticky-summary">
+        <div><strong>Selected:</strong> <span id="stickyPerson">--</span></div>
+        <div><strong>Total:</strong> <span id="stickyTotal">$0</span></div>
+        <div><strong>Percent:</strong> <span id="stickyPercent">--</span></div>
+        <div><strong>Work Time:</strong> <span id="stickyWorkTime">--</span></div>
       </div>
 
-      <div class="panel">
-        <h2>Billionaire selector</h2>
-        <label for="personSelect">Choose a person:</label>
-        <br /><br />
-        <select id="personSelect"></select>
-        <div id="personDetails" style="margin-top: 1rem;"></div>
+      <!-- Action bar -->
+      <div class="panel action-bar">
+        <button type="button" id="resetAppBtn">Reset</button>
+        <button type="button" id="shareResultsBtn">Share</button>
+        <button type="button" id="printReceiptBtn">Print Receipt</button>
+        <button type="button" id="soundToggleBtn" title="Toggle purchase sounds on/off">
+          <span id="soundIcon">🔊</span> <span class="btn-label">Sound</span>
+        </button>
+        <label class="currency-label">
+          Currency
+          <select id="currencySelect" class="currency-select">
+            <option value="USD" selected>$ USD</option>
+            <option value="EUR">€ EUR</option>
+            <option value="GBP">£ GBP</option>
+            <option value="JPY">¥ JPY</option>
+            <option value="CAD">$ CAD</option>
+            <option value="AUD">$ AUD</option>
+            <option value="INR">₹ INR</option>
+            <option value="BRL">R$ BRL</option>
+            <option value="CHF">CHF</option>
+            <option value="MXN">$ MXN</option>
+          </select>
+        </label>
+        <button type="button" id="locationBtn" title="Auto-configure for your area">📍 My Location</button>
+        <span id="shareStatus" class="muted">&nbsp;</span>
       </div>
-      <div class="dashboard-grid">
-        <div class="stack">
-          <div class="panel">
-            <h2>Items</h2>
-	<div id="totalBar" class="panel panel-subtle">
-  	Total Spent: $0
-	</div>
-<div id="wealthStats" class="panel panel-subtle">
-  <div><strong>Percent of wealth:</strong> --</div>
-  <div><strong>Remaining:</strong> --</div>
-  <div><strong>Fraction:</strong> --</div>
 
-  <div style="margin-top:10px;">
-    <div style="height:20px;background:#ddd;border-radius:10px;overflow:hidden;">
-      <div id="progressBar" style="height:100%;width:0%;background:#4caf50;"></div>
-    </div>
-  </div>
-</div>
-        <div class="panel panel-subtle">
-          <h2>Filters</h2>
+      <!-- Title + status line -->
+      <h1 class="hero-title">$pend</h1>
+      <p id="status" class="status-line">Loading...</p>
+      <p class="muted status-meta" id="meta"></p>
+
+      <!-- Controls bar (billionaire + filters + search) -->
+      <div class="panel controls-bar">
+        <div class="controls-row">
+          <div class="controls-select-wrap">
+            <label for="personSelect" class="controls-label">Billionaire:</label>
+            <select id="personSelect" class="controls-select"></select>
+          </div>
+          <div id="personDetails" class="controls-person-details muted"></div>
+        </div>
+        <div class="controls-row">
           <div id="categoryFilters" class="filters-row">
             <button type="button" class="filterBtn" data-category="all">All</button>
             <button type="button" class="filterBtn" data-category="essentials">Essentials</button>
@@ -100,100 +87,118 @@
             <button type="button" class="filterBtn" data-category="luxury">Luxury</button>
             <button type="button" class="filterBtn" data-category="social_impact">🌍 Social Impact</button>
           </div>
+          <div class="search-wrap">
+            <input id="searchInput" type="text" placeholder="Search items..." autocomplete="off" />
+            <div id="searchSuggestions" class="search-suggestions" style="display: none;"></div>
+          </div>
         </div>
-        <div class="panel panel-subtle" style="padding: 0.5rem 0.7rem;">
-          <input id="searchInput" type="text" placeholder="Search items..." autocomplete="off" style="margin: 0;" />
-          <div id="searchSuggestions" class="search-suggestions" style="display: none;"></div>
+      </div>
+
+      <!-- Items (full width) -->
+      <div id="totalBar" class="panel panel-subtle">
+        Total Spent: $0
+      </div>
+      <div id="wealthStats" class="panel panel-subtle">
+        <div><strong>Percent of wealth:</strong> --</div>
+        <div><strong>Remaining:</strong> --</div>
+        <div><strong>Fraction:</strong> --</div>
+        <div style="margin-top:10px;">
+          <div class="progress-track">
+            <div id="progressBar" class="progress-fill"></div>
+          </div>
         </div>
-        <div id="itemsCount" class="muted"></div>
-        <div id="itemsGrid" class="grid" style="margin-top: 1rem;"></div>
+      </div>
+      <div id="itemsCount" class="muted"></div>
+      <div id="itemsGrid" class="grid items-grid" style="margin-top: 0.75rem;"></div>
+
+      <!-- Results dashboard (below items) -->
+      <div class="results-grid">
+
+        <!-- Wealth stats -->
+        <div class="panel">
+          <h2>Work Time</h2>
+          <div id="workTime">--</div>
+          <div id="timeEquivalents" style="margin-top: 0.75rem;">--</div>
+        </div>
+
+        <!-- Position comparison -->
+        <div class="panel">
+          <h2>Your Position</h2>
+          <div class="results-sub-grid">
+            <div>
+              <strong>Annual income</strong>
+              <div id="annualIncomeDisplay" class="muted" style="margin-top: 0.2rem;">--</div>
+            </div>
+            <div>
+              <strong>Years to reach wealth</strong>
+              <div id="yearsToWealthDisplay" class="muted" style="margin-top: 0.2rem;">--</div>
+            </div>
+            <div>
+              <strong>Cart vs savings</strong>
+              <div id="savingsComparisonDisplay" class="muted" style="margin-top: 0.2rem;">--</div>
+            </div>
+            <div>
+              <strong>Years after savings</strong>
+              <div id="cartAfterSavingsDisplay" class="muted" style="margin-top: 0.2rem;">--</div>
+            </div>
           </div>
         </div>
 
-        <div class="stack">
-<div class="panel">
-  <h2>Your Income</h2>
-
-  <div class="grid" style="grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));">
-    <label>
-      Hourly wage
-      <input id="wage" type="number" min="0" step="0.01" placeholder="20" style="width: 100%; margin-top: 0.35rem;" />
-    </label>
-
-    <label>
-      Hours per week
-      <input id="hoursPerWeek" type="number" min="0" step="1" value="40" style="width: 100%; margin-top: 0.35rem;" />
-    </label>
-
-    <label>
-      Weeks per year
-      <input id="weeksPerYear" type="number" min="0" step="1" value="52" style="width: 100%; margin-top: 0.35rem;" />
-    </label>
-
-    <label>
-      Current savings
-      <input id="savings" type="number" min="0" step="0.01" placeholder="0" style="width: 100%; margin-top: 0.35rem;" />
-    </label>
-  </div>
-
-  <div id="workTime" style="margin-top: 1rem;">--</div>
-  <div id="timeEquivalents" style="margin-top: 0.75rem;">--</div>
-</div>
-<div class="panel">
-  <h2>Your Position vs This Billionaire</h2>
-  <div class="grid" style="grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));">
-    <div>
-      <strong>Your annual income</strong>
-      <div id="annualIncomeDisplay" style="margin-top: 0.35rem;">--</div>
-    </div>
-
-    <div>
-      <strong>Years to reach their wealth</strong>
-      <div id="yearsToWealthDisplay" style="margin-top: 0.35rem;">--</div>
-    </div>
-
-    <div>
-      <strong>Cart cost vs your savings</strong>
-      <div id="savingsComparisonDisplay" style="margin-top: 0.35rem;">--</div>
-    </div>
-
-    <div>
-      <strong>Years to afford this cart after savings</strong>
-      <div id="cartAfterSavingsDisplay" style="margin-top: 0.35rem;">--</div>
-    </div>
-  </div>
-</div>
-
-<div class="panel">
-  <h2>Quick Presets</h2>
-  <div id="presetBundles" class="filters-row">
-    <button type="button" class="presetBtn" data-preset="survive_month">Survive One Month</button>
-    <button type="button" class="presetBtn" data-preset="stabilize_household">Stabilize Household</button>
-    <button type="button" class="presetBtn" data-preset="fix_car_and_rent">Fix Car + Rent</button>
-    <button type="button" class="presetBtn" data-preset="college_start">College Start</button>
-  </div>
-  <p id="presetStatus" class="muted" style="margin-top: 0.75rem;">Apply a preset bundle to quickly populate the cart.</p>
-</div>
-
-<div id="receipt" class="panel receipt-panel"></div>
-
-<div class="panel">
-  <h2>Sources</h2>
-  <div class="grid" style="grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));">
-    <div>
-      <strong>Wealth data</strong>
-      <div id="wealthSourceDisplay" class="muted" style="margin-top: 0.35rem;">--</div>
-    </div>
-
-    <div>
-      <strong>Item data</strong>
-      <div id="itemSourceDisplay" class="muted" style="margin-top: 0.35rem;">--</div>
-    </div>
-  </div>
-</div>
+        <!-- Income inputs -->
+        <div class="panel">
+          <h2>Your Income</h2>
+          <div class="income-grid">
+            <label>
+              Hourly wage
+              <input id="wage" type="number" min="0" step="0.01" placeholder="20" />
+            </label>
+            <label>
+              Hours/week
+              <input id="hoursPerWeek" type="number" min="0" step="1" value="40" />
+            </label>
+            <label>
+              Weeks/year
+              <input id="weeksPerYear" type="number" min="0" step="1" value="52" />
+            </label>
+            <label>
+              Savings
+              <input id="savings" type="number" min="0" step="0.01" placeholder="0" />
+            </label>
+          </div>
         </div>
-      </div>
-    </div>
+
+        <!-- Presets -->
+        <div class="panel">
+          <h2>Quick Presets</h2>
+          <div id="presetBundles" class="filters-row">
+            <button type="button" class="presetBtn" data-preset="survive_month">Survive One Month</button>
+            <button type="button" class="presetBtn" data-preset="stabilize_household">Stabilize Household</button>
+            <button type="button" class="presetBtn" data-preset="fix_car_and_rent">Fix Car + Rent</button>
+            <button type="button" class="presetBtn" data-preset="college_start">College Start</button>
+          </div>
+          <p id="presetStatus" class="muted" style="margin-top: 0.5rem;">Apply a preset bundle to quickly populate the cart.</p>
+        </div>
+
+        <!-- Receipt -->
+        <div id="receipt" class="panel receipt-panel"></div>
+
+        <!-- Sources -->
+        <div class="panel">
+          <h2>Sources</h2>
+          <div class="results-sub-grid">
+            <div>
+              <strong>Wealth data</strong>
+              <div id="wealthSourceDisplay" class="muted" style="margin-top: 0.2rem;">--</div>
+            </div>
+            <div>
+              <strong>Item data</strong>
+              <div id="itemSourceDisplay" class="muted" style="margin-top: 0.2rem;">--</div>
+            </div>
+          </div>
+        </div>
+
+      </div><!-- /results-grid -->
+    </div><!-- /wrap -->
 
     <script type="module" src="./js/app.js"></script>
   </body>

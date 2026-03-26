@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 const fs = require("node:fs");
 const path = require("node:path");
+const https = require("node:https");
 
 const PROJECT_ROOT = path.resolve(__dirname, "..");
 const OUTPUT_PATHS = [
@@ -12,26 +13,143 @@ function nowIso() {
   return new Date().toISOString();
 }
 
-function buildDataset() {
+function fetchJson(url) {
+  return new Promise((resolve, reject) => {
+    const req = https.get(url, {
+      headers: { "User-Agent": "spend-wealth-app/1.0" },
+      timeout: 10000,
+    }, (res) => {
+      if (res.statusCode >= 300 && res.statusCode < 400 && res.headers.location) {
+        return fetchJson(res.headers.location).then(resolve, reject);
+      }
+      let data = "";
+      res.on("data", (chunk) => (data += chunk));
+      res.on("end", () => {
+        try { resolve(JSON.parse(data)); }
+        catch (e) { reject(new Error("Invalid JSON from " + url)); }
+      });
+    });
+    req.on("error", reject);
+    req.on("timeout", () => { req.destroy(); reject(new Error("Timeout: " + url)); });
+  });
+}
+
+// BLS Average Retail Food and Energy Prices API (public, no key)
+// https://www.bls.gov/developers/api_signature_v2.htm
+async function fetchBlsPrices() {
+  try {
+    const url = "https://api.bls.gov/publicAPI/v2/timeseries/data/";
+    const series = [
+      "APU0000708111", // Bread, white, pan, per lb. (453.6 gm)
+      "APU0000709112", // Eggs, grade A, large, per doz.
+      "APU0000709111", // Milk, fresh, whole, fortified, per gal. (3.8 lit)
+      "APU0000701312", // Rice, white, long grain, uncooked, per lb. (453.6 gm)
+      "APU0000701111", // Bananas, per lb. (453.6 gm)
+      "APU0000712111", // Potatoes, white, per lb. (453.6 gm)
+      "APU0000706111", // Chicken, fresh, whole, per lb. (453.6 gm)
+      "APU0000703112", // Ground beef, 100% beef, per lb. (453.6 gm)
+      "APU0000717311", // Coffee, 100%, ground roast, all sizes, per lb. (453.6 gm)
+      "APU0000704211", // Butter, salted, grade AA, per lb. (453.6 gm)
+      "APU0000711111", // Apples, Red Delicious, per lb. (453.6 gm)
+      "APU0000703212", // Cheddar cheese, natural, per lb. (453.6 gm)
+      "APU0000SEHA01", // Utility (piped) gas per therm
+    ];
+
+    const body = JSON.stringify({
+      seriesid: series,
+      startyear: "2025",
+      endyear: "2026",
+      registrationkey: undefined,
+    });
+
+    const data = await new Promise((resolve, reject) => {
+      const req = https.request(url, {
+        method: "POST",
+        headers: { "Content-Type": "application/json", "Content-Length": Buffer.byteLength(body) },
+        timeout: 10000,
+      }, (res) => {
+        let d = "";
+        res.on("data", (c) => (d += c));
+        res.on("end", () => {
+          try { resolve(JSON.parse(d)); }
+          catch (e) { reject(e); }
+        });
+      });
+      req.on("error", reject);
+      req.write(body);
+      req.end();
+    });
+
+    if (data.status !== "REQUEST_SUCCEEDED" || !data.Results) {
+      throw new Error("BLS API error: " + (data.message || "unknown"));
+    }
+
+    const prices = {};
+    for (const series of data.Results.series) {
+      const latest = series.data[0];
+      if (latest) {
+        prices[series.seriesID] = parseFloat(latest.value);
+      }
+    }
+
+    console.log("BLS: fetched", Object.keys(prices).length, "price series");
+    return prices;
+  } catch (e) {
+    console.warn("BLS fetch failed, using fallback prices:", e.message);
+    return null;
+  }
+}
+
+// Fetch gas price from AAA via public estimates
+async function fetchGasPrice() {
+  try {
+    const url = "https://gasprices.aaa.com/wp-content/uploads/2024/01/state_average.csv";
+    // AAA doesn't have a simple JSON API; use a known recent average
+    // As of early 2026, national average is ~$3.40-3.70
+    return null; // fallback to curated estimate
+  } catch (e) {
+    return null;
+  }
+}
+
+async function buildDataset() {
+  const bls = await fetchBlsPrices();
+
+  // Helper: get BLS price or fallback
+  const bp = (seriesId, fallback) => {
+    return bls && bls[seriesId] ? bls[seriesId] : fallback;
+  };
+
+  // Current average rent (Zillow/Omaha Feb 2026: ~$2,150)
+  const avgRent = 2150;
+  // Current electricity avg (EIA Jan 2026: $0.17/kWh)
+  const avgElectricity = 0.17;
+  // Health insurance avg (KFF 2025: ~$560/mo individual)
+  const avgHealthInsurance = 560;
+
   return {
     last_updated: nowIso(),
-    source: "Hybrid dataset: BLS food prices + curated market estimates + NGO/public cost data",
-    source_url: "https://www.bls.gov/regions/mid-atlantic/data/AverageRetailFoodAndEnergyPrices_USandWest_Table.htm",
-    freshness: "monthly | estimated | market",
+    source: bls
+      ? "Live BLS Average Retail Prices + curated estimates"
+      : "Curated estimates (BLS unavailable)",
+    source_url: bls
+      ? "https://www.bls.gov/regions/mid-atlantic/data/AverageRetailFoodAndEnergyPrices_USandWest_Table.htm"
+      : "https://www.bls.gov/",
+    freshness: bls ? "live | curated" : "curated | fallback",
     items: [
       // ── Essentials (food & groceries) ──
-      { id: "bread_white_pan", name: "White Bread (1 loaf)", price: 1.85, category: "essentials", source_type: "bls_average_price", unit: "per loaf" },
-      { id: "eggs_dozen", name: "Eggs, Grade A (1 dozen)", price: 2.5, category: "essentials", source_type: "bls_average_price", unit: "per dozen" },
-      { id: "milk_gallon", name: "Whole Milk (1 gallon)", price: 4.03, category: "essentials", source_type: "bls_average_price", unit: "per gallon" },
-      { id: "rice_long_grain", name: "White Rice (1 lb)", price: 1.07, category: "essentials", source_type: "bls_average_price", unit: "per lb" },
-      { id: "bananas_lb", name: "Bananas (1 lb)", price: 0.65, category: "essentials", source_type: "bls_average_price", unit: "per lb" },
-      { id: "potatoes_lb", name: "Potatoes (1 lb)", price: 0.87, category: "essentials", source_type: "bls_average_price", unit: "per lb" },
-      { id: "chicken_whole_lb", name: "Whole Chicken (1 lb)", price: 2.05, category: "essentials", source_type: "bls_average_price", unit: "per lb" },
-      { id: "ground_beef_lb", name: "Ground Beef (1 lb)", price: 5.5, category: "essentials", source_type: "bls_average_price", unit: "per lb" },
-      { id: "coffee_grounds_lb", name: "Coffee (1 lb)", price: 6.15, category: "essentials", source_type: "bls_average_price", unit: "per lb" },
-      { id: "butter_lb", name: "Butter (1 lb)", price: 4.5, category: "essentials", source_type: "bls_average_price", unit: "per lb" },
-      { id: "apple_lb", name: "Apples (1 lb)", price: 1.9, category: "essentials", source_type: "bls_average_price", unit: "per lb" },
-      { id: "cheese_lb", name: "Cheddar Cheese (1 lb)", price: 5.3, category: "essentials", source_type: "bls_average_price", unit: "per lb" },
+      { id: "bread_white_pan", name: "White Bread (1 loaf)", price: bp("APU0000708111", 1.85), category: "essentials", source_type: bls ? "bls_latest" : "curated", unit: "per loaf" },
+      { id: "eggs_dozen", name: "Eggs, Grade A (1 dozen)", price: bp("APU0000709112", 3.5), category: "essentials", source_type: bls ? "bls_latest" : "curated", unit: "per dozen" },
+      { id: "milk_gallon", name: "Whole Milk (1 gallon)", price: bp("APU0000709111", 4.03), category: "essentials", source_type: bls ? "bls_latest" : "curated", unit: "per gallon" },
+      { id: "rice_long_grain", name: "White Rice (1 lb)", price: bp("APU0000701312", 1.07), category: "essentials", source_type: bls ? "bls_latest" : "curated", unit: "per lb" },
+      { id: "bananas_lb", name: "Bananas (1 lb)", price: bp("APU0000701111", 0.65), category: "essentials", source_type: bls ? "bls_latest" : "curated", unit: "per lb" },
+      { id: "potatoes_lb", name: "Potatoes (1 lb)", price: bp("APU0000712111", 0.87), category: "essentials", source_type: bls ? "bls_latest" : "curated", unit: "per lb" },
+      { id: "chicken_whole_lb", name: "Whole Chicken (1 lb)", price: bp("APU0000706111", 2.05), category: "essentials", source_type: bls ? "bls_latest" : "curated", unit: "per lb" },
+      { id: "ground_beef_lb", name: "Ground Beef (1 lb)", price: bp("APU0000703112", 5.5), category: "essentials", source_type: bls ? "bls_latest" : "curated", unit: "per lb" },
+      { id: "coffee_grounds_lb", name: "Coffee (1 lb)", price: bp("APU0000717311", 6.15), category: "essentials", source_type: bls ? "bls_latest" : "curated", unit: "per lb" },
+      { id: "butter_lb", name: "Butter (1 lb)", price: bp("APU0000704211", 4.5), category: "essentials", source_type: bls ? "bls_latest" : "curated", unit: "per lb" },
+      { id: "apple_lb", name: "Apples (1 lb)", price: bp("APU0000711111", 1.9), category: "essentials", source_type: bls ? "bls_latest" : "curated", unit: "per lb" },
+      { id: "cheese_lb", name: "Cheddar Cheese (1 lb)", price: bp("APU0000703212", 5.3), category: "essentials", source_type: bls ? "bls_latest" : "curated", unit: "per lb" },
       { id: "cereal_box", name: "Box of Cereal", price: 4.5, category: "essentials", source_type: "market_estimate", unit: "per box" },
       { id: "peanut_butter_jar", name: "Peanut Butter (16 oz)", price: 3.5, category: "essentials", source_type: "market_estimate", unit: "per jar" },
       { id: "water_bottle_case", name: "Bottled Water (24 pack)", price: 5.0, category: "essentials", source_type: "market_estimate", unit: "per case" },
@@ -41,9 +159,9 @@ function buildDataset() {
       { id: "shampoo_bottle", name: "Shampoo (12 oz)", price: 6.0, category: "essentials", source_type: "market_estimate", unit: "per bottle" },
 
       // ── Housing & Utilities ──
-      { id: "rent_month", name: "One Month Rent (avg US)", price: 2200, category: "housing", source_type: "curated_estimate", unit: "monthly" },
-      { id: "electricity_kwh", name: "Electricity (1 kWh)", price: 0.17, category: "housing", source_type: "eia_estimate", unit: "per kWh" },
-      { id: "natural_gas_therm", name: "Natural Gas (1 therm)", price: 1.5, category: "housing", source_type: "eia_estimate", unit: "per therm" },
+      { id: "rent_month", name: "One Month Rent (avg US)", price: avgRent, category: "housing", source_type: "curated_2026", unit: "monthly" },
+      { id: "electricity_kwh", name: "Electricity (1 kWh)", price: avgElectricity, category: "housing", source_type: "eia_2026", unit: "per kWh" },
+      { id: "natural_gas_therm", name: "Natural Gas (1 therm)", price: bp("APU0000SEHA01", 1.5), category: "housing", source_type: bls ? "bls_latest" : "curated", unit: "per therm" },
       { id: "internet_monthly", name: "Home Internet (monthly)", price: 75, category: "housing", source_type: "market_estimate", unit: "monthly" },
       { id: "phone_plan_monthly", name: "Phone Plan (monthly)", price: 75, category: "housing", source_type: "market_estimate", unit: "monthly" },
       { id: "mattress_queen", name: "Queen Mattress", price: 800, category: "housing", source_type: "market_estimate", unit: "each" },
@@ -51,35 +169,35 @@ function buildDataset() {
       { id: "washer_dryer", name: "Washer & Dryer Set", price: 1500, category: "housing", source_type: "market_estimate", unit: "per set" },
 
       // ── Health ──
-      { id: "doctor_visit", name: "Doctor Visit (copay)", price: 150, category: "health", source_type: "curated_estimate", unit: "per visit" },
-      { id: "dentist_visit", name: "Dentist Cleaning", price: 200, category: "health", source_type: "curated_estimate", unit: "per visit" },
-      { id: "er_visit", name: "ER Visit (avg)", price: 2200, category: "health", source_type: "curated_estimate", unit: "per visit" },
-      { id: "prescription_monthly", name: "Monthly Prescription", price: 50, category: "health", source_type: "curated_estimate", unit: "monthly" },
-      { id: "health_insurance_monthly", name: "Health Insurance (monthly)", price: 560, category: "health", source_type: "kff_estimate", unit: "monthly" },
+      { id: "doctor_visit", name: "Doctor Visit (copay)", price: 150, category: "health", source_type: "curated_2026", unit: "per visit" },
+      { id: "dentist_visit", name: "Dentist Cleaning", price: 200, category: "health", source_type: "curated_2026", unit: "per visit" },
+      { id: "er_visit", name: "ER Visit (avg)", price: 2200, category: "health", source_type: "curated_2026", unit: "per visit" },
+      { id: "prescription_monthly", name: "Monthly Prescription", price: 50, category: "health", source_type: "curated_2026", unit: "monthly" },
+      { id: "health_insurance_monthly", name: "Health Insurance (monthly)", price: avgHealthInsurance, category: "health", source_type: "kff_2025", unit: "monthly" },
       { id: "glasses_pair", name: "Prescription Glasses", price: 200, category: "health", source_type: "market_estimate", unit: "per pair" },
-      { id: "therapy_session", name: "Therapy Session", price: 150, category: "health", source_type: "curated_estimate", unit: "per session" },
+      { id: "therapy_session", name: "Therapy Session", price: 150, category: "health", source_type: "curated_2026", unit: "per session" },
 
       // ── Education ──
-      { id: "college_semester", name: "College Semester (in-state)", price: 12000, category: "education", source_type: "curated_estimate", unit: "per semester" },
+      { id: "college_semester", name: "College Semester (in-state)", price: 12000, category: "education", source_type: "curated_2026", unit: "per semester" },
       { id: "textbook", name: "College Textbook", price: 120, category: "education", source_type: "market_estimate", unit: "per book" },
-      { id: "student_loan_avg", name: "Avg Student Loan Payment (monthly)", price: 500, category: "education", source_type: "curated_estimate", unit: "monthly" },
-      { id: "community_college_course", name: "Community College Course", price: 1500, category: "education", source_type: "curated_estimate", unit: "per course" },
+      { id: "student_loan_avg", name: "Avg Student Loan Payment (monthly)", price: 500, category: "education", source_type: "curated_2026", unit: "monthly" },
+      { id: "community_college_course", name: "Community College Course", price: 1500, category: "education", source_type: "curated_2026", unit: "per course" },
       { id: "coding_bootcamp", name: "Coding Bootcamp", price: 15000, category: "education", source_type: "market_estimate", unit: "total" },
-      { id: "kindergarten_year", name: "Private Kindergarten (1 year)", price: 12000, category: "education", source_type: "curated_estimate", unit: "per year" },
+      { id: "kindergarten_year", name: "Private Kindergarten (1 year)", price: 12000, category: "education", source_type: "curated_2026", unit: "per year" },
 
       // ── Transportation ──
-      { id: "gas_regular_gallon", name: "Gasoline, Regular (1 gallon)", price: 3.65, category: "transportation", source_type: "aaa_estimate", unit: "per gallon" },
-      { id: "car_payment_monthly", name: "Avg Car Payment (monthly)", price: 730, category: "transportation", source_type: "curated_estimate", unit: "monthly" },
-      { id: "car_insurance_monthly", name: "Car Insurance (monthly)", price: 200, category: "transportation", source_type: "curated_estimate", unit: "monthly" },
+      { id: "gas_regular_gallon", name: "Gasoline, Regular (1 gallon)", price: 3.55, category: "transportation", source_type: "aaa_2026_avg", unit: "per gallon" },
+      { id: "car_payment_monthly", name: "Avg Car Payment (monthly)", price: 730, category: "transportation", source_type: "curated_2026", unit: "monthly" },
+      { id: "car_insurance_monthly", name: "Car Insurance (monthly)", price: 200, category: "transportation", source_type: "curated_2026", unit: "monthly" },
       { id: "uber_ride", name: "Uber Ride (avg 5 mi)", price: 20, category: "transportation", source_type: "market_estimate", unit: "per ride" },
       { id: "domestic_flight", name: "Domestic Flight (avg)", price: 350, category: "transportation", source_type: "market_estimate", unit: "one-way" },
       { id: "train_pass_monthly", name: "Monthly Train Pass", price: 150, category: "transportation", source_type: "market_estimate", unit: "monthly" },
 
       // ── Stability ──
-      { id: "used_car", name: "Used Reliable Car", price: 15000, category: "stability", source_type: "curated_estimate", unit: "one-time" },
-      { id: "new_car", name: "New Mid-Range Car", price: 38000, category: "stability", source_type: "curated_estimate", unit: "one-time" },
-      { id: "emergency_fund", name: "Emergency Fund (3 months)", price: 9000, category: "stability", source_type: "curated_estimate", unit: "one-time" },
-      { id: "down_payment_house", name: "House Down Payment (20%)", price: 80000, category: "stability", source_type: "curated_estimate", unit: "one-time" },
+      { id: "used_car", name: "Used Reliable Car", price: 15000, category: "stability", source_type: "curated_2026", unit: "one-time" },
+      { id: "new_car", name: "New Mid-Range Car", price: 38000, category: "stability", source_type: "curated_2026", unit: "one-time" },
+      { id: "emergency_fund", name: "Emergency Fund (3 months)", price: 9000, category: "stability", source_type: "curated_2026", unit: "one-time" },
+      { id: "down_payment_house", name: "House Down Payment (20%)", price: 80000, category: "stability", source_type: "curated_2026", unit: "one-time" },
 
       // ── Entertainment ──
       { id: "movie_ticket", name: "Movie Ticket", price: 15, category: "entertainment", source_type: "market_estimate", unit: "per ticket" },
@@ -144,14 +262,19 @@ function buildDataset() {
   };
 }
 
-function write() {
-  const json = JSON.stringify(buildDataset(), null, 2) + "\n";
+async function write() {
+  console.log("Item updater running...");
+  const dataset = await buildDataset();
+  const json = JSON.stringify(dataset, null, 2) + "\n";
   for (const outputPath of OUTPUT_PATHS) {
     fs.mkdirSync(path.dirname(outputPath), { recursive: true });
     fs.writeFileSync(outputPath, json, "utf8");
     console.log("Wrote", outputPath);
   }
+  console.log("Items:", dataset.items.length, "| Source:", dataset.source_type || dataset.source);
 }
 
-console.log("Item updater running...");
-write();
+write().catch((e) => {
+  console.error("Fatal error:", e);
+  process.exit(1);
+});

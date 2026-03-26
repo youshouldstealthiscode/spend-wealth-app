@@ -2,7 +2,7 @@
 
 ## Project Overview
 
-"Spend a Billionaire's Fortune" — a vanilla HTML/CSS/JavaScript web app with no framework, no build step, and no bundler. Users pick a billionaire and simulate spending their fortune on everyday items to luxury goods.
+"$pend" (working title) — a vanilla HTML/CSS/JavaScript web app with no framework, no build step, and no bundler. Users pick a billionaire and simulate spending their fortune on everyday items to luxury goods and social impact causes.
 
 **Two versions exist:**
 - **Root** (`index.html` + `code.js`) — original prototype, inline data, plain `<script>` loading
@@ -31,8 +31,8 @@ The fork repo (`youshouldstealthiscode/Spend-Elon-Fortune`) has two unmerged Cod
 npm run update:data
 
 # Individual data updates
-npm run update:billionaires
-npm run update:items
+npm run update:billionaires   # Fetches live from Forbes Real-Time API
+npm run update:items          # Writes expanded item dataset (~100 items, 11 categories)
 ```
 
 No build, lint, test, or dev server commands exist. Development uses VS Code Live Server on port 5501. There are no installed dependencies — only Node.js (v20+) for data scripts.
@@ -41,15 +41,17 @@ No build, lint, test, or dev server commands exist. Development uses VS Code Liv
 
 ```
 app/
-├── index.html          # Entry point (ES module)
-├── style.css           # Dark theme styles
-├── js/app.js           # All application logic (~759 lines)
+├── index.html          # Entry point (ES module, ~200 lines)
+├── style.css           # Dark green/gold money theme (~530 lines)
+├── js/app.js           # All application logic (~1300 lines)
+├── sfx/
+│   └── kaching.mp3     # Cash register sound effect
 └── data/
-    ├── richest_people.json
-    └── cpi_items.json
+    ├── richest_people.json   # Auto-updated from Forbes API
+    └── cpi_items.json        # ~100 items, 11 categories
 scripts/
-├── update_billionaires.js   # Data generator (CommonJS)
-└── update_items.js          # Data generator (CommonJS)
+├── update_billionaires.js   # Live fetch from rtb-api + fallback
+└── update_items.js          # Expanded item generator
 code.js                # OLD version — do not modify
 index.html             # OLD version — do not modify
 backups/               # Working snapshots (do not touch)
@@ -70,6 +72,9 @@ backups/               # Working snapshots (do not touch)
 - **State:** Single mutable `STATE` object; persist via `saveState()` → `localStorage`; restore via `loadState()` on init
 - **Data fetching:** Use `fetchJson(path)` wrapper with `cache: "no-store"`; validate array shape before use; `Promise.all()` for parallel loads
 - **Entry point:** `init()` called on the last line of the file
+- **Sound:** MP3 playback via `new Audio()` for cash register; Web Audio API for subtle ticks
+- **Animations:** CSS keyframes for bill fly-out, purchase flash, stash burn glow; `requestAnimationFrame` for JS-driven positioning
+- **Currency:** Live exchange rate fetch from `exchangerate.fun`; `formatCurrency()` replaces `Intl.NumberFormat` for multi-currency support
 
 ## Code Style — JSON Data
 
@@ -78,11 +83,12 @@ backups/               # Working snapshots (do not touch)
 
 ## Code Style — CSS (`app/style.css`)
 
-- CSS custom properties in `:root` for theming (`--bg`, `--panel`, `--text`, `--accent`)
+- CSS custom properties in `:root` for theming (`--bg`, `--panel`, `--text`, `--accent`, `--accent-2`, `--gold`, `--danger`)
 - kebab-case class names; 4-space indent for properties
 - CSS Grid for layout, Flexbox for simple alignment
-- Single responsive breakpoint at 900px; `clamp()` for fluid typography
-- Dark theme only (`color-scheme: dark`)
+- Responsive breakpoints: 900px (tablet collapse), 600px (mobile)
+- Dark theme only (`color-scheme: dark`), green/gold money palette
+- `clamp()` for fluid typography
 
 ## Code Style — HTML
 
@@ -97,10 +103,11 @@ backups/               # Working snapshots (do not touch)
 - `PROJECT_ROOT` via `path.resolve(__dirname, "..")` for path resolution
 - Write JSON to both `app/data/` and `data/` (dual output)
 - `JSON.stringify(data, null, 2) + "\n"` with `fs.mkdirSync(..., { recursive: true })`
+- Billionaire fetch uses `node:https` with fallback to hardcoded data
 
 ## CI/CD
 
-GitHub Actions (`.github/workflows/update-data.yml`): runs daily at 5:17 UTC to regenerate data snapshots and auto-commit changes.
+GitHub Actions (`.github/workflows/update-data.yml`): runs daily at 5:17 UTC to regenerate data snapshots and auto-commit changes. Deployed via GitHub Pages from `main` branch root.
 
 ## What Does NOT Exist
 
