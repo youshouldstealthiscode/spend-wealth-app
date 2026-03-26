@@ -9,7 +9,17 @@
   </head>
   <body>
     <div class="wrap">
-    <div id="floatingWallet" class="floating-wallet" title="Your spending total">💰</div>
+    <div id="fortuneStash" class="fortune-stash">
+      <button id="stashToggle" class="stash-toggle" title="Toggle fortune stash">💸</button>
+      <div id="stashPanel" class="stash-panel" style="display: none;">
+        <div class="stash-title">Fortune Remaining</div>
+        <div id="stashRemaining" class="stash-remaining">$0</div>
+        <div id="stashStacks" class="stash-stacks"></div>
+        <div class="stash-labels">
+          <span>$1</span><span>$5</span><span>$10</span><span>$20</span><span>$50</span><span>$100</span>
+        </div>
+      </div>
+    </div>
     <div id="stickySummary" class="panel sticky-summary">
   <div><strong>Selected:</strong> <span id="stickyPerson">--</span></div>
   <div><strong>Total:</strong> <span id="stickyTotal">$0</span></div>
@@ -20,7 +30,9 @@
       <button type="button" id="resetAppBtn">Reset</button>
       <button type="button" id="shareResultsBtn">Share Results</button>
       <button type="button" id="printReceiptBtn">Print Receipt</button>
-      <button type="button" id="soundToggleBtn" title="Toggle purchase sounds">🔊</button>
+      <button type="button" id="soundToggleBtn" title="Toggle purchase sounds on/off">
+        <span id="soundIcon">🔊</span> <span class="btn-label">Sound</span>
+      </button>
       <label style="display: inline-flex; align-items: center; gap: 0.4rem; font-size: 0.85rem; color: var(--muted); margin: 0;">
         Currency
         <select id="currencySelect" style="width: auto; padding: 0.4rem 0.5rem; margin: 0;">

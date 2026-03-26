@@ -24,8 +24,11 @@ const resetAppBtnEl = document.querySelector("#resetAppBtn");
 const shareResultsBtnEl = document.querySelector("#shareResultsBtn");
 const printReceiptBtnEl = document.querySelector("#printReceiptBtn");
 const soundToggleBtnEl = document.querySelector("#soundToggleBtn");
+const soundIconEl = document.querySelector("#soundIcon");
 const currencySelectEl = document.querySelector("#currencySelect");
 const locationBtnEl = document.querySelector("#locationBtn");
+const stashToggleEl = document.querySelector("#stashToggle");
+const stashPanelEl = document.querySelector("#stashPanel");
 const shareStatusEl = document.querySelector("#shareStatus");
 const presetStatusEl = document.querySelector("#presetStatus");
 const wealthSourceDisplayEl = document.querySelector("#wealthSourceDisplay");
@@ -114,40 +117,108 @@ function playSubtleTick() {
 	}
 }
 
-function flyBill(sourceEl) {
-	const wallet = document.getElementById("floatingWallet");
-	if (!wallet || !sourceEl) return;
+function getDenominations(amount) {
+	const denoms = [100, 50, 20, 10, 5, 1];
+	const result = {};
+	let remaining = Math.round(amount);
+	for (const d of denoms) {
+		result[d] = Math.floor(remaining / d);
+		remaining %= d;
+	}
+	return result;
+}
+
+function renderStashStacks() {
+	const stacksEl = document.getElementById("stashStacks");
+	if (!stacksEl) return;
+
+	const metrics = getDerivedMetrics();
+	const remaining = Math.max(0, metrics.remaining);
+	const denomCounts = getDenominations(remaining);
+	const denoms = [1, 5, 10, 20, 50, 100];
+
+	const maxBills = 20;
+
+	stacksEl.innerHTML = denoms.map((d) => {
+		const count = denomCounts[d];
+		const displayCount = Math.min(count, maxBills);
+		const bars = [];
+		for (let i = 0; i < displayCount; i++) {
+			bars.push(`<div class="stash-bill bill-${d}"></div>`);
+		}
+		const overflow = count > maxBills ? `<div style="font-size:0.5rem;color:var(--muted);margin-top:1px;">+${numberFormatter.format(count - maxBills)}</div>` : "";
+		return `<div class="stash-stack" data-denom="${d}">${bars.join("")}${overflow}</div>`;
+	}).join("");
+
+	const remainingEl = document.getElementById("stashRemaining");
+	if (remainingEl) {
+		remainingEl.textContent = formatCurrency(remaining);
+	}
+}
+
+function flyBills(sourceEl, cost) {
+	if (cost <= 0) return;
+
+	const stashEl = document.getElementById("fortuneStash");
+	const stacksEl = document.getElementById("stashStacks");
+	if (!stashEl || !stacksEl) return;
 
 	const srcRect = sourceEl.getBoundingClientRect();
-	const walletRect = wallet.getBoundingClientRect();
+	const stashRect = stashEl.getBoundingClientRect();
 
 	const startX = srcRect.left + srcRect.width / 2;
 	const startY = srcRect.top + srcRect.height / 2;
-	const endX = walletRect.left + walletRect.width / 2;
-	const endY = walletRect.top + walletRect.height / 2;
+	const endX = stashRect.left + stashRect.width / 2;
+	const endY = stashRect.top + stashRect.height / 2;
 
-	const bill = document.createElement("div");
-	bill.className = "flying-bill";
-	bill.textContent = "$";
-	bill.style.left = startX + "px";
-	bill.style.top = startY + "px";
-	bill.style.setProperty("--dx", (endX - startX) + "px");
-	bill.style.setProperty("--dy", (endY - startY) + "px");
-	bill.style.setProperty("--bill-duration", (0.4 + Math.random() * 0.25) + "s");
+	const denomCounts = getDenominations(cost);
+	const denoms = [100, 50, 20, 10, 5, 1];
+	let totalBills = 0;
 
-	document.body.appendChild(bill);
+	for (const d of denoms) {
+		const count = Math.min(denomCounts[d], 8);
+		for (let i = 0; i < count; i++) {
+			totalBills++;
+			const delay = totalBills * 35 + Math.random() * 20;
+			const dx = endX - startX + (Math.random() - 0.5) * 40;
+			const dy = endY - startY + (Math.random() - 0.5) * 30;
+			const rot = (Math.random() - 0.5) * 360;
 
-	requestAnimationFrame(() => {
-		bill.classList.add("animate");
-	});
+			const bill = document.createElement("div");
+			bill.className = `flying-bill bill-${d}`;
+			bill.textContent = `$${d}`;
+			bill.style.left = (startX + (Math.random() - 0.5) * 30) + "px";
+			bill.style.top = (startY + (Math.random() - 0.5) * 20) + "px";
+			bill.style.setProperty("--dx", dx + "px");
+			bill.style.setProperty("--dy", dy + "px");
+			bill.style.setProperty("--rot", rot + "deg");
+			bill.style.setProperty("--bill-duration", (0.35 + Math.random() * 0.2) + "s");
 
-	wallet.classList.remove("bump");
-	void wallet.offsetWidth;
-	wallet.classList.add("bump");
+			document.body.appendChild(bill);
 
-	setTimeout(() => {
-		bill.remove();
-	}, 800);
+			setTimeout(() => {
+				bill.classList.add("animate");
+			}, delay);
+
+			setTimeout(() => {
+				bill.remove();
+			}, delay + 700);
+		}
+	}
+
+	const toggle = document.getElementById("stashToggle");
+	if (toggle) {
+		toggle.classList.remove("burn");
+		void toggle.offsetWidth;
+		toggle.classList.add("burn");
+	}
+
+	const panel = document.getElementById("stashPanel");
+	if (panel && cost > 1000) {
+		panel.classList.remove("burning");
+		void panel.offsetWidth;
+		panel.classList.add("burning");
+	}
 }
 
 const CURRENCY_SYMBOLS = {
@@ -944,6 +1015,7 @@ function updateUI() {
   renderSourceDisplays();
   renderReceipt();
   renderPresetButtons();
+  renderStashStacks();
 }
 
 function attachEvents() {
@@ -964,7 +1036,7 @@ function attachEvents() {
 				itemCard.classList.remove("flash");
 				void itemCard.offsetWidth;
 				itemCard.classList.add("flash");
-				flyBill(itemCard);
+				flyBills(itemCard, item.price);
 			}
 			saveState();
 			updateUI();
@@ -1102,10 +1174,12 @@ function attachEvents() {
 	if (soundToggleBtnEl) {
 		soundToggleBtnEl.addEventListener("click", () => {
 			STATE.soundEnabled = !STATE.soundEnabled;
-			soundToggleBtnEl.textContent = STATE.soundEnabled ? "🔊" : "🔇";
+			soundIconEl.textContent = STATE.soundEnabled ? "🔊" : "🔇";
+			soundToggleBtnEl.title = STATE.soundEnabled ? "Sound on — click to mute" : "Sound off — click to unmute";
 			saveState();
 		});
-		soundToggleBtnEl.textContent = STATE.soundEnabled ? "🔊" : "🔇";
+		soundIconEl.textContent = STATE.soundEnabled ? "🔊" : "🔇";
+		soundToggleBtnEl.title = STATE.soundEnabled ? "Sound on — click to mute" : "Sound off — click to unmute";
 	}
 
 	if (searchInputEl) {
@@ -1161,6 +1235,14 @@ function attachEvents() {
 	if (locationBtnEl) {
 		locationBtnEl.addEventListener("click", () => {
 			applyLocationPreset();
+		});
+	}
+
+	if (stashToggleEl && stashPanelEl) {
+		stashToggleEl.addEventListener("click", () => {
+			const isVisible = stashPanelEl.style.display !== "none";
+			stashPanelEl.style.display = isVisible ? "none" : "block";
+			if (!isVisible) renderStashStacks();
 		});
 	}
 }
