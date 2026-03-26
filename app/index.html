@@ -25,10 +25,11 @@
 
       <!-- Sticky summary bar (always visible) -->
       <div id="stickySummary" class="panel sticky-summary">
-        <div><strong>Selected:</strong> <span id="stickyPerson">--</span></div>
+        <div><strong>Spending:</strong> <span id="stickyPerson">--</span></div>
         <div><strong>Total:</strong> <span id="stickyTotal">$0</span></div>
-        <div><strong>Percent:</strong> <span id="stickyPercent">--</span></div>
-        <div><strong>Work Time:</strong> <span id="stickyWorkTime">--</span></div>
+        <div><strong>Remaining:</strong> <span id="stickyRemaining">$0</span></div>
+        <div><strong>% Used:</strong> <span id="stickyPercent">--</span></div>
+        <div><strong>Work Years:</strong> <span id="stickyWorkTime">--</span></div>
       </div>
 
       <!-- Action bar -->
@@ -94,27 +95,10 @@
         </div>
       </div>
 
-      <!-- Items (full width) -->
-      <div id="totalBar" class="panel panel-subtle">
-        Total Spent: $0
-      </div>
-      <div id="wealthStats" class="panel panel-subtle">
-        <div><strong>Percent of wealth:</strong> --</div>
-        <div><strong>Remaining:</strong> --</div>
-        <div><strong>Fraction:</strong> --</div>
-        <div style="margin-top:10px;">
-          <div class="progress-track">
-            <div id="progressBar" class="progress-fill"></div>
-          </div>
-        </div>
-      </div>
-      <div id="itemsCount" class="muted"></div>
-      <div id="itemsGrid" class="grid items-grid" style="margin-top: 0.75rem;"></div>
+      <!-- Dashboard above items (visible while clicking) -->
+      <div class="dashboard-row">
 
-      <!-- Results dashboard (below items) -->
-      <div class="results-grid">
-
-        <!-- Wealth stats -->
+        <!-- Work time -->
         <div class="panel">
           <h2>Work Time</h2>
           <div id="workTime">--</div>
@@ -179,10 +163,28 @@
           <p id="presetStatus" class="muted" style="margin-top: 0.5rem;">Apply a preset bundle to quickly populate the cart.</p>
         </div>
 
-        <!-- Receipt -->
-        <div id="receipt" class="panel receipt-panel"></div>
+      </div><!-- /dashboard-row -->
 
-        <!-- Sources -->
+      <!-- Items (full width) -->
+      <div id="totalBar" class="panel panel-subtle">
+        Total Spent: $0
+      </div>
+      <div id="wealthStats" class="panel panel-subtle">
+        <div><strong>Percent of wealth:</strong> --</div>
+        <div><strong>Remaining:</strong> --</div>
+        <div><strong>Fraction:</strong> --</div>
+        <div style="margin-top:10px;">
+          <div class="progress-track">
+            <div id="progressBar" class="progress-fill"></div>
+          </div>
+        </div>
+      </div>
+      <div id="itemsCount" class="muted"></div>
+      <div id="itemsGrid" class="grid items-grid" style="margin-top: 0.75rem;"></div>
+
+      <!-- Below items (receipt + sources) -->
+      <div class="bottom-row">
+        <div id="receipt" class="panel receipt-panel"></div>
         <div class="panel">
           <h2>Sources</h2>
           <div class="results-sub-grid">
@@ -196,8 +198,7 @@
             </div>
           </div>
         </div>
-
-      </div><!-- /results-grid -->
+      </div>
     </div><!-- /wrap -->
 
     <script type="module" src="./js/app.js"></script>

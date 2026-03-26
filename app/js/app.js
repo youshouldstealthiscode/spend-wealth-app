@@ -864,10 +864,11 @@ function renderWorkTime() {
 function renderStickySummary() {
 	const person = STATE.selectedPerson;
 	const metrics = getDerivedMetrics();
-	const { total, percent } = metrics;
+	const { total, percent, remaining } = metrics;
 
 	document.getElementById("stickyPerson").textContent = person ? person.name : "--";
 	document.getElementById("stickyTotal").textContent = moneyFormatter.format(total);
+	document.getElementById("stickyRemaining").textContent = moneyFormatter.format(remaining);
 	document.getElementById("stickyPercent").textContent =
 		percent < 0.000001 ? "<0.000001%" : percent.toFixed(6) + "%";
 
