@@ -64,6 +64,10 @@ let STATE = {
 	selectedCurrency: "USD",
 	exchangeRates: { USD: 1 },
 	ratesLoaded: false,
+	customItems: [
+		{ id: "custom_1", name: "", price: 0 },
+		{ id: "custom_2", name: "", price: 0 },
+	],
 };
 
 let audioCtx = null;
@@ -350,6 +354,9 @@ function loadState() {
 		if (typeof parsed.soundEnabled === "boolean") STATE.soundEnabled = parsed.soundEnabled;
 		if (parsed.activePreset) STATE.activePreset = parsed.activePreset;
 		if (parsed.selectedCurrency) STATE.selectedCurrency = parsed.selectedCurrency;
+		if (Array.isArray(parsed.customItems) && parsed.customItems.length === 2) {
+			STATE.customItems = parsed.customItems;
+		}
 	} catch (e) {
 		console.warn("Failed to load state", e);
 	}
@@ -361,6 +368,7 @@ function encodeShareState() {
 		cart: STATE.cart,
 		activeCategory: STATE.activeCategory,
 		activePreset: STATE.activePreset,
+		customItems: STATE.customItems,
 		userFinance: STATE.userFinance,
 	};
 
@@ -655,6 +663,11 @@ function getCartTotal() {
 		total += quantity * item.price;
 	}
 
+	for (const custom of STATE.customItems) {
+		const quantity = STATE.cart[custom.id] || 0;
+		total += quantity * custom.price;
+	}
+
 	return total;
 }
 
@@ -758,6 +771,43 @@ function renderItems() {
 	  style="width: 70px; text-align: center;"
 	/>
 	<button type="button" data-id="${item.id}" class="plus">+</button>
+      </div>
+    `;
+
+		itemsGridEl.appendChild(card);
+	}
+
+	for (const custom of STATE.customItems) {
+		const quantity = STATE.cart[custom.id] || 0;
+		const hasItem = custom.name && custom.price > 0;
+
+		const card = document.createElement("div");
+		card.className = "item";
+		card.dataset.category = "custom";
+		card.dataset.price = custom.price || 0;
+		card.dataset.customId = custom.id;
+
+		card.innerHTML = `
+      <div style="font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.08em; color: var(--accent-2); margin-bottom: 0.3rem;">Custom Item</div>
+      <div>
+        <input type="text" class="custom-name-input" data-id="${custom.id}" value="${custom.name}" placeholder="Item name..." style="width: 100%; padding: 0.4rem 0.5rem; font-size: 0.82rem; margin-bottom: 0.3rem;" />
+      </div>
+      <div style="display: flex; align-items: center; gap: 0.3rem;">
+        <span style="color: var(--muted); font-size: 0.82rem;">$</span>
+        <input type="number" class="custom-price-input" data-id="${custom.id}" value="${custom.price || ""}" placeholder="0.00" min="0" step="0.01" style="width: 100%; padding: 0.4rem 0.5rem; font-size: 0.82rem;" />
+      </div>
+      <div style="margin-top: 8px;">
+        <button type="button" data-id="${custom.id}" class="minus" ${!hasItem ? "disabled" : ""}>-</button>
+        <input
+          type="number"
+          min="0"
+          step="1"
+          data-id="${custom.id}"
+          class="qty"
+          value="${quantity}"
+          style="width: 70px; text-align: center;"
+        />
+        <button type="button" data-id="${custom.id}" class="plus" ${!hasItem ? "disabled" : ""}>+</button>
       </div>
     `;
 
@@ -894,14 +944,25 @@ function renderReceipt() {
 	const metrics = getDerivedMetrics();
 	const { total, percent, remaining } = metrics;
 
-	const cartItems = STATE.items
+	const regularItems = STATE.items
 		.filter((item) => (STATE.cart[item.id] || 0) > 0)
 		.map((item) => ({
 			name: item.name,
 			quantity: STATE.cart[item.id],
 			unitPrice: item.price,
 			subtotal: STATE.cart[item.id] * item.price,
-		}))
+		}));
+
+	const customCartItems = STATE.customItems
+		.filter((c) => (STATE.cart[c.id] || 0) > 0 && c.name && c.price > 0)
+		.map((c) => ({
+			name: c.name + " (custom)",
+			quantity: STATE.cart[c.id],
+			unitPrice: c.price,
+			subtotal: STATE.cart[c.id] * c.price,
+		}));
+
+	const cartItems = [...regularItems, ...customCartItems]
 		.sort((a, b) => b.subtotal - a.subtotal);
 
 	if (cartItems.length === 0) {
@@ -1051,6 +1112,30 @@ function attachEvents() {
 		const target = event.target;
 
 		if (!(target instanceof HTMLInputElement)) return;
+
+		if (target.classList.contains("custom-name-input")) {
+			const id = target.dataset.id;
+			const custom = STATE.customItems.find((c) => c.id === id);
+			if (custom) {
+				custom.name = target.value;
+				saveState();
+			}
+			return;
+		}
+
+		if (target.classList.contains("custom-price-input")) {
+			const id = target.dataset.id;
+			const custom = STATE.customItems.find((c) => c.id === id);
+			if (custom) {
+				custom.price = parseFloat(target.value) || 0;
+				const card = target.closest(".item");
+				if (card) card.dataset.price = custom.price;
+				saveState();
+				updateUI();
+			}
+			return;
+		}
+
 		if (!target.classList.contains("qty")) return;
 
 		const id = target.dataset.id;
