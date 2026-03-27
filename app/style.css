@@ -46,7 +46,7 @@ body {
 .wrap {
   max-width: 1200px;
   margin: 0 auto;
-  overflow-x: clip;
+  padding: 0 0.5rem;
 }
 
 h1, h2 {
