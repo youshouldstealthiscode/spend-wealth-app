@@ -529,8 +529,6 @@ button:active {
 }
 
 .receipt-body {
-  max-height: 260px;
-  overflow-y: auto;
   scrollbar-width: thin;
 }
 
@@ -868,5 +866,73 @@ button:active {
   .stash-panel {
     min-width: 0;
     width: 180px;
+  }
+}
+
+/* ── Landscape (phone sideways) ── */
+
+@media (orientation: landscape) and (max-height: 500px) {
+  body { padding: 0.4rem 0.6rem; }
+
+  .hero-title {
+    font-size: 1.1rem;
+    margin-bottom: 0.15rem;
+  }
+
+  .panel {
+    padding: 0.45rem 0.6rem;
+    margin-bottom: 0.4rem;
+  }
+
+  h2 {
+    font-size: 0.82rem;
+    margin-bottom: 0.35rem;
+  }
+
+  .sticky-summary {
+    padding: 0.25rem 0.6rem;
+    font-size: 0.68rem;
+    gap: 0.3rem;
+  }
+
+  .dashboard-row {
+    grid-template-columns: repeat(4, 1fr);
+    gap: 0.4rem;
+    margin-bottom: 0.6rem;
+  }
+
+  .items-grid {
+    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+    gap: 0.4rem;
+  }
+
+  .item {
+    padding: 0.4rem;
+    font-size: 0.75rem;
+  }
+
+  .income-grid {
+    grid-template-columns: repeat(4, 1fr);
+    gap: 0.3rem;
+  }
+
+  .income-grid input {
+    padding: 0.35rem;
+    font-size: 0.75rem;
+  }
+
+  .bottom-row {
+    grid-template-columns: 1fr 1fr;
+    gap: 0.4rem;
+  }
+
+  .receipt-line {
+    font-size: 0.72rem;
+    padding: 0.1rem 0;
+  }
+
+  .fortune-stash {
+    bottom: 0.5rem;
+    right: 0.5rem;
   }
 }
