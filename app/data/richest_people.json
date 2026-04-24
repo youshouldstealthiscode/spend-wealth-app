@@ -1,14 +1,14 @@
 {
-  "last_updated": "2026-03-29T06:18:23.400Z",
+  "last_updated": "2026-04-24T20:18:57.504Z",
   "source": "Forbes Real-Time Billionaires (via rtb-api, auto-updated)",
   "source_url": "https://realtimebillionaires.de",
-  "api_date": "2026-03-02",
+  "api_date": "2026-03-31",
   "people": [
     {
       "id": "elon-musk",
       "rank": 1,
       "name": "Elon Musk",
-      "net_worth": 839618478000,
+      "net_worth": 816979229000,
       "company": "Tesla, SpaceX",
       "country": "US"
     },
@@ -16,73 +16,73 @@
       "id": "larry-page",
       "rank": 2,
       "name": "Larry Page",
-      "net_worth": 253048372000,
+      "net_worth": 238011382000,
       "company": "Google",
       "country": "US"
     },
     {
-      "id": "sergey-brin",
+      "id": "jeff-bezos",
       "rank": 3,
-      "name": "Sergey Brin",
-      "net_worth": 233526324000,
+      "name": "Jeff Bezos",
+      "net_worth": 222215811000,
+      "company": "Amazon",
+      "country": "US"
+    },
+    {
+      "id": "sergey-jr-brin",
+      "rank": 4,
+      "name": "Sergey Jr Brin",
+      "net_worth": 219702344000,
       "company": "Google",
       "country": "US"
     },
     {
       "id": "mark-zuckerberg",
-      "rank": 4,
-      "name": "Mark Zuckerberg",
-      "net_worth": 224125183000,
-      "company": "Facebook",
-      "country": "US"
-    },
-    {
-      "id": "jeff-bezos",
       "rank": 5,
-      "name": "Jeff Bezos",
-      "net_worth": 222321675000,
-      "company": "Amazon",
+      "name": "Mark Zuckerberg",
+      "net_worth": 196515013000,
+      "company": "Facebook",
       "country": "US"
     },
     {
       "id": "larry-ellison",
       "rank": 6,
       "name": "Larry Ellison",
-      "net_worth": 197024201000,
+      "net_worth": 188675149000,
       "company": "Oracle",
       "country": "US"
     },
     {
-      "id": "bernard-arnault",
+      "id": "jensen-huang",
       "rank": 7,
-      "name": "Bernard Arnault & family",
-      "net_worth": 164146411000,
-      "company": "LVMH",
-      "country": "FR"
+      "name": "Jensen Huang",
+      "net_worth": 151188864000,
+      "company": "Semiconductors",
+      "country": "US"
     },
     {
-      "id": "jensen-huang",
+      "id": "michael-dell",
       "rank": 8,
-      "name": "Jensen Huang",
-      "net_worth": 158061775000,
-      "company": "Semiconductors",
+      "name": "Michael Dell",
+      "net_worth": 143533768000,
+      "company": "Dell Technologies",
       "country": "US"
     },
     {
       "id": "rob-walton",
       "rank": 9,
       "name": "Rob Walton & family",
-      "net_worth": 145274484000,
+      "net_worth": 142689289000,
       "company": "Walmart",
       "country": "US"
     },
     {
-      "id": "jim-walton",
+      "id": "bernard-arnault",
       "rank": 10,
-      "name": "Jim Walton & family",
-      "net_worth": 142549447000,
-      "company": "Walmart",
-      "country": "US"
+      "name": "Bernard Arnault & family",
+      "net_worth": 142524030000,
+      "company": "LVMH",
+      "country": "FR"
     }
   ]
 }

@@ -1,5 +1,5 @@
 {
-  "last_updated": "2026-03-29T06:18:23.890Z",
+  "last_updated": "2026-04-24T20:18:58.074Z",
   "source": "Live BLS Average Retail Prices + curated estimates",
   "source_url": "https://www.bls.gov/regions/mid-atlantic/data/AverageRetailFoodAndEnergyPrices_USandWest_Table.htm",
   "freshness": "live | curated",
@@ -7,7 +7,7 @@
     {
       "id": "bread_white_pan",
       "name": "White Bread (1 loaf)",
-      "price": 2.5,
+      "price": 2.348,
       "category": "essentials",
       "source_type": "bls_latest",
       "unit": "per loaf"
@@ -15,7 +15,7 @@
     {
       "id": "eggs_dozen",
       "name": "Eggs, Grade A (1 dozen)",
-      "price": 4.026,
+      "price": 4.067,
       "category": "essentials",
       "source_type": "bls_latest",
       "unit": "per dozen"
@@ -31,7 +31,7 @@
     {
       "id": "rice_long_grain",
       "name": "White Rice (1 lb)",
-      "price": 1.074,
+      "price": 1.06,
       "category": "essentials",
       "source_type": "bls_latest",
       "unit": "per lb"
@@ -55,7 +55,7 @@
     {
       "id": "chicken_whole_lb",
       "name": "Whole Chicken (1 lb)",
-      "price": 2.049,
+      "price": 2.033,
       "category": "essentials",
       "source_type": "bls_latest",
       "unit": "per lb"
@@ -63,7 +63,7 @@
     {
       "id": "ground_beef_lb",
       "name": "Ground Beef (1 lb)",
-      "price": 6.739,
+      "price": 6.701,
       "category": "essentials",
       "source_type": "bls_latest",
       "unit": "per lb"
@@ -71,7 +71,7 @@
     {
       "id": "coffee_grounds_lb",
       "name": "Coffee (1 lb)",
-      "price": 9.459,
+      "price": 9.608,
       "category": "essentials",
       "source_type": "bls_latest",
       "unit": "per lb"
@@ -79,7 +79,7 @@
     {
       "id": "butter_lb",
       "name": "Butter (1 lb)",
-      "price": 4.564,
+      "price": 4.571,
       "category": "essentials",
       "source_type": "bls_latest",
       "unit": "per lb"
