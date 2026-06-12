@@ -28,6 +28,22 @@ export const PRESETS = {
       baby_stroller: 1, child_car_seat: 1, doctor_visit: 4,
     },
   },
+  pet_owner_month: {
+    label: "Pet Owner (Month)",
+    items: {
+      dog_food_30lb: 1, cat_food_15lb: 1, pet_toys: 1,
+      pet_flea_treatment: 1, pet_vet_visit: 1,
+    },
+  },
+  furnish_apartment: {
+    label: "Furnish Apartment",
+    items: {
+      bed_frame_queen: 1, mattress_queen: 1, dresser: 1,
+      dining_table: 1, couch: 1, desk: 1, office_chair: 1,
+      vacuum_cleaner: 1, microwave: 1, coffeemaker: 1,
+      toaster: 1, blender: 1,iron: 1,
+    },
+  },
 };
 
 export function applyPresetBundle(state, presetKey, setPresetStatus, renderPresetButtons, saveState, updateUI) {

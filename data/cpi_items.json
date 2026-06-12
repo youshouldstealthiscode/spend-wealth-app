@@ -1,6 +1,6 @@
 {
-  "last_updated": "2026-06-12T14:53:39.631Z",
-  "source": "Live BLS Average Retail Prices + curated estimates",
+  "last_updated": "2026-06-12T15:35:55.530Z",
+  "source": "Live BLS Average Retail Prices (latest month) + curated estimates",
   "source_url": "https://www.bls.gov/regions/mid-atlantic/data/AverageRetailFoodAndEnergyPrices_USandWest_Table.htm",
   "freshness": "live | curated",
   "items": [
@@ -23,7 +23,7 @@
     {
       "id": "milk_gallon",
       "name": "Whole Milk (1 gallon)",
-      "price": 4.03,
+      "price": 4.22,
       "category": "essentials",
       "source_type": "bls_latest",
       "unit": "per gallon"
@@ -40,14 +40,6 @@
       "id": "bananas_lb",
       "name": "Bananas (1 lb)",
       "price": 0.544,
-      "category": "essentials",
-      "source_type": "bls_latest",
-      "unit": "per lb"
-    },
-    {
-      "id": "potatoes_lb",
-      "name": "Potatoes (1 lb)",
-      "price": 0.87,
       "category": "essentials",
       "source_type": "bls_latest",
       "unit": "per lb"
@@ -85,19 +77,35 @@
       "unit": "per lb"
     },
     {
-      "id": "apple_lb",
-      "name": "Apples (1 lb)",
-      "price": 1.9,
+      "id": "chicken_breast_lb",
+      "name": "Chicken Breast, Boneless (1 lb)",
+      "price": 4.171,
       "category": "essentials",
       "source_type": "bls_latest",
       "unit": "per lb"
     },
     {
+      "id": "potatoes_lb",
+      "name": "Potatoes (1 lb)",
+      "price": 0.75,
+      "category": "essentials",
+      "source_type": "usda_retail_jun2026",
+      "unit": "per lb"
+    },
+    {
+      "id": "apple_lb",
+      "name": "Apples (1 lb)",
+      "price": 1.31,
+      "category": "essentials",
+      "source_type": "usda_retail_jun2026",
+      "unit": "per lb"
+    },
+    {
       "id": "cheese_lb",
       "name": "Cheddar Cheese (1 lb)",
-      "price": 5.3,
+      "price": 6.03,
       "category": "essentials",
-      "source_type": "bls_latest",
+      "source_type": "usda_retail_jun2026",
       "unit": "per lb"
     },
     {
@@ -157,14 +165,6 @@
       "unit": "per bottle"
     },
     {
-      "id": "chicken_breast_lb",
-      "name": "Chicken Breast, Boneless (1 lb)",
-      "price": 4.5,
-      "category": "essentials",
-      "source_type": "market_estimate",
-      "unit": "per lb"
-    },
-    {
       "id": "pasta_lb",
       "name": "Spaghetti / Pasta (1 lb)",
       "price": 1.5,
@@ -183,9 +183,9 @@
     {
       "id": "onions_lb",
       "name": "Onions (1 lb)",
-      "price": 1.2,
+      "price": 1.27,
       "category": "essentials",
-      "source_type": "market_estimate",
+      "source_type": "usda_retail_jun2026",
       "unit": "per lb"
     },
     {
@@ -221,11 +221,211 @@
       "unit": "per dinner"
     },
     {
+      "id": "orange_juice_gallon",
+      "name": "Orange Juice (1 gallon)",
+      "price": 6.5,
+      "category": "essentials",
+      "source_type": "market_estimate",
+      "unit": "per gallon"
+    },
+    {
+      "id": "frozen_vegetables",
+      "name": "Frozen Vegetables (1 lb bag)",
+      "price": 2,
+      "category": "essentials",
+      "source_type": "market_estimate",
+      "unit": "per bag"
+    },
+    {
+      "id": "canned_tuna",
+      "name": "Canned Tuna (5 oz)",
+      "price": 1.5,
+      "category": "essentials",
+      "source_type": "market_estimate",
+      "unit": "per can"
+    },
+    {
+      "id": "canned_beans",
+      "name": "Canned Beans (15 oz)",
+      "price": 1.2,
+      "category": "essentials",
+      "source_type": "market_estimate",
+      "unit": "per can"
+    },
+    {
+      "id": "flour_5lb",
+      "name": "All-Purpose Flour (5 lb)",
+      "price": 4.5,
+      "category": "essentials",
+      "source_type": "market_estimate",
+      "unit": "per bag"
+    },
+    {
+      "id": "sugar_4lb",
+      "name": "Granulated Sugar (4 lb)",
+      "price": 3.5,
+      "category": "essentials",
+      "source_type": "market_estimate",
+      "unit": "per bag"
+    },
+    {
+      "id": "salt_26oz",
+      "name": "Table Salt (26 oz)",
+      "price": 1.5,
+      "category": "essentials",
+      "source_type": "market_estimate",
+      "unit": "per container"
+    },
+    {
+      "id": "black_pepper",
+      "name": "Black Pepper (4 oz)",
+      "price": 5,
+      "category": "essentials",
+      "source_type": "market_estimate",
+      "unit": "per container"
+    },
+    {
+      "id": "hot_dog_buns",
+      "name": "Hot Dog Buns (8-pack)",
+      "price": 2.5,
+      "category": "essentials",
+      "source_type": "market_estimate",
+      "unit": "per pack"
+    },
+    {
+      "id": "ketchup",
+      "name": "Ketchup (20 oz)",
+      "price": 3,
+      "category": "essentials",
+      "source_type": "market_estimate",
+      "unit": "per bottle"
+    },
+    {
+      "id": "mustard",
+      "name": "Yellow Mustard (14 oz)",
+      "price": 2,
+      "category": "essentials",
+      "source_type": "market_estimate",
+      "unit": "per bottle"
+    },
+    {
+      "id": "mayonnaise",
+      "name": "Mayonnaise (30 oz)",
+      "price": 4.5,
+      "category": "essentials",
+      "source_type": "market_estimate",
+      "unit": "per jar"
+    },
+    {
+      "id": "soy_sauce",
+      "name": "Soy Sauce (15 oz)",
+      "price": 3.5,
+      "category": "essentials",
+      "source_type": "market_estimate",
+      "unit": "per bottle"
+    },
+    {
+      "id": "olive_oil",
+      "name": "Extra Virgin Olive Oil (16 oz)",
+      "price": 8,
+      "category": "essentials",
+      "source_type": "market_estimate",
+      "unit": "per bottle"
+    },
+    {
+      "id": "yogurt_cup",
+      "name": "Yogurt (32 oz tub)",
+      "price": 5.5,
+      "category": "essentials",
+      "source_type": "market_estimate",
+      "unit": "per tub"
+    },
+    {
+      "id": "ice_cream_half_gallon",
+      "name": "Ice Cream (half gallon)",
+      "price": 5,
+      "category": "essentials",
+      "source_type": "market_estimate",
+      "unit": "per carton"
+    },
+    {
+      "id": "chocolate_bar",
+      "name": "Chocolate Bar (Hershey's, 1.55 oz)",
+      "price": 1.5,
+      "category": "essentials",
+      "source_type": "market_estimate",
+      "unit": "per bar"
+    },
+    {
+      "id": "chips_bag",
+      "name": "Potato Chips (8 oz bag)",
+      "price": 4.5,
+      "category": "essentials",
+      "source_type": "market_estimate",
+      "unit": "per bag"
+    },
+    {
+      "id": "popcorn",
+      "name": "Microwave Popcorn (3-pack)",
+      "price": 3.5,
+      "category": "essentials",
+      "source_type": "market_estimate",
+      "unit": "per pack"
+    },
+    {
+      "id": "soda_12pack",
+      "name": "Soda (12-pack cans)",
+      "price": 6,
+      "category": "essentials",
+      "source_type": "market_estimate",
+      "unit": "per 12-pack"
+    },
+    {
+      "id": "energy_drink",
+      "name": "Energy Drink (16 oz can)",
+      "price": 3,
+      "category": "essentials",
+      "source_type": "market_estimate",
+      "unit": "per can"
+    },
+    {
+      "id": "sports_drink",
+      "name": "Sports Drink (20 oz)",
+      "price": 2,
+      "category": "essentials",
+      "source_type": "market_estimate",
+      "unit": "per bottle"
+    },
+    {
+      "id": "beer_6pack",
+      "name": "Beer (6-pack domestic)",
+      "price": 9,
+      "category": "essentials",
+      "source_type": "market_estimate",
+      "unit": "per 6-pack"
+    },
+    {
+      "id": "wine_bottle",
+      "name": "Wine (mid-range, 750ml)",
+      "price": 12,
+      "category": "essentials",
+      "source_type": "market_estimate",
+      "unit": "per bottle"
+    },
+    {
+      "id": "cigarettes_pack",
+      "name": "Cigarettes (1 pack)",
+      "price": 8,
+      "category": "essentials",
+      "source_type": "market_estimate",
+      "unit": "per pack"
+    },
+    {
       "id": "rent_month",
       "name": "One Month Rent (avg US)",
       "price": 2150,
       "category": "housing",
-      "source_type": "curated_2026",
+      "source_type": "zillow_2026",
       "unit": "monthly"
     },
     {
@@ -307,6 +507,102 @@
       "category": "housing",
       "source_type": "census_2025",
       "unit": "per year"
+    },
+    {
+      "id": "dining_table",
+      "name": "Dining Table (seats 6)",
+      "price": 600,
+      "category": "housing",
+      "source_type": "market_estimate",
+      "unit": "each"
+    },
+    {
+      "id": "bed_frame_queen",
+      "name": "Bed Frame (queen)",
+      "price": 400,
+      "category": "housing",
+      "source_type": "market_estimate",
+      "unit": "each"
+    },
+    {
+      "id": "dresser",
+      "name": "Dresser (6-drawer)",
+      "price": 350,
+      "category": "housing",
+      "source_type": "market_estimate",
+      "unit": "each"
+    },
+    {
+      "id": "desk",
+      "name": "Office Desk",
+      "price": 300,
+      "category": "housing",
+      "source_type": "market_estimate",
+      "unit": "each"
+    },
+    {
+      "id": "office_chair",
+      "name": "Office Chair (ergonomic)",
+      "price": 250,
+      "category": "housing",
+      "source_type": "market_estimate",
+      "unit": "each"
+    },
+    {
+      "id": "vacuum_cleaner",
+      "name": "Vacuum Cleaner",
+      "price": 200,
+      "category": "housing",
+      "source_type": "market_estimate",
+      "unit": "each"
+    },
+    {
+      "id": "microwave",
+      "name": "Microwave Oven",
+      "price": 150,
+      "category": "housing",
+      "source_type": "market_estimate",
+      "unit": "each"
+    },
+    {
+      "id": "toaster",
+      "name": "Toaster",
+      "price": 40,
+      "category": "housing",
+      "source_type": "market_estimate",
+      "unit": "each"
+    },
+    {
+      "id": "coffeemaker",
+      "name": "Coffeemaker (drip, 12-cup)",
+      "price": 60,
+      "category": "housing",
+      "source_type": "market_estimate",
+      "unit": "each"
+    },
+    {
+      "id": "blender",
+      "name": "Blender",
+      "price": 50,
+      "category": "housing",
+      "source_type": "market_estimate",
+      "unit": "each"
+    },
+    {
+      "id": "iron",
+      "name": "Clothes Iron",
+      "price": 35,
+      "category": "housing",
+      "source_type": "market_estimate",
+      "unit": "each"
+    },
+    {
+      "id": "hair_dryer",
+      "name": "Hair Dryer",
+      "price": 30,
+      "category": "housing",
+      "source_type": "market_estimate",
+      "unit": "each"
     },
     {
       "id": "doctor_visit",
@@ -553,7 +849,7 @@
       "name": "Netflix (monthly)",
       "price": 15.5,
       "category": "entertainment",
-      "source_type": "market_estimate",
+      "source_type": "market_price",
       "unit": "monthly"
     },
     {
@@ -561,7 +857,7 @@
       "name": "Spotify (monthly)",
       "price": 11,
       "category": "entertainment",
-      "source_type": "market_estimate",
+      "source_type": "market_price",
       "unit": "monthly"
     },
     {
@@ -907,6 +1203,254 @@
       "category": "childcare",
       "source_type": "market_estimate",
       "unit": "each"
+    },
+    {
+      "id": "dog_food_30lb",
+      "name": "Dog Food (30 lb bag)",
+      "price": 55,
+      "category": "pets",
+      "source_type": "market_estimate",
+      "unit": "per bag"
+    },
+    {
+      "id": "cat_food_15lb",
+      "name": "Cat Food (15 lb bag)",
+      "price": 30,
+      "category": "pets",
+      "source_type": "market_estimate",
+      "unit": "per bag"
+    },
+    {
+      "id": "pet_vet_visit",
+      "name": "Vet Visit (routine checkup)",
+      "price": 65,
+      "category": "pets",
+      "source_type": "market_estimate",
+      "unit": "per visit"
+    },
+    {
+      "id": "pet_vaccinations",
+      "name": "Pet Vaccinations (annual)",
+      "price": 120,
+      "category": "pets",
+      "source_type": "market_estimate",
+      "unit": "per year"
+    },
+    {
+      "id": "pet_flea_treatment",
+      "name": "Flea/Tick Treatment (6-month)",
+      "price": 75,
+      "category": "pets",
+      "source_type": "market_estimate",
+      "unit": "per treatment"
+    },
+    {
+      "id": "pet_toys",
+      "name": "Pet Toys (assorted)",
+      "price": 25,
+      "category": "pets",
+      "source_type": "market_estimate",
+      "unit": "per set"
+    },
+    {
+      "id": "pet_bed",
+      "name": "Pet Bed (medium)",
+      "price": 40,
+      "category": "pets",
+      "source_type": "market_estimate",
+      "unit": "each"
+    },
+    {
+      "id": "pet_crate",
+      "name": "Pet Crate (medium)",
+      "price": 50,
+      "category": "pets",
+      "source_type": "market_estimate",
+      "unit": "each"
+    },
+    {
+      "id": "pet_grooming",
+      "name": "Pet Grooming (basic bath)",
+      "price": 50,
+      "category": "pets",
+      "source_type": "market_estimate",
+      "unit": "per session"
+    },
+    {
+      "id": "pet_boarding_daily",
+      "name": "Pet Boarding (per day)",
+      "price": 40,
+      "category": "pets",
+      "source_type": "market_estimate",
+      "unit": "per day"
+    },
+    {
+      "id": "pet_adoption_fee",
+      "name": "Pet Adoption Fee (shelter)",
+      "price": 150,
+      "category": "pets",
+      "source_type": "market_estimate",
+      "unit": "one-time"
+    },
+    {
+      "id": "haircut_men",
+      "name": "Men's Haircut",
+      "price": 30,
+      "category": "services",
+      "source_type": "market_estimate",
+      "unit": "per cut"
+    },
+    {
+      "id": "haircut_women",
+      "name": "Women's Haircut & Style",
+      "price": 65,
+      "category": "services",
+      "source_type": "market_estimate",
+      "unit": "per cut"
+    },
+    {
+      "id": "manicure",
+      "name": "Manicure",
+      "price": 30,
+      "category": "services",
+      "source_type": "market_estimate",
+      "unit": "per session"
+    },
+    {
+      "id": "massage_hour",
+      "name": "Massage (1 hour)",
+      "price": 100,
+      "category": "services",
+      "source_type": "market_estimate",
+      "unit": "per hour"
+    },
+    {
+      "id": "house_cleaning",
+      "name": "House Cleaning (one-time, 3BR)",
+      "price": 150,
+      "category": "services",
+      "source_type": "market_estimate",
+      "unit": "per visit"
+    },
+    {
+      "id": "lawn_care_monthly",
+      "name": "Lawn Care (monthly)",
+      "price": 100,
+      "category": "services",
+      "source_type": "market_estimate",
+      "unit": "monthly"
+    },
+    {
+      "id": "plumber_visit",
+      "name": "Plumber Visit (1 hour)",
+      "price": 150,
+      "category": "services",
+      "source_type": "market_estimate",
+      "unit": "per visit"
+    },
+    {
+      "id": "electrician_visit",
+      "name": "Electrician Visit (1 hour)",
+      "price": 150,
+      "category": "services",
+      "source_type": "market_estimate",
+      "unit": "per visit"
+    },
+    {
+      "id": "auto_oil_change",
+      "name": "Car Oil Change",
+      "price": 60,
+      "category": "services",
+      "source_type": "market_estimate",
+      "unit": "per change"
+    },
+    {
+      "id": "auto_tire_rotation",
+      "name": "Tire Rotation",
+      "price": 50,
+      "category": "services",
+      "source_type": "market_estimate",
+      "unit": "per service"
+    },
+    {
+      "id": "auto_brake_job",
+      "name": "Brake Job (per axle)",
+      "price": 350,
+      "category": "services",
+      "source_type": "market_estimate",
+      "unit": "per axle"
+    },
+    {
+      "id": "auto_new_tire",
+      "name": "New Tire (all-season)",
+      "price": 150,
+      "category": "services",
+      "source_type": "market_estimate",
+      "unit": "per tire"
+    },
+    {
+      "id": "dry_cleaning_suit",
+      "name": "Dry Cleaning (suit)",
+      "price": 20,
+      "category": "services",
+      "source_type": "market_estimate",
+      "unit": "per suit"
+    },
+    {
+      "id": "laundromat_load",
+      "name": "Laundromat (1 load, wash+dry)",
+      "price": 6,
+      "category": "services",
+      "source_type": "market_estimate",
+      "unit": "per load"
+    },
+    {
+      "id": "postage_stamp",
+      "name": "Postage Stamp (Forever)",
+      "price": 0.68,
+      "category": "services",
+      "source_type": "usps_2026",
+      "unit": "per stamp"
+    },
+    {
+      "id": "bank_fee_monthly",
+      "name": "Bank Monthly Maintenance Fee",
+      "price": 12,
+      "category": "services",
+      "source_type": "market_estimate",
+      "unit": "monthly"
+    },
+    {
+      "id": "credit_card_annual_fee",
+      "name": "Credit Card Annual Fee",
+      "price": 95,
+      "category": "services",
+      "source_type": "market_estimate",
+      "unit": "per year"
+    },
+    {
+      "id": "tax_preparation",
+      "name": "Tax Preparation (professional)",
+      "price": 250,
+      "category": "services",
+      "source_type": "market_estimate",
+      "unit": "per return"
+    },
+    {
+      "id": "legal_consultation",
+      "name": "Legal Consultation (1 hour)",
+      "price": 300,
+      "category": "services",
+      "source_type": "market_estimate",
+      "unit": "per hour"
+    },
+    {
+      "id": "moving_company",
+      "name": "Moving Company (local, 2BR)",
+      "price": 800,
+      "category": "services",
+      "source_type": "market_estimate",
+      "unit": "per move"
     },
     {
       "id": "meal_for_one",
