@@ -1,12 +1,12 @@
 {
-  "last_updated": "2026-06-12T21:21:29.745Z",
+  "last_updated": "2026-06-12T21:24:58.580Z",
   "source": "Live BLS Average Retail Prices (latest month) + curated estimates",
   "source_url": "https://www.bls.gov/regions/mid-atlantic/data/AverageRetailFoodAndEnergyPrices_USandWest_Table.htm",
   "freshness": "live | curated",
   "stats": {
-    "total_items": 286,
+    "total_items": 307,
     "bls_live_items": 11,
-    "curated_items": 275,
+    "curated_items": 296,
     "needs_manual_review": 42,
     "manual_review_ids": [
       "potatoes_lb",
@@ -1104,6 +1104,70 @@
       "unit": "each"
     },
     {
+      "id": "ferrari_296gtb",
+      "name": "Ferrari 296 GTB",
+      "price": 350000,
+      "category": "luxury",
+      "source_type": "market_price",
+      "unit": "each"
+    },
+    {
+      "id": "rolls_royce_ghost",
+      "name": "Rolls-Royce Ghost",
+      "price": 450000,
+      "category": "luxury",
+      "source_type": "market_estimate",
+      "unit": "each"
+    },
+    {
+      "id": "patek_nautilus",
+      "name": "Patek Philippe Nautilus Watch",
+      "price": 250000,
+      "category": "luxury",
+      "source_type": "market_price",
+      "unit": "each"
+    },
+    {
+      "id": "diamond_ring_5ct",
+      "name": "5-Carat Diamond Engagement Ring",
+      "price": 500000,
+      "category": "luxury",
+      "source_type": "market_estimate",
+      "unit": "each"
+    },
+    {
+      "id": "patek_grand_complications",
+      "name": "Patek Philippe Grand Complications",
+      "price": 1500000,
+      "category": "luxury",
+      "source_type": "market_estimate",
+      "unit": "each"
+    },
+    {
+      "id": "luxury_watch_collection",
+      "name": "Curated Luxury Watch Collection (3 watches)",
+      "price": 700000,
+      "category": "luxury",
+      "source_type": "market_estimate",
+      "unit": "per collection"
+    },
+    {
+      "id": "helicopter_r66",
+      "name": "Robinson R66 Helicopter",
+      "price": 975000,
+      "category": "luxury",
+      "source_type": "market_estimate",
+      "unit": "each"
+    },
+    {
+      "id": "aston_martin_db5",
+      "name": "Classic Aston Martin DB5 (1960s)",
+      "price": 2500000,
+      "category": "luxury",
+      "source_type": "market_estimate",
+      "unit": "each"
+    },
+    {
       "id": "bugatti_chiron",
       "name": "Bugatti Chiron",
       "price": 3000000,
@@ -1112,9 +1176,33 @@
       "unit": "each"
     },
     {
+      "id": "artwork_notable",
+      "name": "Original Artwork (Notable Artist)",
+      "price": 8000000,
+      "category": "luxury",
+      "source_type": "market_estimate",
+      "unit": "each"
+    },
+    {
+      "id": "penthouse_nyc",
+      "name": "NYC Luxury Penthouse",
+      "price": 15000000,
+      "category": "luxury",
+      "source_type": "market_estimate",
+      "unit": "each"
+    },
+    {
       "id": "mansion_beverly_hills",
       "name": "Beverly Hills Mansion",
       "price": 30000000,
+      "category": "luxury",
+      "source_type": "market_estimate",
+      "unit": "each"
+    },
+    {
+      "id": "private_island",
+      "name": "Private Island (Caribbean)",
+      "price": 50000000,
       "category": "luxury",
       "source_type": "market_estimate",
       "unit": "each"
@@ -1128,9 +1216,25 @@
       "unit": "each"
     },
     {
+      "id": "art_masterpiece",
+      "name": "Famous Painting (auction avg)",
+      "price": 100000000,
+      "category": "luxury",
+      "source_type": "market_estimate",
+      "unit": "each"
+    },
+    {
       "id": "superyacht",
       "name": "Superyacht (150 ft)",
       "price": 150000000,
+      "category": "luxury",
+      "source_type": "market_estimate",
+      "unit": "each"
+    },
+    {
+      "id": "skyscraper_nyc",
+      "name": "NYC Skyscraper",
+      "price": 2000000000,
       "category": "luxury",
       "source_type": "market_estimate",
       "unit": "each"
@@ -1144,25 +1248,89 @@
       "unit": "each"
     },
     {
-      "id": "private_island",
-      "name": "Private Island (Caribbean)",
-      "price": 50000000,
+      "id": "first_class_rtw",
+      "name": "First-Class Around-the-World Trip for 2",
+      "price": 75000,
+      "category": "luxury",
+      "source_type": "market_estimate",
+      "unit": "per trip"
+    },
+    {
+      "id": "private_chef_year",
+      "name": "Private Chef for a Year",
+      "price": 150000,
+      "category": "luxury",
+      "source_type": "market_estimate",
+      "unit": "per year"
+    },
+    {
+      "id": "custom_wine_cellar",
+      "name": "Custom Wine Cellar (500-bottle)",
+      "price": 200000,
       "category": "luxury",
       "source_type": "market_estimate",
       "unit": "each"
     },
     {
-      "id": "art_masterpiece",
-      "name": "Famous Painting (auction avg)",
-      "price": 100000000,
+      "id": "vintage_bordeaux_set",
+      "name": "Vintage Bordeaux Collection (12 bottles)",
+      "price": 250000,
       "category": "luxury",
       "source_type": "market_estimate",
-      "unit": "each"
+      "unit": "per set"
     },
     {
-      "id": "skyscraper_nyc",
-      "name": "NYC Skyscraper",
-      "price": 2000000000,
+      "id": "rare_scotch_collection",
+      "name": "Rare Scotch Whisky Collection (12 bottles)",
+      "price": 500000,
+      "category": "luxury",
+      "source_type": "market_estimate",
+      "unit": "per set"
+    },
+    {
+      "id": "safari_private_jet",
+      "name": "Luxury African Safari with Private Jet",
+      "price": 150000,
+      "category": "luxury",
+      "source_type": "market_estimate",
+      "unit": "per trip"
+    },
+    {
+      "id": "formula1_paddock",
+      "name": "F1 Paddock Club Weekend for 2",
+      "price": 50000,
+      "category": "luxury",
+      "source_type": "market_estimate",
+      "unit": "per weekend"
+    },
+    {
+      "id": "oceanfront_villa_week",
+      "name": "Malibu Oceanfront Villa (1 week)",
+      "price": 100000,
+      "category": "luxury",
+      "source_type": "market_estimate",
+      "unit": "per week"
+    },
+    {
+      "id": "bespoke_wardrobe",
+      "name": "Bespoke Savile Row Wardrobe",
+      "price": 50000,
+      "category": "luxury",
+      "source_type": "market_estimate",
+      "unit": "per wardrobe"
+    },
+    {
+      "id": "butler_year",
+      "name": "Live-in Butler for a Year",
+      "price": 100000,
+      "category": "luxury",
+      "source_type": "market_estimate",
+      "unit": "per year"
+    },
+    {
+      "id": "home_theater",
+      "name": "Private Home Theater System",
+      "price": 150000,
       "category": "luxury",
       "source_type": "market_estimate",
       "unit": "each"
