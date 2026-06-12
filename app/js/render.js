@@ -25,7 +25,6 @@ const els = {
   savingsComparisonDisplay: $("#savingsComparisonDisplay"),
   cartAfterSavingsDisplay: $("#cartAfterSavingsDisplay"),
   shareStatus: $("#shareStatus"),
-  presetStatus: $("#presetStatus"),
   wealthSourceDisplay: $("#wealthSourceDisplay"),
   itemSourceDisplay: $("#itemSourceDisplay"),
   stickyPerson: $("#stickyPerson"),
@@ -132,10 +131,6 @@ export function setShareStatus(message) {
   els.shareStatus.textContent = message;
   clearTimeout(setShareStatus._tid);
   setShareStatus._tid = setTimeout(() => { els.shareStatus.textContent = ""; }, 2500);
-}
-
-export function setPresetStatus(message) {
-  if (els.presetStatus) els.presetStatus.textContent = message;
 }
 
 // ─── Render: Person selector & details ───
@@ -366,16 +361,6 @@ export function renderReceipt(state) {
     <div class="receipt-barcode"></div>`;
 }
 
-// ─── Render: Preset buttons ───
-export function renderPresetButtons(state) {
-  for (const btn of $$(".presetBtn")) {
-    const isActive = btn.dataset.preset === state.activePreset;
-    btn.style.outline = isActive ? "2px solid currentColor" : "none";
-    btn.style.fontWeight = isActive ? "700" : "400";
-    btn.setAttribute("aria-pressed", isActive ? "true" : "false");
-  }
-}
-
 // ─── Render: Source displays ───
 export function renderSourceDisplays(state) {
   if (els.wealthSourceDisplay && state.dataMeta.wealth) {
@@ -473,7 +458,6 @@ export function updateUI(state) {
   renderPositionComparison(state);
   renderSourceDisplays(state);
   renderReceipt(state);
-  renderPresetButtons(state);
   renderStashStacks(state);
   renderGapMetrics(state);
   highlightActiveSort(state);

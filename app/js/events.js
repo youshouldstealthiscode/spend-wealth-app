@@ -2,8 +2,8 @@
 
 import { playKaching, playSubtleTick } from "./audio.js";
 import { applyPresetBundle, PRESETS } from "./presets.js";
-import { setShareStatus, setPresetStatus } from "./render.js";
-import { renderSearchSuggestions, renderPresetButtons, updateUI, flyBills, renderStashStacks, highlightActiveSort } from "./render.js";
+import { setShareStatus } from "./render.js";
+import { renderSearchSuggestions, updateUI, flyBills, renderStashStacks, highlightActiveSort } from "./render.js";
 import { saveState } from "./state.js";
 import { encodeShareState } from "./utils.js";
 
@@ -100,18 +100,6 @@ export function attachEvents(state, updateUICfg) {
       state.activeCategory = cat;
       saveStateFn(state);
       updateUI(state);
-    });
-  }
-
-  // ─── Preset buttons ───
-  const presetBundles = $("#presetBundles");
-  if (presetBundles) {
-    presetBundles.addEventListener("click", (e) => {
-      const target = e.target;
-      if (!(target instanceof HTMLElement) || !target.classList.contains("presetBtn")) return;
-      const key = target.dataset.preset;
-      if (!key) return;
-      applyPresetBundle(state, key, setPresetStatusFn, renderPresetButtonsFn, saveStateFn, updateUI);
     });
   }
 

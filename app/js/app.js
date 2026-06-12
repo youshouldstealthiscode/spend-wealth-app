@@ -3,7 +3,7 @@
 import { createInitialState, loadState, saveState, resetAppState } from "./state.js";
 import { loadData, fetchExchangeRates } from "./api.js";
 import { applySharedState } from "./utils.js";
-import { updateUI, renderPersonOptions, renderPresetButtons, renderStashStacks, setShareStatus, setPresetStatus } from "./render.js";
+import { updateUI, renderPersonOptions, renderStashStacks, setShareStatus } from "./render.js";
 import { attachEvents } from "./events.js";
 
 async function main() {
@@ -48,8 +48,8 @@ async function main() {
     attachEvents(STATE, {
       saveStateFn: (st) => saveState(st),
       setShareStatusFn: (msg) => setShareStatus(msg),
-      setPresetStatusFn: (msg) => setPresetStatus(msg),
-      renderPresetButtonsFn: (st) => renderPresetButtons(st),
+      setPresetStatusFn: () => {},
+      renderPresetButtonsFn: () => {},
       syncFinanceInputsFn: () => syncFinanceInputsFromState(),
       renderPersonOptionsFn: (st) => renderPersonOptions(st),
       resetAppStateFn: () => resetAppState(STATE, STATE.people),
