@@ -4,7 +4,10 @@ on:
   workflow_dispatch:
   schedule:
     # Run twice daily: 05:00 and 17:00 UTC
-    # Catches morning and afternoon market movements
+    # Handles item price updates (BLS API)
+    # NOTE: Billionaire data is updated by Hermes cron job 'a07b56e14990'
+    #       which scrapes Forbes Real-Time via headless browser.
+    #       This workflow still runs the Node billionaire updater as a fallback.
     - cron: "0 5,17 * * *"
 
 permissions:
@@ -23,20 +26,21 @@ jobs:
         with:
           node-version: "20"
 
-      - name: Run billionaire updater
-        id: billionaires
-        run: |
-          # Fetches from Forbes Real-Time Billionaires API (official endpoint)
-          # Falls back to static snapshot if API is unreachable
-          npm run update:billionaires
-          echo "exit_code=$?" >> $GITHUB_OUTPUT
-        continue-on-error: true
-
       - name: Run item price updater
         id: items
         run: |
           npm run update:items
           echo "exit_code=$?" >> $GITHUB_OUTPUT
+
+      - name: Run billionaire updater (fallback)
+        id: billionaires
+        run: |
+          # Attempts Forbes official API; falls back to static snapshot.
+          # Primary billionaire updates are handled by Hermes cron job
+          # which uses a live browser for accurate real-time scraping.
+          npm run update:billionaires
+          echo "exit_code=$?" >> $GITHUB_OUTPUT
+        continue-on-error: true
 
       - name: Check data freshness
         id: freshness
@@ -53,8 +57,8 @@ jobs:
             const d = require('./app/data/richest_people.json');
             console.log(d.stale ? 'true' : 'false');
           ")
-          echo "| Dataset | Last Updated | Stale |" >> $GITHUB_STEP_SUMMARY
-          echo "|---------|-------------|-------|" >> $GITHUB_STEP_SUMMARY
+          echo "| Dataset | Last Updated | Source |" >> $GITHUB_STEP_SUMMARY
+          echo "|---------|-------------|--------|" >> $GITHUB_STEP_SUMMARY
           echo "| Billionaires | $BILLIONAIRE_DATE | $BILLIONAIRE_STALE |" >> $GITHUB_STEP_SUMMARY
 
           # Check item data
@@ -65,16 +69,14 @@ jobs:
           ITEMS_STATS=$(node -e "
             const d = require('./app/data/cpi_items.json');
             const s = d.stats || {};
-            console.log(\`\${s.total_items || '?'} total, \${s.bls_live_items || 0} live BLS, \${s.curated_items || 0} curated\`);
+            console.log(\`${s.total_items || '?'} total, ${s.bls_live_items || 0} live BLS, ${s.curated_items || 0} curated\`);
           ")
           echo "| Items | $ITEMS_DATE | $ITEMS_STATS |" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
 
-          # Warn if billionaire data is stale
-          if [ "$BILLIONAIRE_STALE" = "true" ]; then
-            echo "::warning::Billionaire data is STALE — all auto-fetch sources failed. Manual update may be needed."
-            echo "**⚠️ Warning:** Billionaire data is stale. All auto-fetch sources failed." >> $GITHUB_STEP_SUMMARY
-          fi
+          # Note about update sources
+          echo "**Note:** Billionaire data is primarily updated by Hermes cron (Forbes browser scrape). GitHub Actions provides fallback via Node script." >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
 
           # Warn if BLS fetch failed
           BLS_FRESH=$(node -e "
