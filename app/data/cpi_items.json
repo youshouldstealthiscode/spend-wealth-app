@@ -1,5 +1,5 @@
 {
-  "last_updated": "2026-06-12T21:24:58.580Z",
+  "last_updated": "2026-06-12T23:27:43.127Z",
   "source": "Live BLS Average Retail Prices (latest month) + curated estimates",
   "source_url": "https://www.bls.gov/regions/mid-atlantic/data/AverageRetailFoodAndEnergyPrices_USandWest_Table.htm",
   "freshness": "live | curated",
@@ -890,23 +890,23 @@
     {
       "id": "movie_ticket",
       "name": "Movie Ticket",
-      "price": 15,
+      "price": 16,
       "category": "entertainment",
       "source_type": "market_estimate",
       "unit": "per ticket"
     },
     {
       "id": "netflix_monthly",
-      "name": "Netflix (monthly)",
-      "price": 15.5,
+      "name": "Netflix (Standard, monthly)",
+      "price": 19.99,
       "category": "entertainment",
       "source_type": "market_price",
       "unit": "monthly"
     },
     {
       "id": "spotify_monthly",
-      "name": "Spotify (monthly)",
-      "price": 11,
+      "name": "Spotify Premium (monthly)",
+      "price": 12.99,
       "category": "entertainment",
       "source_type": "market_price",
       "unit": "monthly"
@@ -961,16 +961,16 @@
     },
     {
       "id": "hulu_monthly",
-      "name": "Hulu (monthly, no ads)",
-      "price": 18,
+      "name": "Hulu (No Ads, monthly)",
+      "price": 18.99,
       "category": "entertainment",
       "source_type": "market_price",
       "unit": "monthly"
     },
     {
       "id": "disney_plus_monthly",
-      "name": "Disney+ (monthly)",
-      "price": 10,
+      "name": "Disney+ Premium (monthly)",
+      "price": 19,
       "category": "entertainment",
       "source_type": "market_price",
       "unit": "monthly"
@@ -1138,9 +1138,9 @@
     {
       "id": "patek_grand_complications",
       "name": "Patek Philippe Grand Complications",
-      "price": 1500000,
+      "price": 350000,
       "category": "luxury",
-      "source_type": "market_estimate",
+      "source_type": "market_price",
       "unit": "each"
     },
     {
@@ -1154,17 +1154,17 @@
     {
       "id": "helicopter_r66",
       "name": "Robinson R66 Helicopter",
-      "price": 975000,
+      "price": 1400000,
       "category": "luxury",
-      "source_type": "market_estimate",
+      "source_type": "market_price",
       "unit": "each"
     },
     {
       "id": "aston_martin_db5",
       "name": "Classic Aston Martin DB5 (1960s)",
-      "price": 2500000,
+      "price": 650000,
       "category": "luxury",
-      "source_type": "market_estimate",
+      "source_type": "market_price",
       "unit": "each"
     },
     {
@@ -1289,18 +1289,18 @@
     },
     {
       "id": "safari_private_jet",
-      "name": "Luxury African Safari with Private Jet",
-      "price": 150000,
+      "name": "Ultra-Luxury African Safari for 2",
+      "price": 350000,
       "category": "luxury",
-      "source_type": "market_estimate",
+      "source_type": "market_price",
       "unit": "per trip"
     },
     {
       "id": "formula1_paddock",
       "name": "F1 Paddock Club Weekend for 2",
-      "price": 50000,
+      "price": 15000,
       "category": "luxury",
-      "source_type": "market_estimate",
+      "source_type": "market_price",
       "unit": "per weekend"
     },
     {
@@ -1970,9 +1970,9 @@
     {
       "id": "pet_lifetime_dog",
       "name": "Buy & Support a Dog for Its Lifetime",
-      "price": 25000,
+      "price": 32000,
       "category": "community",
-      "source_type": "market_2026",
+      "source_type": "akc_2026",
       "unit": "one-time"
     },
     {
