@@ -1,12 +1,12 @@
 {
-  "last_updated": "2026-06-12T17:42:13.865Z",
+  "last_updated": "2026-06-12T21:15:12.135Z",
   "source": "Live BLS Average Retail Prices (latest month) + curated estimates",
   "source_url": "https://www.bls.gov/regions/mid-atlantic/data/AverageRetailFoodAndEnergyPrices_USandWest_Table.htm",
   "freshness": "live | curated",
   "stats": {
-    "total_items": 271,
+    "total_items": 269,
     "bls_live_items": 11,
-    "curated_items": 260,
+    "curated_items": 258,
     "needs_manual_review": 42,
     "manual_review_ids": [
       "potatoes_lb",
@@ -2064,14 +2064,6 @@
       "unit": "one-time"
     },
     {
-      "id": "universal_healthcare_us_1yr",
-      "name": "Universal Healthcare US (1 year)",
-      "price": 3800000000000,
-      "category": "social_impact",
-      "source_type": "peri_2023",
-      "unit": "per year"
-    },
-    {
       "id": "affordable_housing_us_gap",
       "name": "Close US Affordable Housing Gap",
       "price": 150000000000,
@@ -2117,14 +2109,6 @@
       "price": 300000000000,
       "category": "social_impact",
       "source_type": "wef_2024",
-      "unit": "one-time"
-    },
-    {
-      "id": "forgive_all_student_loans",
-      "name": "Forgive All US Student Loans",
-      "price": 1770000000000,
-      "category": "social_impact",
-      "source_type": "federal_reserve",
       "unit": "one-time"
     },
     {

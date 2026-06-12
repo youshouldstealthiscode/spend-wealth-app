@@ -1,5 +1,5 @@
 {
-  "last_updated": "2026-06-12T17:42:12.929Z",
+  "last_updated": "2026-06-12T21:15:11.110Z",
   "source": "Forbes Real-Time Billionaires (official API)",
   "source_url": "https://www.forbes.com/real-time-billionaires/",
   "stale": false,
@@ -8,7 +8,7 @@
       "id": "elon-musk",
       "rank": 1,
       "name": "Elon Musk",
-      "net_worth": 1173865987000,
+      "net_worth": 1120389387000,
       "country": "",
       "company": "Tesla, SpaceX"
     },
@@ -16,7 +16,7 @@
       "id": "larry-page",
       "rank": 2,
       "name": "Larry Page",
-      "net_worth": 296412613000,
+      "net_worth": 294083626000,
       "country": "",
       "company": "Google"
     },
@@ -24,7 +24,7 @@
       "id": "sergey-brin",
       "rank": 3,
       "name": "Sergey Brin",
-      "net_worth": 273393100000,
+      "net_worth": 271251891000,
       "country": "",
       "company": "Google"
     },
@@ -32,7 +32,7 @@
       "id": "jeff-bezos",
       "rank": 4,
       "name": "Jeff Bezos",
-      "net_worth": 247668573000,
+      "net_worth": 248928887000,
       "country": "",
       "company": "Amazon"
     },
@@ -40,7 +40,7 @@
       "id": "larry-ellison",
       "rank": 5,
       "name": "Larry Ellison",
-      "net_worth": 229621658000,
+      "net_worth": 231495357000,
       "country": "",
       "company": "Oracle"
     },
@@ -48,7 +48,7 @@
       "id": "michael-dell",
       "rank": 6,
       "name": "Michael Dell",
-      "net_worth": 226884656000,
+      "net_worth": 225015481000,
       "country": "",
       "company": "Dell Technologies"
     },
@@ -56,7 +56,7 @@
       "id": "mark-zuckerberg",
       "rank": 7,
       "name": "Mark Zuckerberg",
-      "net_worth": 194972261000,
+      "net_worth": 194768821000,
       "country": "",
       "company": "Facebook"
     },
@@ -64,7 +64,7 @@
       "id": "jensen-huang",
       "rank": 8,
       "name": "Jensen Huang",
-      "net_worth": 177217463000,
+      "net_worth": 177379079000,
       "country": "",
       "company": "Semiconductors"
     },
@@ -72,7 +72,7 @@
       "id": "bernard-arnault-family",
       "rank": 9,
       "name": "Bernard Arnault & family",
-      "net_worth": 156842587000,
+      "net_worth": 156838444000,
       "country": "",
       "company": "LVMH"
     },
@@ -80,7 +80,7 @@
       "id": "warren-buffett",
       "rank": 10,
       "name": "Warren Buffett",
-      "net_worth": 143769851000,
+      "net_worth": 144468733000,
       "country": "",
       "company": "Berkshire Hathaway"
     }

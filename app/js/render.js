@@ -53,7 +53,6 @@ const els = {
   gapCountYears: $("#gapCountYears"),
   gapWorldHunger: $("#gapWorldHunger"),
   gapSchools: $("#gapSchools"),
-  gapStudentLoans: $("#gapStudentLoans"),
   gapHomeless: $("#gapHomeless"),
   gapDailyIncome: $("#gapDailyIncome"),
 };
@@ -571,15 +570,6 @@ export function renderGapMetrics(state) {
     const times = wealth / schoolsCost;
     els.gapSchools.textContent = times >= 1
       ? times.toFixed(1) + "×"
-      : "Not enough";
-  }
-
-  // Student loans ($1.77T)
-  if (els.gapStudentLoans) {
-    const loanCost = 1770000000000;
-    const times = wealth / loanCost;
-    els.gapStudentLoans.textContent = times >= 1
-      ? times.toFixed(2) + "×"
       : "Not enough";
   }
 
