@@ -260,9 +260,15 @@ export function renderWorkTime(state) {
   if (!els.workTime || !els.timeEquivalents) return;
   const { hoursToAffordCart, yearsToAffordCart } = getDerivedMetrics(state);
   const { hourlyWage } = state.userFinance;
+  const { total } = getDerivedMetrics(state);
   if (!hourlyWage || hourlyWage <= 0) {
     els.workTime.textContent = "--";
     els.timeEquivalents.textContent = "--";
+    return;
+  }
+  if (total <= 0) {
+    els.workTime.innerHTML = `<div><strong>Work required:</strong></div><div style="opacity:0.7;">Add items to your cart to see</div>`;
+    els.timeEquivalents.innerHTML = `<div><strong>Equivalent to:</strong></div><div style="opacity:0.7;">Cart is empty — try clicking items above</div>`;
     return;
   }
   els.workTime.innerHTML = `
@@ -312,8 +318,10 @@ export function renderStickySummary(state) {
 
   // Work time
   if (els.stickyWork) {
-    if (hourlyWage > 0) {
+    if (hourlyWage > 0 && total > 0) {
       els.stickyWork.textContent = yearsToAffordCart.toFixed(2) + " yrs work";
+    } else if (hourlyWage > 0 && total <= 0) {
+      els.stickyWork.textContent = "---";
     } else {
       els.stickyWork.textContent = "--";
     }
