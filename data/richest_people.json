@@ -1,88 +1,108 @@
 {
-  "last_updated": "2026-04-24T20:18:57.504Z",
-  "source": "Forbes Real-Time Billionaires (via rtb-api, auto-updated)",
-  "source_url": "https://realtimebillionaires.de",
-  "api_date": "2026-03-31",
+  "last_updated": "2026-06-12T00:00:00.000Z",
+  "source": "Forbes Real-Time Billionaires (manual update, June 2026)",
+  "source_url": "https://www.forbes.com/real-time-billionaires/",
+  "api_date": "2026-06-01",
   "people": [
     {
       "id": "elon-musk",
       "rank": 1,
       "name": "Elon Musk",
-      "net_worth": 816979229000,
+      "net_worth": 835000000000,
       "company": "Tesla, SpaceX",
-      "country": "US"
+      "country": "United States",
+      "daily_change_pct": 0.154,
+      "daily_change_usd": 1211921000
     },
     {
       "id": "larry-page",
       "rank": 2,
       "name": "Larry Page",
-      "net_worth": 238011382000,
+      "net_worth": 309000000000,
       "company": "Google",
-      "country": "US"
+      "country": "United States",
+      "daily_change_pct": -0.013,
+      "daily_change_usd": -4000000000
+    },
+    {
+      "id": "sergey-brin",
+      "rank": 3,
+      "name": "Sergey Brin",
+      "net_worth": 285000000000,
+      "company": "Google",
+      "country": "United States",
+      "daily_change_pct": -0.014,
+      "daily_change_usd": -4000000000
     },
     {
       "id": "jeff-bezos",
-      "rank": 3,
-      "name": "Jeff Bezos",
-      "net_worth": 222215811000,
-      "company": "Amazon",
-      "country": "US"
-    },
-    {
-      "id": "sergey-jr-brin",
       "rank": 4,
-      "name": "Sergey Jr Brin",
-      "net_worth": 219702344000,
-      "company": "Google",
-      "country": "US"
-    },
-    {
-      "id": "mark-zuckerberg",
-      "rank": 5,
-      "name": "Mark Zuckerberg",
-      "net_worth": 196515013000,
-      "company": "Facebook",
-      "country": "US"
+      "name": "Jeff Bezos",
+      "net_worth": 277000000000,
+      "company": "Amazon",
+      "country": "United States",
+      "daily_change_pct": 0.018,
+      "daily_change_usd": 5000000000
     },
     {
       "id": "larry-ellison",
-      "rank": 6,
+      "rank": 5,
       "name": "Larry Ellison",
-      "net_worth": 188675149000,
+      "net_worth": 276000000000,
       "company": "Oracle",
-      "country": "US"
-    },
-    {
-      "id": "jensen-huang",
-      "rank": 7,
-      "name": "Jensen Huang",
-      "net_worth": 151188864000,
-      "company": "Semiconductors",
-      "country": "US"
+      "country": "United States",
+      "daily_change_pct": 0.209,
+      "daily_change_usd": 47670000000
     },
     {
       "id": "michael-dell",
-      "rank": 8,
+      "rank": 6,
       "name": "Michael Dell",
-      "net_worth": 143533768000,
+      "net_worth": 244000000000,
       "company": "Dell Technologies",
-      "country": "US"
+      "country": "United States",
+      "daily_change_pct": 0.275,
+      "daily_change_usd": 52700000000
     },
     {
-      "id": "rob-walton",
-      "rank": 9,
-      "name": "Rob Walton & family",
-      "net_worth": 142689289000,
-      "company": "Walmart",
-      "country": "US"
+      "id": "mark-zuckerberg",
+      "rank": 7,
+      "name": "Mark Zuckerberg",
+      "net_worth": 217000000000,
+      "company": "Meta",
+      "country": "United States",
+      "daily_change_pct": 0.033,
+      "daily_change_usd": 7000000000
+    },
+    {
+      "id": "jensen-huang",
+      "rank": 8,
+      "name": "Jensen Huang",
+      "net_worth": 182000000000,
+      "company": "Nvidia",
+      "country": "United States",
+      "daily_change_pct": 0.052,
+      "daily_change_usd": 9000000000
     },
     {
       "id": "bernard-arnault",
-      "rank": 10,
+      "rank": 9,
       "name": "Bernard Arnault & family",
-      "net_worth": 142524030000,
+      "net_worth": 148000000000,
       "company": "LVMH",
-      "country": "FR"
+      "country": "France",
+      "daily_change_pct": 0.035,
+      "daily_change_usd": 5000000000
+    },
+    {
+      "id": "steve-ballmer",
+      "rank": 10,
+      "name": "Steve Ballmer",
+      "net_worth": 141000000000,
+      "company": "Microsoft",
+      "country": "United States",
+      "daily_change_pct": 0.085,
+      "daily_change_usd": 11000000000
     }
   ]
 }

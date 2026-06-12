@@ -67,6 +67,9 @@ let STATE = {
 	customItems: [
 		{ id: "custom_1", name: "", price: 0 },
 		{ id: "custom_2", name: "", price: 0 },
+		{ id: "custom_3", name: "", price: 0 },
+		{ id: "custom_4", name: "", price: 0 },
+		{ id: "custom_5", name: "", price: 0 },
 	],
 };
 
@@ -258,9 +261,11 @@ function formatCurrency(amount) {
 		return symbol + Math.round(converted).toLocaleString("en-US");
 	}
 
+	// Use 2 decimal places for small amounts so sub-$1 prices don't show as $0
+	const useCents = converted < 10;
 	return symbol + converted.toLocaleString("en-US", {
-		minimumFractionDigits: 0,
-		maximumFractionDigits: 0,
+		minimumFractionDigits: useCents ? 2 : 0,
+		maximumFractionDigits: useCents ? 2 : 0,
 	});
 }
 
@@ -354,8 +359,18 @@ function loadState() {
 		if (typeof parsed.soundEnabled === "boolean") STATE.soundEnabled = parsed.soundEnabled;
 		if (parsed.activePreset) STATE.activePreset = parsed.activePreset;
 		if (parsed.selectedCurrency) STATE.selectedCurrency = parsed.selectedCurrency;
-		if (Array.isArray(parsed.customItems) && parsed.customItems.length === 2) {
-			STATE.customItems = parsed.customItems;
+		if (Array.isArray(parsed.customItems)) {
+			// Merge saved custom items with default slots (up to 5)
+			const merged = [];
+			for (let i = 0; i < 5; i++) {
+				const saved = parsed.customItems[i];
+				if (saved) {
+					merged.push(saved);
+				} else {
+					merged.push({ id: `custom_${i + 1}`, name: "", price: 0 });
+				}
+			}
+			STATE.customItems = merged;
 		}
 	} catch (e) {
 		console.warn("Failed to load state", e);
@@ -722,7 +737,13 @@ function renderPersonOptions() {
 	for (const person of STATE.people) {
 		const option = document.createElement("option");
 		option.value = person.id;
-		option.textContent = `#${person.rank} ${person.name} — ${moneyFormatter.format(person.net_worth)}`;
+		let changeLabel = "";
+		if (typeof person.daily_change_pct === "number") {
+			const pct = (person.daily_change_pct * 100).toFixed(2);
+			const sign = person.daily_change_pct >= 0 ? "↑" : "↓";
+			changeLabel = ` ${sign}${pct}%`;
+		}
+		option.textContent = `#${person.rank} ${person.name}${changeLabel} — ${moneyFormatter.format(person.net_worth)}`;
 		personSelectEl.appendChild(option);
 	}
 
