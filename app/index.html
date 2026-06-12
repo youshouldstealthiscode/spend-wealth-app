@@ -20,13 +20,17 @@
         </div>
       </div>
     </div>
+
+    <!-- Sticky bar — follows scroll -->
     <div id="stickySummary" class="panel sticky-summary">
-  <div><strong>Selected:</strong> <span id="stickyPerson">--</span></div>
-  <div><strong>Total:</strong> <span id="stickyTotal">$0</span></div>
-  <div><strong>Remaining:</strong> <span id="stickyRemaining">$0</span></div>
-  <div><strong>Percent:</strong> <span id="stickyPercent">--</span></div>
-  <div><strong>Work Time:</strong> <span id="stickyWorkTime">--</span></div>
-</div>
+      <div><strong>Selected:</strong> <span id="stickyPerson">--</span></div>
+      <div><strong>Spent:</strong> <span id="stickyTotal">$0</span></div>
+      <div><strong>Left:</strong> <span id="stickyRemaining">$0</span></div>
+      <div><strong>%:</strong> <span id="stickyPercent">--</span></div>
+      <div><strong>→ Wealth:</strong> <span id="stickyYearsToWealth">--</span></div>
+      <div><strong>Work:</strong> <span id="stickyWorkTime">--</span></div>
+    </div>
+
     <div class="panel action-bar">
       <button type="button" id="resetAppBtn">Reset</button>
       <button type="button" id="shareResultsBtn">📤 Share</button>
@@ -53,191 +57,154 @@
       <button type="button" id="scrollToSources" title="Jump to data sources">📄 Sources ↓</button>
       <span id="shareStatus" class="muted">&nbsp;</span>
     </div>
-      <h1 class="hero-title">Spend Wealth App</h1>
-      <div class="panel panel-subtle" style="margin-top: -0.5rem; margin-bottom: 1.5rem;">
-        <p style="font-size: 0.85rem; line-height: 1.6; margin: 0; color: var(--muted);">
-          <span style="color: var(--accent-2); font-weight: 600;">One person on this page</span> has more wealth than the bottom 50% of Americans combined.
-          Their money earns more in <em>interest while you sleep</em> than you'll make in a lifetime.
-          Try to spend it. You can't.
-        </p>
-      </div>
 
-      <div class="panel">
-        <h2>Select a person</h2>
-        <label for="personSelect">Choose whose wealth to spend:</label>
-        <br /><br />
-        <select id="personSelect"></select>
-        <div id="personDetails" style="margin-top: 1rem;"></div>
-      </div>
+    <h1 class="hero-title">Spend Wealth App</h1>
+    <div class="panel panel-subtle" style="margin-top: -0.5rem; margin-bottom: 1.5rem;">
+      <p style="font-size: 0.85rem; line-height: 1.6; margin: 0; color: var(--muted);">
+        <span style="color: var(--accent-2); font-weight: 600;">One person on this page</span> has more wealth than the bottom 50% of Americans combined.
+        Their money earns more in <em>interest while you sleep</em> than you'll make in a lifetime.
+        Try to spend it. You can't.
+      </p>
+    </div>
 
-      <!-- Your Income — at the top so you see it first -->
-      <div class="panel">
-        <h2>Your Income</h2>
-        <div class="grid" style="grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));">
-          <label>
-            Hourly wage
-            <input id="wage" type="number" min="0" step="0.01" placeholder="20" style="width: 100%; margin-top: 0.35rem;" />
-          </label>
-          <label>
-            Hours per week
-            <input id="hoursPerWeek" type="number" min="0" step="1" value="40" style="width: 100%; margin-top: 0.35rem;" />
-          </label>
-          <label>
-            Weeks per year
-            <input id="weeksPerYear" type="number" min="0" step="1" value="52" style="width: 100%; margin-top: 0.35rem;" />
-          </label>
-          <label>
-            Current savings
-            <input id="savings" type="number" min="0" step="0.01" placeholder="0" style="width: 100%; margin-top: 0.35rem;" />
-          </label>
+    <div class="panel">
+      <h2>Select a person</h2>
+      <label for="personSelect">Choose whose wealth to spend:</label>
+      <br /><br />
+      <select id="personSelect"></select>
+      <div id="personDetails" style="margin-top: 1rem;"></div>
+    </div>
+
+    <!-- Your Income -->
+    <div class="panel">
+      <h2>Your Income</h2>
+      <div class="grid" style="grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));">
+        <label>Hourly wage <input id="wage" type="number" min="0" step="0.01" placeholder="20" style="width: 100%; margin-top: 0.35rem;" /></label>
+        <label>Hours per week <input id="hoursPerWeek" type="number" min="0" step="1" value="40" style="width: 100%; margin-top: 0.35rem;" /></label>
+        <label>Weeks per year <input id="weeksPerYear" type="number" min="0" step="1" value="52" style="width: 100%; margin-top: 0.35rem;" /></label>
+        <label>Current savings <input id="savings" type="number" min="0" step="0.01" placeholder="0" style="width: 100%; margin-top: 0.35rem;" /></label>
+      </div>
+      <div id="workTime" style="margin-top: 1rem;">--</div>
+      <div id="timeEquivalents" style="margin-top: 0.75rem;">--</div>
+    </div>
+
+    <!-- Your Position — condensed 2 columns -->
+    <div class="panel">
+      <h2>Your Position vs Their Wealth</h2>
+      <div class="grid position-grid">
+        <div>
+          <strong>Your annual income</strong>
+          <div id="annualIncomeDisplay" style="margin-top: 0.35rem;">--</div>
         </div>
-        <div id="workTime" style="margin-top: 1rem;">--</div>
-        <div id="timeEquivalents" style="margin-top: 0.75rem;">--</div>
-      </div>
-
-      <!-- Your Position vs the selected person — 4 columns -->
-      <div class="panel">
-        <h2>Your Position vs Their Wealth</h2>
-        <div class="grid position-grid">
-          <div>
-            <strong>Your annual income</strong>
-            <div id="annualIncomeDisplay" style="margin-top: 0.35rem;">--</div>
-          </div>
-          <div>
-            <strong>Years to reach their wealth</strong>
-            <div id="yearsToWealthDisplay" style="margin-top: 0.35rem;">--</div>
-          </div>
-          <div>
-            <strong>Cart cost vs your savings</strong>
-            <div id="savingsComparisonDisplay" style="margin-top: 0.35rem;">--</div>
-          </div>
-          <div>
-            <strong>Years to afford this cart after savings</strong>
-            <div id="cartAfterSavingsDisplay" style="margin-top: 0.35rem;">--</div>
-          </div>
+        <div>
+          <strong>Years to reach their wealth</strong>
+          <div id="yearsToWealthDisplay" style="margin-top: 0.35rem;">--</div>
+        </div>
+        <div>
+          <strong>Cart cost vs savings</strong>
+          <div id="savingsComparisonDisplay" style="margin-top: 0.35rem;">--</div>
+        </div>
+        <div>
+          <strong>Afford this cart (after savings)</strong>
+          <div id="cartAfterSavingsDisplay" style="margin-top: 0.35rem;">--</div>
         </div>
       </div>
+    </div>
 
-      <!-- Gap metrics — what this wealth can actually do -->
-      <div class="panel" id="gapMetricsPanel">
-        <h2>🌍 What Could This Wealth Actually Do?</h2>
-        <p class="muted" style="margin-bottom: 0.75rem;">Real-cost estimates from UN, US government, and research organizations.</p>
-        <div class="grid" style="grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 0.75rem;">
-          <div class="gap-card">
-            <div class="gap-label">Billionaire-seconds to earn your hourly wage</div>
-            <div id="gapBillionaireSeconds" class="gap-value">--</div>
-          </div>
-          <div class="gap-card">
-            <div class="gap-label">Your lifetime income vs their net worth</div>
-            <div id="gapLifetimeRatio" class="gap-value">--</div>
-          </div>
-          <div class="gap-card">
-            <div class="gap-label">People needed to match their wealth</div>
-            <div id="gapPeopleNeeded" class="gap-value">--</div>
-          </div>
-          <div class="gap-card">
-            <div class="gap-label">Years to count their wealth at $1/sec</div>
-            <div id="gapCountYears" class="gap-value">--</div>
-          </div>
-          <div class="gap-card">
-            <div class="gap-label">Times they could solve world hunger (1yr)</div>
-            <div id="gapWorldHunger" class="gap-value">--</div>
-          </div>
-          <div class="gap-card">
-            <div class="gap-label">Times they could fund all US schools (1yr)</div>
-            <div id="gapSchools" class="gap-value">--</div>
-          </div>
-          <div class="gap-card">
-            <div class="gap-label">Times they could forgive all US student loans</div>
-            <div id="gapStudentLoans" class="gap-value">--</div>
-          </div>
-          <div class="gap-card">
-            <div class="gap-label">End homelessness in the US (years)</div>
-            <div id="gapHomeless" class="gap-value">--</div>
-          </div>
-          <div class="gap-card">
-            <div class="gap-label">Daily income vs yours (at work hours)</div>
-            <div id="gapDailyIncome" class="gap-value">--</div>
-          </div>
-        </div>
+    <!-- Gap metrics -->
+    <div class="panel" id="gapMetricsPanel">
+      <h2>🌍 What Could This Wealth Actually Do?</h2>
+      <p class="muted" style="margin-bottom: 0.75rem;">Real-cost estimates from UN, US government, and research organizations.</p>
+      <div class="grid" style="grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 0.75rem;">
+        <div class="gap-card"><div class="gap-label">Billionaire-seconds to earn your hourly wage</div><div id="gapBillionaireSeconds" class="gap-value">--</div></div>
+        <div class="gap-card"><div class="gap-label">Your lifetime income vs their net worth</div><div id="gapLifetimeRatio" class="gap-value">--</div></div>
+        <div class="gap-card"><div class="gap-label">People needed to match their wealth</div><div id="gapPeopleNeeded" class="gap-value">--</div></div>
+        <div class="gap-card"><div class="gap-label">Years to count their wealth at $1/sec</div><div id="gapCountYears" class="gap-value">--</div></div>
+        <div class="gap-card"><div class="gap-label">Times they could solve world hunger (1yr)</div><div id="gapWorldHunger" class="gap-value">--</div></div>
+        <div class="gap-card"><div class="gap-label">Times they could fund all US schools (1yr)</div><div id="gapSchools" class="gap-value">--</div></div>
+        <div class="gap-card"><div class="gap-label">Times they could forgive all US student loans</div><div id="gapStudentLoans" class="gap-value">--</div></div>
+        <div class="gap-card"><div class="gap-label">End homelessness in the US (years)</div><div id="gapHomeless" class="gap-value">--</div></div>
+        <div class="gap-card"><div class="gap-label">Daily income vs yours</div><div id="gapDailyIncome" class="gap-value">--</div></div>
+      </div>
+    </div>
+
+    <!-- Items — full width with compact stats bar -->
+    <div class="panel">
+      <h2>Items</h2>
+
+      <!-- Compact stats bar — single horizontal row -->
+      <div id="statsBar" class="stats-bar">
+        <span><strong>Spent:</strong> <span id="totalCompact">$0</span></span>
+        <span class="stat-sep">|</span>
+        <span><strong>%:</strong> <span id="percentCompact">--</span></span>
+        <span class="stat-sep">|</span>
+        <span><strong>Left:</strong> <span id="remainingCompact">$0</span></span>
+        <span class="stat-sep">|</span>
+        <span><strong>1 in X:</strong> <span id="fractionCompact">--</span></span>
+        <span class="stat-sep">|</span>
+        <span id="progressCompact" class="mini-bar-wrap"><span id="miniProgress" class="mini-bar" style="width:0%"></span></span>
       </div>
 
-      <!-- Full-width items section -->
-      <div class="panel">
-        <h2>Items</h2>
-        <div id="totalBar" class="panel panel-subtle">
-          Total Spent: $0
-        </div>
-        <div id="wealthStats" class="panel panel-subtle">
-          <div><strong>Percent of wealth:</strong> --</div>
-          <div><strong>Remaining:</strong> --</div>
-          <div><strong>Fraction:</strong> --</div>
-          <div style="margin-top:10px;">
-            <div style="height:20px;background:#ddd;border-radius:10px;overflow:hidden;">
-              <div id="progressBar" style="height:100%;width:0%;background:#4caf50;"></div>
-            </div>
-          </div>
-        </div>
-        <div class="panel panel-subtle">
-          <h2>Filters</h2>
-          <div id="categoryFilters" class="filters-row">
-            <button type="button" class="filterBtn" data-category="all">All</button>
-            <button type="button" class="filterBtn" data-category="essentials">Essentials</button>
-            <button type="button" class="filterBtn" data-category="housing">Housing</button>
-            <button type="button" class="filterBtn" data-category="health">Health</button>
-            <button type="button" class="filterBtn" data-category="education">Education</button>
-            <button type="button" class="filterBtn" data-category="stability">Stability</button>
-            <button type="button" class="filterBtn" data-category="transportation">Transportation</button>
-            <button type="button" class="filterBtn" data-category="entertainment">Entertainment</button>
-            <button type="button" class="filterBtn" data-category="tech">Tech</button>
-            <button type="button" class="filterBtn" data-category="clothing">Clothing</button>
-            <button type="button" class="filterBtn" data-category="personal">Personal</button>
-            <button type="button" class="filterBtn" data-category="childcare">👶 Childcare</button>
-            <button type="button" class="filterBtn" data-category="pets">🐾 Pets</button>
-            <button type="button" class="filterBtn" data-category="services">🔧 Services</button>
-            <button type="button" class="filterBtn" data-category="parents">👶 Parents</button>
-            <button type="button" class="filterBtn" data-category="students">📚 Students</button>
-            <button type="button" class="filterBtn" data-category="teens">🧑 Teens</button>
-            <button type="button" class="filterBtn" data-category="elderly">🧓 Elderly</button>
-            <button type="button" class="filterBtn" data-category="social_impact">🌍 Social Impact</button>
-          </div>
-        </div>
-        <div class="panel panel-subtle" style="padding: 0.5rem 0.7rem;">
-          <input id="searchInput" type="text" placeholder="Search items..." autocomplete="off" style="margin: 0;" />
-          <div id="searchSuggestions" class="search-suggestions" style="display: none;"></div>
-        </div>
-        <div class="sort-row">
-          <span class="sort-label">Sort:</span>
-          <button type="button" class="sortBtn" data-sort="default">Default</button>
-          <button type="button" class="sortBtn" data-sort="name-asc">Name ↑</button>
-          <button type="button" class="sortBtn" data-sort="name-desc">Name ↓</button>
-          <button type="button" class="sortBtn" data-sort="price-asc">Price ↑</button>
-          <button type="button" class="sortBtn" data-sort="price-desc">Price ↓</button>
-        </div>
-        <div id="itemsCount" class="muted"></div>
-        <div id="itemsGrid" class="grid" style="margin-top: 0.5rem;"></div>
-      </div>
-
-      <div id="receipt" class="panel receipt-panel"></div>
-
-      <div class="panel" id="sourcesPanel">
-        <h2>Sources & Data Status</h2>
-        <div class="grid" style="grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));">
-          <div>
-            <strong>Wealth data</strong>
-            <div id="wealthSourceDisplay" class="muted" style="margin-top: 0.35rem;">--</div>
-          </div>
-          <div>
-            <strong>Item data</strong>
-            <div id="itemSourceDisplay" class="muted" style="margin-top: 0.35rem;">--</div>
-          </div>
-          <div>
-            <strong>Status</strong>
-            <div id="status" class="muted" style="margin-top: 0.35rem;">Loading...</div>
-            <div id="meta" class="muted" style="margin-top: 0.2rem; font-size: 0.78rem;"></div>
-          </div>
+      <div class="panel panel-subtle">
+        <h2>Filters</h2>
+        <div id="categoryFilters" class="filters-row">
+          <button type="button" class="filterBtn" data-category="all">All</button>
+          <button type="button" class="filterBtn" data-category="essentials">Essentials</button>
+          <button type="button" class="filterBtn" data-category="housing">Housing</button>
+          <button type="button" class="filterBtn" data-category="health">Health</button>
+          <button type="button" class="filterBtn" data-category="education">Education</button>
+          <button type="button" class="filterBtn" data-category="stability">Stability</button>
+          <button type="button" class="filterBtn" data-category="transportation">Transportation</button>
+          <button type="button" class="filterBtn" data-category="entertainment">Entertainment</button>
+          <button type="button" class="filterBtn" data-category="tech">Tech</button>
+          <button type="button" class="filterBtn" data-category="clothing">Clothing</button>
+          <button type="button" class="filterBtn" data-category="personal">Personal</button>
+          <button type="button" class="filterBtn" data-category="childcare">👶 Childcare</button>
+          <button type="button" class="filterBtn" data-category="pets">🐾 Pets</button>
+          <button type="button" class="filterBtn" data-category="services">🔧 Services</button>
+          <button type="button" class="filterBtn" data-category="parents">👶 Parents</button>
+          <button type="button" class="filterBtn" data-category="students">📚 Students</button>
+          <button type="button" class="filterBtn" data-category="teens">🧑 Teens</button>
+          <button type="button" class="filterBtn" data-category="elderly">🧓 Elderly</button>
+          <button type="button" class="filterBtn" data-category="social_impact">🌍 Social Impact</button>
         </div>
       </div>
+      <div class="panel panel-subtle" style="padding: 0.5rem 0.7rem;">
+        <input id="searchInput" type="text" placeholder="Search items..." autocomplete="off" style="margin: 0;" />
+        <div id="searchSuggestions" class="search-suggestions" style="display: none;"></div>
+      </div>
+      <div class="sort-row">
+        <span class="sort-label">Sort:</span>
+        <button type="button" class="sortBtn" data-sort="default">Default</button>
+        <button type="button" class="sortBtn" data-sort="name-asc">Name ↑</button>
+        <button type="button" class="sortBtn" data-sort="name-desc">Name ↓</button>
+        <button type="button" class="sortBtn" data-sort="price-asc">Price ↑</button>
+        <button type="button" class="sortBtn" data-sort="price-desc">Price ↓</button>
+      </div>
+      <div id="itemsCount" class="muted"></div>
+      <div id="itemsGrid" class="grid" style="margin-top: 0.5rem;"></div>
+    </div>
+
+    <div id="receipt" class="panel receipt-panel"></div>
+
+    <div class="panel" id="sourcesPanel">
+      <h2>Sources & Data Status</h2>
+      <div class="grid" style="grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));">
+        <div>
+          <strong>Wealth data</strong>
+          <div id="wealthSourceDisplay" class="muted" style="margin-top: 0.35rem;">--</div>
+        </div>
+        <div>
+          <strong>Item data</strong>
+          <div id="itemSourceDisplay" class="muted" style="margin-top: 0.35rem;">--</div>
+        </div>
+        <div>
+          <strong>Status</strong>
+          <div id="status" class="muted" style="margin-top: 0.35rem;">Loading...</div>
+          <div id="meta" class="muted" style="margin-top: 0.2rem; font-size: 0.78rem;"></div>
+        </div>
+      </div>
+    </div>
     </div>
 
     <script type="module" src="./js/app.js"></script>

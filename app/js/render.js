@@ -32,7 +32,14 @@ const els = {
   stickyRemaining: $("#stickyRemaining"),
   stickyPercent: $("#stickyPercent"),
   stickyWorkTime: $("#stickyWorkTime"),
-  soundIcon: $("#soundIcon"),
+  stickyYearsToWealth: $("#stickyYearsToWealth"),
+  // Compact stats bar
+  totalCompact: $("#totalCompact"),
+  percentCompact: $("#percentCompact"),
+  remainingCompact: $("#remainingCompact"),
+  fractionCompact: $("#fractionCompact"),
+  miniProgress: $("#miniProgress"),
+  // Sound & toggles
   soundToggleBtn: $("#soundToggleBtn"),
   currencySelect: $("#currencySelect"),
   stashToggle: $("#stashToggle"),
@@ -238,31 +245,15 @@ export function renderSearchSuggestions(state) {
   els.searchSuggestions.style.display = "block";
 }
 
-// ─── Render: Total bar ───
-export function renderTotal(state) {
-  if (!els.totalBar) return;
-  const { total } = getDerivedMetrics(state);
-  els.totalBar.innerHTML = `<strong>Total Spent:</strong> ${moneyFmt(state)(total)}`;
-}
-
-// ─── Render: Wealth stats ───
-export function renderWealthStats(state) {
-  if (!els.wealthStats) return;
-  const m = getDerivedMetrics(state);
+// ─── Render: Compact stats bar ───
+export function renderCompactStats(state) {
   const fmt = moneyFmt(state);
-  els.wealthStats.innerHTML = `
-    <div><strong>Percent of wealth:</strong> ${m.percent < 0.000001 ? "<0.000001" : m.percent.toFixed(6)}%</div>
-    <div><strong>Remaining:</strong> ${fmt(m.remaining)}</div>
-    <div><strong>1 in X:</strong> 1 / ${m.fraction.toLocaleString()}</div>
-    <div style="margin-top:10px;">
-      <div style="height:20px;background:#ddd;border-radius:10px;overflow:hidden;">
-        <div style="height:100%;width:${Math.min(m.percent, 100)}%;background:#4caf50;"></div>
-      </div>
-    </div>
-    <div style="margin-top:10px;"><strong>Impact:</strong><br>Could support ${Math.floor(m.households).toLocaleString()} people for a year</div>
-    <div style="margin-top:10px;"><strong>Compared to your savings:</strong><br>${m.savingsMultiple ? `${m.savingsMultiple.toFixed(2)}x your current savings` : "Add your savings to compare"}</div>
-    <div style="margin-top:10px;"><strong>Time to reach their wealth:</strong><br>${m.yearsToReachWealth ? `${numberFormatter.format(m.yearsToReachWealth)} years at your current income` : "Add income details to compare"}</div>
-    <div style="margin-top:10px;"><strong>Time to afford this cart using savings first:</strong><br>${state.userFinance.hourlyWage > 0 ? `${m.yearsToAffordCartWithSavings.toFixed(2)} years after using ${fmt(state.userFinance.savings)} in savings` : "Add income details to compare"}<br><span style="opacity:0.8;">Remaining after savings: ${fmt(m.remainingAfterSavings)}</span></div>`;
+  const { total, percent, remaining, fraction } = getDerivedMetrics(state);
+  if (els.totalCompact) els.totalCompact.textContent = fmt(total);
+  if (els.percentCompact) els.percentCompact.textContent = percent < 0.000001 ? "<0.000001%" : percent.toFixed(6) + "%";
+  if (els.remainingCompact) els.remainingCompact.textContent = fmt(remaining);
+  if (els.fractionCompact) els.fractionCompact.textContent = "1 / " + numberFormatter.format(Math.round(fraction));
+  if (els.miniProgress) els.miniProgress.style.width = Math.min(percent, 100) + "%";
 }
 
 // ─── Render: Work time equivalents ───
@@ -297,6 +288,13 @@ export function renderStickySummary(state) {
   if (els.stickyTotal) els.stickyTotal.textContent = fmt(total);
   if (els.stickyRemaining) els.stickyRemaining.textContent = fmt(remaining);
   if (els.stickyPercent) els.stickyPercent.textContent = percent < 0.000001 ? "<0.000001%" : percent.toFixed(6) + "%";
+  // Years to reach their wealth
+  if (els.stickyYearsToWealth) {
+    const m = getDerivedMetrics(state);
+    els.stickyYearsToWealth.textContent = m.yearsToReachWealth
+      ? numberFormatter.format(m.yearsToReachWealth) + " yrs"
+      : "Enter wage";
+  }
   renderStickyWorkTime(state);
 }
 
@@ -451,8 +449,7 @@ export function updateUI(state) {
   renderPersonDetails(state);
   renderCategoryFilters(state);
   renderItems(state);
-  renderTotal(state);
-  renderWealthStats(state);
+  renderCompactStats(state);
   renderWorkTime(state);
   renderStickySummary(state);
   renderPositionComparison(state);
