@@ -358,10 +358,21 @@ export function renderPresetButtons(state) {
 // ─── Render: Source displays ───
 export function renderSourceDisplays(state) {
   if (els.wealthSourceDisplay && state.dataMeta.wealth) {
-    els.wealthSourceDisplay.innerHTML = `<div>${state.dataMeta.wealth.source}</div><div style="margin-top:0.35rem;">Updated: ${state.dataMeta.wealth.last_updated}</div>`;
+    const w = state.dataMeta.wealth;
+    const staleBadge = w.stale
+      ? `<span style="color:#e74c3c;font-size:0.75rem;margin-left:0.5rem;">⚠ STALE</span>`
+      : "";
+    const ageLabel = w.last_updated
+      ? `Updated: ${w.last_updated}${staleBadge}`
+      : "Unknown";
+    els.wealthSourceDisplay.innerHTML = `<div>${w.source || "Unknown"}</div><div style="margin-top:0.35rem;">${ageLabel}</div>`;
   }
   if (els.itemSourceDisplay && state.dataMeta.items) {
-    els.itemSourceDisplay.innerHTML = `<div>${state.dataMeta.items.source}</div><div style="margin-top:0.35rem;">Updated: ${state.dataMeta.items.last_updated}</div>`;
+    const m = state.dataMeta.items;
+    const stats = m.stats
+      ? `<div style="margin-top:0.2rem;font-size:0.75rem;color:var(--muted);">${m.stats.bls_live_items || 0} live prices · ${m.stats.curated_items || 0} curated</div>`
+      : "";
+    els.itemSourceDisplay.innerHTML = `<div>${m.source || "Unknown"}</div><div style="margin-top:0.35rem;">Updated: ${m.last_updated || "Unknown"}</div>${stats}`;
   }
 }
 

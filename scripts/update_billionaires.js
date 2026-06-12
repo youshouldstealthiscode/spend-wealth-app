@@ -1,13 +1,33 @@
 #!/usr/bin/env node
+/**
+ * Billionaire data updater — automatic with staleness awareness.
+ *
+ * Data source: rtb-api (https://github.com/komed3/rtb-api)
+ *   - Community-maintained mirror of Forbes Real-Time Billionaires
+ *   - Updates daily via GitHub Actions bot
+ *   - Free, no API key needed
+ *
+ * The repo stores data in dated folders: api/list/rtb/YYYY-MM-DD/latest.json
+ * We use the GitHub API to find the latest date, then fetch that file.
+ *
+ * Fallback chain:
+ *   1. rtb-api latest snapshot (primary — free, auto-updated daily)
+ *   2. Static fallback (last known good values, flagged as stale)
+ *
+ * GitHub Actions workflow runs this twice daily (05:00, 17:00 UTC).
+ */
+
 const fs = require("node:fs");
 const path = require("node:path");
-const https = require("node:https");
+const https = require("https");
 
 const PROJECT_ROOT = path.resolve(__dirname, "..");
 const OUTPUT_PATHS = [
   path.join(PROJECT_ROOT, "app", "data", "richest_people.json"),
   path.join(PROJECT_ROOT, "data", "richest_people.json"),
 ];
+
+const STALE_THRESHOLD_DAYS = 30;
 
 const FALLBACK = [
   { id: "elon-musk", rank: 1, name: "Elon Musk", net_worth: 981600000000, company: "Tesla, SpaceX", country: "United States" },
@@ -22,112 +42,117 @@ const FALLBACK = [
   { id: "warren-buffett", rank: 10, name: "Warren Buffett", net_worth: 144400000000, company: "Berkshire Hathaway", country: "United States" },
 ];
 
-function nowIso() {
-  return new Date().toISOString();
-}
+function nowIso() { return new Date().toISOString(); }
 
-function fetchJson(url) {
+function httpGet(url, opts = {}) {
   return new Promise((resolve, reject) => {
-    https.get(url, { headers: { "User-Agent": "spend-wealth-app/1.0" }, timeout: 15000 }, (res) => {
+    const req = https.get(url, {
+      headers: {
+        "User-Agent": "spend-wealth-app/1.0",
+        "Accept": "application/json",
+        ...opts.headers,
+      },
+      timeout: opts.timeout || 15000,
+    }, (res) => {
+      if (res.statusCode >= 300 && res.statusCode < 400 && res.headers.location) {
+        return httpGet(res.headers.location, opts).then(resolve, reject);
+      }
       let data = "";
-      res.on("data", (chunk) => (data += chunk));
-      res.on("end", () => {
-        try {
-          resolve(JSON.parse(data));
-        } catch (e) {
-          reject(new Error("Invalid JSON from " + url));
-        }
-      });
-    }).on("error", reject);
+      res.on("data", (c) => (data += c));
+      res.on("end", () => resolve({ status: res.statusCode, body: data }));
+    });
+    req.on("error", reject);
+    req.on("timeout", () => { req.destroy(); reject(new Error("timeout")); });
   });
 }
 
-async function fetchFromApi() {
-  const url = "https://cdn.jsdelivr.net/gh/komed3/rtb-api@main/api/list/rtb/latest";
-  const data = await fetchJson(url);
+/** Find the latest dated snapshot by checking the most recent commit */
+async function getLatestDate() {
+  const { body, status } = await httpGet(
+    "https://api.github.com/repos/komed3/rtb-api/commits?path=api/list/rtb&per_page=1"
+  );
+  if (status !== 200) throw new Error(`GitHub commits API HTTP ${status}`);
+  const commits = JSON.parse(body);
+  if (!Array.isArray(commits) || commits.length === 0) throw new Error("No commits found");
 
-  if (!data.list || !Array.isArray(data.list)) {
-    throw new Error("API returned unexpected format");
+  // Commit message format: "update API database (YYYY-MM-DD)"
+  const msg = commits[0]?.commit?.message || "";
+  const match = msg.match(/(\d{4}-\d{2}-\d{2})/);
+  if (!match) throw new Error(`Could not parse date from commit: "${msg}"`);
+
+  const date = match[1];
+  const commitDate = commits[0]?.commit?.author?.date || "unknown";
+  console.log(`rtb-api: latest commit is ${commitDate}, data date ${date}`);
+  return date;
+}
+
+async function fetchFromRtbApi() {
+  // The rtb-api stores the latest data at api/list/rtb/latest (no date in path)
+  // The commit message contains the date: "update API database (YYYY-MM-DD)"
+  const latestDate = await getLatestDate();
+  console.log(`rtb-api: latest data date is ${latestDate}`);
+
+  const url = "https://raw.githubusercontent.com/komed3/rtb-api/main/api/list/rtb/latest";
+  const { body, status } = await httpGet(url);
+  if (status !== 200) throw new Error(`HTTP ${status}`);
+
+  const data = JSON.parse(body);
+  if (!data.list || !Array.isArray(data.list) || data.list.length === 0) {
+    throw new Error("Empty or invalid list");
   }
 
-  // Check API data freshness — warn if older than 7 days
-  const apiDate = data.date ? new Date(data.date) : null;
-  const now = new Date();
-  const maxAgeMs = 7 * 24 * 60 * 60 * 1000; // 7 days
-  if (apiDate) {
-    const ageMs = now - apiDate;
-    const ageDays = Math.round(ageMs / (24 * 60 * 60 * 1000));
-    if (ageMs > maxAgeMs) {
-      console.warn(`API data is ${ageDays} days old (dated ${data.date}). Data may be stale.`);
-      console.warn("Consider updating manually. Proceeding with API data anyway.");
-    } else {
-      console.log(`API data is ${ageDays} day(s) old. Within freshness window.`);
-    }
-  } else {
-    console.warn("API response missing date field — cannot verify freshness.");
-  }
+  // Use the date from the commit (when the data was scraped from Forbes)
+  const dataDate = data.date || latestDate;
+  const ageMs = Date.now() - new Date(dataDate).getTime();
+  const ageDays = Math.round(ageMs / 86400000);
+  const isStale = ageDays > STALE_THRESHOLD_DAYS;
+
+  console.log(`rtb-api: ${data.list.length} people, data dated ${dataDate} (${ageDays} days old)`);
 
   const top10 = data.list.slice(0, 10).map((p) => {
-    // Guard against zero/missing net worth
-    const rawNetWorth = p.networth || 0;
-    if (rawNetWorth <= 0) {
-      console.warn(`Warning: ${p.name} has net_worth=0 in API response — may be a data issue.`);
-    }
-
     const source = Array.isArray(p.source) ? p.source.join(", ") : (p.source || "");
-
-    const entry = {
-      id: p.uri,
-      rank: p.rank,
+    return {
+      id: p.uri || p.id || p.name.toLowerCase().replace(/[^a-z0-9]+/g, "-"),
+      rank: p.rank || 0,
       name: p.name,
-      net_worth: Math.round(rawNetWorth * 1e6),
+      net_worth: Math.round((p.networth || 0) * 1e6),
       company: source,
       country: (p.citizenship || "").toUpperCase(),
+      daily_change_pct: (p.change?.pct && typeof p.change.pct === "number") ? p.change.pct / 100 : null,
+      daily_change_usd: (p.change?.value && typeof p.change.value === "number") ? Math.round(p.change.value * 1e6) : null,
     };
-
-    // Include daily change data if available
-    if (p.change && typeof p.change === "object") {
-      if (typeof p.change.pct === "number") {
-        entry.daily_change_pct = p.change.pct / 100; // convert pct (e.g. 0.154) to decimal
-      }
-      if (typeof p.change.value === "number") {
-        entry.daily_change_usd = Math.round(p.change.value * 1e6);
-      }
-    }
-
-    return entry;
   });
 
-  // Validate: abort if all net worths are 0 (API is broken)
-  const allZero = top10.every((p) => p.net_worth === 0);
-  if (allZero) {
-    throw new Error("All billionaire net worths are 0 — API appears to be broken.");
-  }
+  const valid = top10.filter((p) => p.net_worth > 0);
+  if (valid.length === 0) throw new Error("All net worths are 0");
 
   return {
     last_updated: nowIso(),
-    source: "Forbes Real-Time Billionaires (via rtb-api, auto-updated)",
-    source_url: "https://realtimebillionaires.de",
-    api_date: data.date,
+    source: "Forbes Real-Time Billionaires (via rtb-api)",
+    source_url: "https://www.forbes.com/real-time-billionaires/",
+    api_date: latestDate,
+    data_age_days: ageDays,
+    stale: isStale,
+    staleness_warning: isStale ? `Data is ${ageDays} days old. Rankings and net worths may have changed.` : null,
     people: top10,
   };
 }
 
-async function write() {
+async function main() {
   let dataset;
-  let source = "live";
 
   try {
-    dataset = await fetchFromApi();
-    console.log("Fetched live data for", dataset.people.length, "billionaires");
-    console.log("Top:", dataset.people[0].name, "-", "$" + (dataset.people[0].net_worth / 1e9).toFixed(1) + "B");
+    dataset = await fetchFromRtbApi();
+    console.log(`[✓] Fetched: #1 ${dataset.people[0].name} $${(dataset.people[0].net_worth / 1e9).toFixed(1)}B`);
   } catch (e) {
-    console.warn("API fetch failed, using fallback:", e.message);
-    source = "fallback";
+    console.warn(`[✗] rtb-api failed: ${e.message}`);
+    console.warn("[!] Using static fallback. Data will be flagged as stale.");
     dataset = {
       last_updated: nowIso(),
-      source: "Forbes Top 10 Richest People (fallback, static — June 2026)",
-      source_url: "https://www.forbes.com/",
+      source: "Static fallback (rtb-api unavailable)",
+      source_url: "https://www.forbes.com/real-time-billionaires/",
+      stale: true,
+      staleness_warning: "Billionaire data is from a cached snapshot and may be outdated.",
       people: FALLBACK,
     };
   }
@@ -136,12 +161,10 @@ async function write() {
   for (const outputPath of OUTPUT_PATHS) {
     fs.mkdirSync(path.dirname(outputPath), { recursive: true });
     fs.writeFileSync(outputPath, json, "utf8");
-    console.log("Wrote", outputPath, "(" + source + ")");
+    console.log("Wrote", outputPath);
   }
+
+  if (dataset.stale) process.exitCode = 2;
 }
 
-console.log("Billionaire updater running...");
-write().catch((e) => {
-  console.error("Fatal error:", e);
-  process.exit(1);
-});
+main().catch((e) => { console.error("Fatal:", e); process.exit(1); });

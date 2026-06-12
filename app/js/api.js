@@ -43,11 +43,14 @@ export async function loadData(state) {
     source: peopleData.source,
     last_updated: peopleData.last_updated,
     source_url: peopleData.source_url || "",
+    stale: peopleData.stale || false,
+    staleness_warning: peopleData.staleness_warning || null,
   };
   state.dataMeta.items = {
     source: itemsData.source,
     last_updated: itemsData.last_updated,
     source_url: itemsData.source_url || "",
+    stats: itemsData.stats || null,
   };
 
   return { peopleData, itemsData };

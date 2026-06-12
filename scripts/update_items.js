@@ -122,6 +122,21 @@ async function buildDataset() {
   // Health insurance avg (KFF 2025: ~$560/mo individual)
   const avgHealthInsurance = 560;
 
+  // Track which items need periodic manual review (no BLS series)
+  // These should be verified against current retail data every ~90 days.
+  const MANUAL_REVIEW_ITEMS = [
+    "potatoes_lb", "apple_lb", "cheese_lb", "onions_lb", "tomatoes_lb",
+    "cereal_box", "peanut_butter_jar", "water_bottle_case", "toilet_paper_12",
+    "toothpaste", "soap_bar", "shampoo_bottle", "pasta_lb", "cooking_oil",
+    "frozen_pizza", "fast_food_meal", "restaurant_dinner_two",
+    "orange_juice_gallon", "frozen_vegetables", "canned_tuna", "canned_beans",
+    "flour_5lb", "sugar_4lb", "salt_26oz", "black_pepper", "hot_dog_buns",
+    "ketchup", "mustard", "mayonnaise", "soy_sauce", "olive_oil",
+    "yogurt_cup", "ice_cream_half_gallon", "chocolate_bar", "chips_bag",
+    "popcorn", "soda_12pack", "energy_drink", "sports_drink",
+    "beer_6pack", "wine_bottle", "cigarettes_pack",
+  ];
+
   return {
     last_updated: nowIso(),
     source: bls
@@ -131,6 +146,13 @@ async function buildDataset() {
       ? "https://www.bls.gov/regions/mid-atlantic/data/AverageRetailFoodAndEnergyPrices_USandWest_Table.htm"
       : "https://www.bls.gov/",
     freshness: bls ? "live | curated" : "curated | fallback",
+    stats: {
+      total_items: 0,
+      bls_live_items: 0,
+      curated_items: 0,
+      needs_manual_review: MANUAL_REVIEW_ITEMS.length,
+      manual_review_ids: MANUAL_REVIEW_ITEMS,
+    },
     items: [
       // ── Essentials (food & groceries) ──
       // BLS latest-month prices (June 2026 or most recent available):
@@ -371,13 +393,21 @@ async function buildDataset() {
 async function write() {
   console.log("Item updater running...");
   const dataset = await buildDataset();
+
+  // Fill in stats
+  const blsItems = dataset.items.filter((i) => i.source_type === "bls_latest");
+  dataset.stats.total_items = dataset.items.length;
+  dataset.stats.bls_live_items = blsItems.length;
+  dataset.stats.curated_items = dataset.items.length - blsItems.length;
+  dataset.stats.bls_fresh = !!blsItems.length;
+
   const json = JSON.stringify(dataset, null, 2) + "\n";
   for (const outputPath of OUTPUT_PATHS) {
     fs.mkdirSync(path.dirname(outputPath), { recursive: true });
     fs.writeFileSync(outputPath, json, "utf8");
     console.log("Wrote", outputPath);
   }
-  console.log("Items:", dataset.items.length, "| Source:", dataset.source);
+  console.log(`Items: ${dataset.stats.total_items} (${dataset.stats.bls_live_items} live BLS, ${dataset.stats.curated_items} curated)`);
 }
 
 write().catch((e) => {

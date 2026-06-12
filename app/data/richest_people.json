@@ -1,108 +1,111 @@
 {
-  "last_updated": "2026-06-12T15:45:00.000Z",
-  "source": "Forbes Real-Time Billionaires (manual update, June 2026)",
+  "last_updated": "2026-06-12T16:12:39.205Z",
+  "source": "Forbes Real-Time Billionaires (via rtb-api)",
   "source_url": "https://www.forbes.com/real-time-billionaires/",
   "api_date": "2026-06-12",
+  "data_age_days": 40,
+  "stale": true,
+  "staleness_warning": "Data is 40 days old. Rankings and net worths may have changed.",
   "people": [
     {
       "id": "elon-musk",
       "rank": 1,
       "name": "Elon Musk",
-      "net_worth": 981600000000,
+      "net_worth": 789907490000,
       "company": "Tesla, SpaceX",
-      "country": "United States",
-      "daily_change_pct": -0.0010,
-      "daily_change_usd": -968100000
+      "country": "US",
+      "daily_change_pct": 0.00154,
+      "daily_change_usd": 1211921000
     },
     {
       "id": "larry-page",
       "rank": 2,
       "name": "Larry Page",
-      "net_worth": 296400000000,
+      "net_worth": 311695494000,
       "company": "Google",
-      "country": "United States",
-      "daily_change_pct": 0.0126,
-      "daily_change_usd": 3700000000
+      "country": "US",
+      "daily_change_pct": -0.0075,
+      "daily_change_usd": -2354329000
     },
     {
       "id": "sergey-brin",
       "rank": 3,
       "name": "Sergey Brin",
-      "net_worth": 273400000000,
+      "net_worth": 287443578000,
       "company": "Google",
-      "country": "United States",
-      "daily_change_pct": 0.0126,
-      "daily_change_usd": 3400000000
+      "country": "US",
+      "daily_change_pct": -0.00747,
+      "daily_change_usd": -2164199000
     },
     {
       "id": "jeff-bezos",
       "rank": 4,
       "name": "Jeff Bezos",
-      "net_worth": 248400000000,
+      "net_worth": 278482654000,
       "company": "Amazon",
-      "country": "United States",
-      "daily_change_pct": -0.0125,
-      "daily_change_usd": -3100000000
+      "country": "US",
+      "daily_change_pct": 0.012150000000000001,
+      "daily_change_usd": 3343545000
     },
     {
       "id": "larry-ellison",
       "rank": 5,
       "name": "Larry Ellison",
-      "net_worth": 228500000000,
+      "net_worth": 226127673000,
       "company": "Oracle",
-      "country": "United States",
-      "daily_change_pct": -0.0071,
-      "daily_change_usd": -1600000000
-    },
-    {
-      "id": "michael-dell",
-      "rank": 6,
-      "name": "Michael Dell",
-      "net_worth": 228300000000,
-      "company": "Dell Technologies",
-      "country": "United States",
-      "daily_change_pct": 0.0173,
-      "daily_change_usd": 3900000000
+      "country": "US",
+      "daily_change_pct": 0.04217,
+      "daily_change_usd": 9149400000
     },
     {
       "id": "mark-zuckerberg",
-      "rank": 7,
+      "rank": 6,
       "name": "Mark Zuckerberg",
-      "net_worth": 196300000000,
-      "company": "Meta",
-      "country": "United States",
-      "daily_change_pct": 0.0056,
-      "daily_change_usd": 1100000000
+      "net_worth": 209494471000,
+      "company": "Facebook",
+      "country": "US",
+      "daily_change_pct": 0.0027,
+      "daily_change_usd": 564545000
+    },
+    {
+      "id": "michael-dell",
+      "rank": 7,
+      "name": "Michael Dell",
+      "net_worth": 177239281000,
+      "company": "Dell Technologies",
+      "country": "US",
+      "daily_change_pct": -0.00253,
+      "daily_change_usd": -448692000
     },
     {
       "id": "jensen-huang",
       "rank": 8,
       "name": "Jensen Huang",
-      "net_worth": 178400000000,
-      "company": "Nvidia",
-      "country": "United States",
-      "daily_change_pct": 0.0073,
-      "daily_change_usd": 1300000000
+      "net_worth": 171671501000,
+      "company": "Semiconductors",
+      "country": "US",
+      "daily_change_pct": 0.00015,
+      "daily_change_usd": 25519000
     },
     {
-      "id": "bernard-arnault",
+      "id": "rob-walton",
       "rank": 9,
-      "name": "Bernard Arnault & family",
-      "net_worth": 157200000000,
-      "company": "LVMH",
-      "country": "France",
-      "daily_change_pct": 0.0358,
-      "daily_change_usd": 5400000000
+      "name": "Rob Walton & family",
+      "net_worth": 148235540000,
+      "company": "Walmart",
+      "country": "US",
+      "daily_change_pct": -0.00779,
+      "daily_change_usd": -1164255000
     },
     {
-      "id": "warren-buffett",
+      "id": "jim-walton",
       "rank": 10,
-      "name": "Warren Buffett",
-      "net_worth": 144400000000,
-      "company": "Berkshire Hathaway",
-      "country": "United States",
-      "daily_change_pct": 0.0069,
-      "daily_change_usd": 1000000000
+      "name": "Jim Walton & family",
+      "net_worth": 145503711000,
+      "company": "Walmart",
+      "country": "US",
+      "daily_change_pct": -0.00792,
+      "daily_change_usd": -1161584000
     }
   ]
 }

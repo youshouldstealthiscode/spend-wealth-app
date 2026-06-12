@@ -3,7 +3,9 @@ name: Update data snapshots
 on:
   workflow_dispatch:
   schedule:
-    - cron: "17 5 * * *"
+    # Run twice daily: 05:00 and 17:00 UTC
+    # Catches morning and afternoon market movements
+    - cron: "0 5,17 * * *"
 
 permissions:
   contents: write
@@ -21,14 +23,72 @@ jobs:
         with:
           node-version: "20"
 
-      - name: Run data updaters
-        run: npm run update:data
+      - name: Run billionaire updater
+        id: billionaires
+        run: |
+          npm run update:billionaires
+          echo "exit_code=$?" >> $GITHUB_OUTPUT
+        continue-on-error: true
+
+      - name: Run item price updater
+        id: items
+        run: |
+          npm run update:items
+          echo "exit_code=$?" >> $GITHUB_OUTPUT
+
+      - name: Check data freshness
+        id: freshness
+        run: |
+          echo "## Data Freshness Report" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+
+          # Check billionaire data
+          BILLIONAIRE_DATE=$(node -e "
+            const d = require('./app/data/richest_people.json');
+            console.log(d.last_updated || 'unknown');
+          ")
+          BILLIONAIRE_STALE=$(node -e "
+            const d = require('./app/data/richest_people.json');
+            console.log(d.stale ? 'true' : 'false');
+          ")
+          echo "| Dataset | Last Updated | Stale |" >> $GITHUB_STEP_SUMMARY
+          echo "|---------|-------------|-------|" >> $GITHUB_STEP_SUMMARY
+          echo "| Billionaires | $BILLIONAIRE_DATE | $BILLIONAIRE_STALE |" >> $GITHUB_STEP_SUMMARY
+
+          # Check item data
+          ITEMS_DATE=$(node -e "
+            const d = require('./app/data/cpi_items.json');
+            console.log(d.last_updated || 'unknown');
+          ")
+          ITEMS_STATS=$(node -e "
+            const d = require('./app/data/cpi_items.json');
+            const s = d.stats || {};
+            console.log(\`\${s.total_items || '?'} total, \${s.bls_live_items || 0} live BLS, \${s.curated_items || 0} curated\`);
+          ")
+          echo "| Items | $ITEMS_DATE | $ITEMS_STATS |" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+
+          # Warn if billionaire data is stale
+          if [ "$BILLIONAIRE_STALE" = "true" ]; then
+            echo "::warning::Billionaire data is STALE — all auto-fetch sources failed. Manual update may be needed."
+            echo "**⚠️ Warning:** Billionaire data is stale. All auto-fetch sources failed." >> $GITHUB_STEP_SUMMARY
+          fi
+
+          # Warn if BLS fetch failed
+          BLS_FRESH=$(node -e "
+            const d = require('./app/data/cpi_items.json');
+            console.log(d.stats && d.stats.bls_fresh ? 'true' : 'false');
+          ")
+          if [ "$BLS_FRESH" = "false" ]; then
+            echo "::warning::BLS price data unavailable — using fallback prices."
+            echo "**⚠️ Warning:** BLS prices unavailable, using fallbacks." >> $GITHUB_STEP_SUMMARY
+          fi
 
       - name: Commit updated snapshots
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add app/data/richest_people.json data/richest_people.json app/data/cpi_items.json data/cpi_items.json
-          git diff --cached --quiet && exit 0
-          git commit -m "chore: update data snapshots"
+          git diff --cached --quiet && echo "No changes to commit" && exit 0
+          git commit -m "chore: update data snapshots [$(date -u +%Y-%m-%d)]"
           git push
