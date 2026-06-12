@@ -102,7 +102,10 @@
             <button type="button" class="filterBtn" data-category="childcare">👶 Childcare</button>
             <button type="button" class="filterBtn" data-category="pets">🐾 Pets</button>
             <button type="button" class="filterBtn" data-category="services">🔧 Services</button>
-            <button type="button" class="filterBtn" data-category="luxury">Luxury</button>
+            <button type="button" class="filterBtn" data-category="parents">👶 Parents</button>
+            <button type="button" class="filterBtn" data-category="students">📚 Students</button>
+            <button type="button" class="filterBtn" data-category="teens">🧑 Teens</button>
+            <button type="button" class="filterBtn" data-category="elderly">🧓 Elderly</button>
             <button type="button" class="filterBtn" data-category="social_impact">🌍 Social Impact</button>
           </div>
         </div>
@@ -184,6 +187,49 @@
 </div>
 
 <div id="receipt" class="panel receipt-panel"></div>
+
+<div class="panel" id="gapMetricsPanel">
+  <h2>🌍 What Could This Wealth Actually Do?</h2>
+  <p class="muted" style="margin-bottom: 0.75rem;">These are real-cost estimates from UN, US government, and research organizations.</p>
+  <div class="grid" style="grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 0.75rem;">
+    <div class="gap-card">
+      <div class="gap-label">Billionaire-seconds to earn your hourly wage</div>
+      <div id="gapBillionaireSeconds" class="gap-value">--</div>
+    </div>
+    <div class="gap-card">
+      <div class="gap-label">Your lifetime income vs their net worth</div>
+      <div id="gapLifetimeRatio" class="gap-value">--</div>
+    </div>
+    <div class="gap-card">
+      <div class="gap-label">People needed to match their wealth</div>
+      <div id="gapPeopleNeeded" class="gap-value">--</div>
+    </div>
+    <div class="gap-card">
+      <div class="gap-label">Years to count their wealth at $1/sec</div>
+      <div id="gapCountYears" class="gap-value">--</div>
+    </div>
+    <div class="gap-card">
+      <div class="gap-label">Times they could solve world hunger (1yr)</div>
+      <div id="gapWorldHunger" class="gap-value">--</div>
+    </div>
+    <div class="gap-card">
+      <div class="gap-label">Times they could fund all US schools (1yr)</div>
+      <div id="gapSchools" class="gap-value">--</div>
+    </div>
+    <div class="gap-card">
+      <div class="gap-label">Times they could forgive all US student loans</div>
+      <div id="gapStudentLoans" class="gap-value">--</div>
+    </div>
+    <div class="gap-card">
+      <div class="gap-label">End homelessness in the US (years)</div>
+      <div id="gapHomeless" class="gap-value">--</div>
+    </div>
+    <div class="gap-card">
+      <div class="gap-label">Daily income vs yours (at work hours)</div>
+      <div id="gapDailyIncome" class="gap-value">--</div>
+    </div>
+  </div>
+</div>
 
 <div class="panel">
   <h2>Sources</h2>

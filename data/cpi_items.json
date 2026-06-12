@@ -1,12 +1,12 @@
 {
-  "last_updated": "2026-06-12T16:42:28.501Z",
+  "last_updated": "2026-06-12T17:42:13.865Z",
   "source": "Live BLS Average Retail Prices (latest month) + curated estimates",
   "source_url": "https://www.bls.gov/regions/mid-atlantic/data/AverageRetailFoodAndEnergyPrices_USandWest_Table.htm",
   "freshness": "live | curated",
   "stats": {
-    "total_items": 200,
+    "total_items": 271,
     "bls_live_items": 11,
-    "curated_items": 189,
+    "curated_items": 260,
     "needs_manual_review": 42,
     "manual_review_ids": [
       "potatoes_lb",
@@ -1504,95 +1504,623 @@
       "unit": "per move"
     },
     {
-      "id": "meal_for_one",
-      "name": "Meal for One Person",
-      "price": 3,
-      "category": "social_impact",
-      "source_type": "wfp_estimate",
-      "unit": "per meal"
+      "id": "diapers_monthly",
+      "name": "Diapers (monthly supply)",
+      "price": 80,
+      "category": "parents",
+      "source_type": "market_estimate",
+      "unit": "monthly"
     },
     {
-      "id": "end_hunger_1yr",
-      "name": "End World Hunger (1 year est.)",
-      "price": 33000000000,
-      "category": "social_impact",
-      "source_type": "un_estimate",
-      "unit": "one-time"
+      "id": "baby_formula_monthly",
+      "name": "Baby Formula (monthly)",
+      "price": 150,
+      "category": "parents",
+      "source_type": "market_estimate",
+      "unit": "monthly"
     },
     {
-      "id": "clean_water_africa",
-      "name": "Clean Water Access for All of Africa",
-      "price": 20000000000,
-      "category": "social_impact",
-      "source_type": "who_estimate",
-      "unit": "one-time"
+      "id": "baby_food_monthly",
+      "name": "Baby Food (monthly)",
+      "price": 60,
+      "category": "parents",
+      "source_type": "market_estimate",
+      "unit": "monthly"
     },
     {
-      "id": "end_homelessness_us",
-      "name": "End Homelessness in the US",
-      "price": 20000000000,
-      "category": "social_impact",
-      "source_type": "hud_estimate",
-      "unit": "one-time"
+      "id": "daycare_monthly_parent",
+      "name": "Daycare (monthly, avg US)",
+      "price": 1300,
+      "category": "parents",
+      "source_type": "curated_2026",
+      "unit": "monthly"
     },
     {
-      "id": "universal_prek_us",
-      "name": "Universal Pre-K in the US",
-      "price": 26000000000,
-      "category": "social_impact",
-      "source_type": "brookings_estimate",
-      "unit": "per year"
+      "id": "preschool_monthly",
+      "name": "Preschool (monthly)",
+      "price": 800,
+      "category": "parents",
+      "source_type": "market_estimate",
+      "unit": "monthly"
     },
     {
-      "id": "malaria_eradication",
-      "name": "Eradicate Malaria Globally",
-      "price": 5000000000,
-      "category": "social_impact",
-      "source_type": "gates_foundation",
-      "unit": "one-time"
+      "id": "baby_clothes_monthly",
+      "name": "Baby Clothes (monthly)",
+      "price": 50,
+      "category": "parents",
+      "source_type": "market_estimate",
+      "unit": "monthly"
     },
     {
-      "id": "reforest_earth",
-      "name": "Reforest 1 Billion Acres",
-      "price": 50000000000,
-      "category": "social_impact",
-      "source_type": "curated_estimate",
-      "unit": "one-time"
-    },
-    {
-      "id": "fund_schools_us",
-      "name": "Fully Fund US Public Schools (1 year)",
-      "price": 50000000000,
-      "category": "social_impact",
-      "source_type": "curated_estimate",
-      "unit": "per year"
-    },
-    {
-      "id": "build_hospital",
-      "name": "Build a Modern Hospital",
-      "price": 500000000,
-      "category": "social_impact",
-      "source_type": "curated_estimate",
+      "id": "stroller",
+      "name": "Baby Stroller (mid-range)",
+      "price": 350,
+      "category": "parents",
+      "source_type": "market_estimate",
       "unit": "each"
     },
     {
-      "id": "orphan_care_year",
-      "name": "Fund Global Orphan Care (1 year)",
-      "price": 8000000000,
-      "category": "social_impact",
-      "source_type": "unicef_estimate",
+      "id": "child_car_seat_parent",
+      "name": "Child Car Seat",
+      "price": 200,
+      "category": "parents",
+      "source_type": "market_estimate",
+      "unit": "each"
+    },
+    {
+      "id": "baby_monitor",
+      "name": "Baby Monitor",
+      "price": 80,
+      "category": "parents",
+      "source_type": "market_estimate",
+      "unit": "each"
+    },
+    {
+      "id": "crib",
+      "name": "Crib + Mattress",
+      "price": 400,
+      "category": "parents",
+      "source_type": "market_estimate",
+      "unit": "each"
+    },
+    {
+      "id": "high_chair",
+      "name": "High Chair",
+      "price": 150,
+      "category": "parents",
+      "source_type": "market_estimate",
+      "unit": "each"
+    },
+    {
+      "id": "kids_shoes",
+      "name": "Kids' Shoes",
+      "price": 45,
+      "category": "parents",
+      "source_type": "market_estimate",
+      "unit": "per pair"
+    },
+    {
+      "id": "school_supplies_semester",
+      "name": "School Supplies (per semester)",
+      "price": 60,
+      "category": "parents",
+      "source_type": "market_estimate",
+      "unit": "per semester"
+    },
+    {
+      "id": "pediatrician_visit",
+      "name": "Pediatrician Visit (routine)",
+      "price": 150,
+      "category": "parents",
+      "source_type": "curated_2026",
+      "unit": "per visit"
+    },
+    {
+      "id": "childrens_vaccines_year",
+      "name": "Children's Vaccines (annual)",
+      "price": 300,
+      "category": "parents",
+      "source_type": "cdc_2025",
       "unit": "per year"
     },
     {
-      "id": "free_lunch_k12",
-      "name": "Free School Lunch for All US K-12 (1 year)",
-      "price": 26000000000,
-      "category": "social_impact",
-      "source_type": "usda_estimate",
+      "id": "after_school_program",
+      "name": "After-School Program (monthly)",
+      "price": 250,
+      "category": "parents",
+      "source_type": "market_estimate",
+      "unit": "monthly"
+    },
+    {
+      "id": "summer_camp_week",
+      "name": "Summer Camp (1 week)",
+      "price": 400,
+      "category": "parents",
+      "source_type": "market_estimate",
+      "unit": "per week"
+    },
+    {
+      "id": "kids_tablet",
+      "name": "Tablet for Kids",
+      "price": 150,
+      "category": "parents",
+      "source_type": "market_estimate",
+      "unit": "each"
+    },
+    {
+      "id": "college_tuition_year",
+      "name": "College Tuition (in-state, 1 year)",
+      "price": 11000,
+      "category": "students",
+      "source_type": "curated_2026",
       "unit": "per year"
     },
     {
-      "id": "student_loan_forgiveness",
+      "id": "college_tuition_private_year",
+      "name": "College Tuition (private, 1 year)",
+      "price": 60000,
+      "category": "students",
+      "source_type": "curated_2026",
+      "unit": "per year"
+    },
+    {
+      "id": "college_dorm_year",
+      "name": "College Dorm (1 year)",
+      "price": 8000,
+      "category": "students",
+      "source_type": "curated_2026",
+      "unit": "per year"
+    },
+    {
+      "id": "meal_plan_semester",
+      "name": "College Meal Plan (1 semester)",
+      "price": 2500,
+      "category": "students",
+      "source_type": "curated_2026",
+      "unit": "per semester"
+    },
+    {
+      "id": "textbook_each",
+      "name": "College Textbook",
+      "price": 120,
+      "category": "students",
+      "source_type": "market_estimate",
+      "unit": "per book"
+    },
+    {
+      "id": "textbooks_semester",
+      "name": "Textbooks (full semester, 5 courses)",
+      "price": 600,
+      "category": "students",
+      "source_type": "market_estimate",
+      "unit": "per semester"
+    },
+    {
+      "id": "laptop_student",
+      "name": "Laptop (student)",
+      "price": 600,
+      "category": "students",
+      "source_type": "market_estimate",
+      "unit": "each"
+    },
+    {
+      "id": "backpack",
+      "name": "Backpack",
+      "price": 60,
+      "category": "students",
+      "source_type": "market_estimate",
+      "unit": "each"
+    },
+    {
+      "id": "notebooks_semester",
+      "name": "Notebooks & Supplies (semester)",
+      "price": 40,
+      "category": "students",
+      "source_type": "market_estimate",
+      "unit": "per semester"
+    },
+    {
+      "id": "student_transit_pass",
+      "name": "Student Transit Pass (monthly)",
+      "price": 25,
+      "category": "students",
+      "source_type": "market_estimate",
+      "unit": "monthly"
+    },
+    {
+      "id": "student_loan_payment_monthly",
+      "name": "Student Loan Payment (monthly avg)",
+      "price": 350,
+      "category": "students",
+      "source_type": "curated_2026",
+      "unit": "monthly"
+    },
+    {
+      "id": "apartment_rent_shared",
+      "name": "Shared Apartment Rent (monthly, per person)",
+      "price": 700,
+      "category": "students",
+      "source_type": "market_estimate",
+      "unit": "monthly"
+    },
+    {
+      "id": "coffee_daily_year",
+      "name": "Daily Coffee (1 year)",
+      "price": 1200,
+      "category": "students",
+      "source_type": "market_estimate",
+      "unit": "per year"
+    },
+    {
+      "id": "graduation_gown",
+      "name": "Graduation Gown + Cap",
+      "price": 50,
+      "category": "students",
+      "source_type": "market_estimate",
+      "unit": "each"
+    },
+    {
+      "id": "professional_clothing",
+      "name": "Professional Clothing (interview outfit)",
+      "price": 200,
+      "category": "students",
+      "source_type": "market_estimate",
+      "unit": "one-time"
+    },
+    {
+      "id": "phone_plan_teen",
+      "name": "Phone Plan (teen, monthly)",
+      "price": 40,
+      "category": "teens",
+      "source_type": "market_estimate",
+      "unit": "monthly"
+    },
+    {
+      "id": "phone_case_headphones",
+      "name": "Phone Case + Headphones",
+      "price": 50,
+      "category": "teens",
+      "source_type": "market_estimate",
+      "unit": "one-time"
+    },
+    {
+      "id": "video_game_console",
+      "name": "Gaming Console",
+      "price": 500,
+      "category": "teens",
+      "source_type": "market_price",
+      "unit": "each"
+    },
+    {
+      "id": "video_game_teen",
+      "name": "Video Game (new release)",
+      "price": 70,
+      "category": "teens",
+      "source_type": "market_estimate",
+      "unit": "per game"
+    },
+    {
+      "id": "sneakers_teen",
+      "name": "Sneakers (name brand)",
+      "price": 150,
+      "category": "teens",
+      "source_type": "market_estimate",
+      "unit": "per pair"
+    },
+    {
+      "id": "clothing_teen_monthly",
+      "name": "Clothing (monthly)",
+      "price": 80,
+      "category": "teens",
+      "source_type": "market_estimate",
+      "unit": "monthly"
+    },
+    {
+      "id": "movie_concessions_teen",
+      "name": "Movie + Concessions",
+      "price": 30,
+      "category": "teens",
+      "source_type": "market_estimate",
+      "unit": "per outing"
+    },
+    {
+      "id": "fast_food_teen_weekly",
+      "name": "Fast Food (weekly)",
+      "price": 50,
+      "category": "teens",
+      "source_type": "market_estimate",
+      "unit": "weekly"
+    },
+    {
+      "id": "driver_ed_course",
+      "name": "Driver's Ed Course",
+      "price": 400,
+      "category": "teens",
+      "source_type": "market_estimate",
+      "unit": "one-time"
+    },
+    {
+      "id": "car_insurance_teen_monthly",
+      "name": "Car Insurance (teen driver, monthly)",
+      "price": 300,
+      "category": "teens",
+      "source_type": "curated_2026",
+      "unit": "monthly"
+    },
+    {
+      "id": "gas_monthly_teen",
+      "name": "Gas (monthly, teen driver)",
+      "price": 120,
+      "category": "teens",
+      "source_type": "market_estimate",
+      "unit": "monthly"
+    },
+    {
+      "id": "prom_outfit",
+      "name": "Prom Outfit (rental or purchase)",
+      "price": 200,
+      "category": "teens",
+      "source_type": "market_estimate",
+      "unit": "one-time"
+    },
+    {
+      "id": "prom_tickets",
+      "name": "Prom Tickets (couple)",
+      "price": 150,
+      "category": "teens",
+      "source_type": "market_estimate",
+      "unit": "per couple"
+    },
+    {
+      "id": "yearbook",
+      "name": "Yearbook",
+      "price": 80,
+      "category": "teens",
+      "source_type": "market_estimate",
+      "unit": "each"
+    },
+    {
+      "id": "sports_equipment",
+      "name": "Sports Equipment (season)",
+      "price": 150,
+      "category": "teens",
+      "source_type": "market_estimate",
+      "unit": "per season"
+    },
+    {
+      "id": "music_lessons_monthly",
+      "name": "Music Lessons (monthly)",
+      "price": 100,
+      "category": "teens",
+      "source_type": "market_estimate",
+      "unit": "monthly"
+    },
+    {
+      "id": "tutoring_monthly",
+      "name": "Tutoring (monthly)",
+      "price": 200,
+      "category": "teens",
+      "source_type": "market_estimate",
+      "unit": "monthly"
+    },
+    {
+      "id": "medicare_premium_monthly",
+      "name": "Medicare Part B Premium (monthly)",
+      "price": 185,
+      "category": "elderly",
+      "source_type": "cms_2026",
+      "unit": "monthly"
+    },
+    {
+      "id": "medicare_supplement_monthly",
+      "name": "Medicare Supplement Plan (monthly)",
+      "price": 200,
+      "category": "elderly",
+      "source_type": "market_estimate",
+      "unit": "monthly"
+    },
+    {
+      "id": "prescription_monthly_senior",
+      "name": "Prescription Drugs (monthly, senior avg)",
+      "price": 150,
+      "category": "elderly",
+      "source_type": "kff_2025",
+      "unit": "monthly"
+    },
+    {
+      "id": "hearing_aid",
+      "name": "Hearing Aid (per ear)",
+      "price": 2500,
+      "category": "elderly",
+      "source_type": "market_estimate",
+      "unit": "each"
+    },
+    {
+      "id": "dentures",
+      "name": "Dentures (full set)",
+      "price": 2000,
+      "category": "elderly",
+      "source_type": "market_estimate",
+      "unit": "one-time"
+    },
+    {
+      "id": "walker_wheelchair",
+      "name": "Walker or Wheelchair",
+      "price": 300,
+      "category": "elderly",
+      "source_type": "market_estimate",
+      "unit": "each"
+    },
+    {
+      "id": "home_health_aide_weekly",
+      "name": "Home Health Aide (weekly)",
+      "price": 600,
+      "category": "elderly",
+      "source_type": "curated_2026",
+      "unit": "weekly"
+    },
+    {
+      "id": "assisted_living_monthly",
+      "name": "Assisted Living (monthly)",
+      "price": 4500,
+      "category": "elderly",
+      "source_type": "genworth_2025",
+      "unit": "monthly"
+    },
+    {
+      "id": "nursing_home_monthly",
+      "name": "Nursing Home (monthly)",
+      "price": 9000,
+      "category": "elderly",
+      "source_type": "genworth_2025",
+      "unit": "monthly"
+    },
+    {
+      "id": "medical_alert_system",
+      "name": "Medical Alert System (monthly)",
+      "price": 40,
+      "category": "elderly",
+      "source_type": "market_estimate",
+      "unit": "monthly"
+    },
+    {
+      "id": "eyeglasses_senior",
+      "name": "Prescription Eyeglasses",
+      "price": 300,
+      "category": "elderly",
+      "source_type": "market_estimate",
+      "unit": "per pair"
+    },
+    {
+      "id": "incontinence_supplies_monthly",
+      "name": "Incontinence Supplies (monthly)",
+      "price": 100,
+      "category": "elderly",
+      "source_type": "market_estimate",
+      "unit": "monthly"
+    },
+    {
+      "id": "meal_delivery_senior_weekly",
+      "name": "Meal Delivery (weekly, e.g. Meals on Wheels)",
+      "price": 70,
+      "category": "elderly",
+      "source_type": "market_estimate",
+      "unit": "weekly"
+    },
+    {
+      "id": "social_security_monthly",
+      "name": "Social Security Payment (monthly avg)",
+      "price": 1800,
+      "category": "elderly",
+      "source_type": "ssa_2026",
+      "unit": "monthly"
+    },
+    {
+      "id": "senior_transit_pass",
+      "name": "Senior Transit Pass (monthly)",
+      "price": 20,
+      "category": "elderly",
+      "source_type": "market_estimate",
+      "unit": "monthly"
+    },
+    {
+      "id": "solve_world_hunger_1yr",
+      "name": "Solve World Hunger (1 year)",
+      "price": 40000000000,
+      "category": "social_impact",
+      "source_type": "wfp_2026",
+      "unit": "one-time"
+    },
+    {
+      "id": "fund_us_schools_1yr",
+      "name": "Fund All US K-12 Schools (1 year)",
+      "price": 981570000000,
+      "category": "social_impact",
+      "source_type": "nces_2024",
+      "unit": "per year"
+    },
+    {
+      "id": "end_homeless_us_1yr",
+      "name": "End Homelessness in US (1 year)",
+      "price": 20000000000,
+      "category": "social_impact",
+      "source_type": "hud_2025",
+      "unit": "one-time"
+    },
+    {
+      "id": "clean_pacific_garbage",
+      "name": "Clean Great Pacific Garbage Patch",
+      "price": 7500000000,
+      "category": "social_impact",
+      "source_type": "theoceancleanup_2025",
+      "unit": "one-time"
+    },
+    {
+      "id": "end_world_hunger_2030",
+      "name": "End World Hunger by 2030 (7 years)",
+      "price": 655000000000,
+      "category": "social_impact",
+      "source_type": "wfp_2026",
+      "unit": "one-time"
+    },
+    {
+      "id": "universal_healthcare_us_1yr",
+      "name": "Universal Healthcare US (1 year)",
+      "price": 3800000000000,
+      "category": "social_impact",
+      "source_type": "peri_2023",
+      "unit": "per year"
+    },
+    {
+      "id": "affordable_housing_us_gap",
+      "name": "Close US Affordable Housing Gap",
+      "price": 150000000000,
+      "category": "social_impact",
+      "source_type": "tcf_2024",
+      "unit": "one-time"
+    },
+    {
+      "id": "buy_coffee_all_americans",
+      "name": "Buy a Coffee for Every American",
+      "price": 300000000,
+      "category": "social_impact",
+      "source_type": "market_estimate",
+      "unit": "one-time"
+    },
+    {
+      "id": "pay_off_all_medical_debt_us",
+      "name": "Pay Off All US Medical Debt",
+      "price": 220000000000,
+      "category": "social_impact",
+      "source_type": "kipf_2024",
+      "unit": "one-time"
+    },
+    {
+      "id": "fund_nasa_10yr",
+      "name": "Fund NASA for 10 Years",
+      "price": 25000000000,
+      "category": "social_impact",
+      "source_type": "nasa_2025",
+      "unit": "one-time"
+    },
+    {
+      "id": "end_poverty_us_1yr",
+      "name": "End Poverty in US (1 year est.)",
+      "price": 500000000000,
+      "category": "social_impact",
+      "source_type": "cbo_2025",
+      "unit": "one-time"
+    },
+    {
+      "id": "plant_trillion_trees",
+      "name": "Plant 1 Trillion Trees",
+      "price": 300000000000,
+      "category": "social_impact",
+      "source_type": "wef_2024",
+      "unit": "one-time"
+    },
+    {
+      "id": "forgive_all_student_loans",
       "name": "Forgive All US Student Loans",
       "price": 1770000000000,
       "category": "social_impact",
@@ -1600,15 +2128,7 @@
       "unit": "one-time"
     },
     {
-      "id": "opioid_treatment_us",
-      "name": "Fund Opioid Treatment for All (US 1yr)",
-      "price": 15000000000,
-      "category": "social_impact",
-      "source_type": "curated_estimate",
-      "unit": "per year"
-    },
-    {
-      "id": "lead_pipe_replacement",
+      "id": "replace_all_lead_pipes_us",
       "name": "Replace All US Lead Pipes",
       "price": 45000000000,
       "category": "social_impact",
@@ -1616,7 +2136,31 @@
       "unit": "one-time"
     },
     {
-      "id": "save_amazon",
+      "id": "vaccinate_all_children_globally",
+      "name": "Vaccinate All Children Globally (1 year)",
+      "price": 10000000000,
+      "category": "social_impact",
+      "source_type": "gavi_2025",
+      "unit": "per year"
+    },
+    {
+      "id": "clean_water_everyone_globally",
+      "name": "Clean Water Access for Everyone on Earth",
+      "price": 50000000000,
+      "category": "social_impact",
+      "source_type": "who_2025",
+      "unit": "one-time"
+    },
+    {
+      "id": "eradicate_malaria",
+      "name": "Eradicate Malaria Globally",
+      "price": 5000000000,
+      "category": "social_impact",
+      "source_type": "gates_foundation",
+      "unit": "one-time"
+    },
+    {
+      "id": "save_amazon_rainforest",
       "name": "Protect the Amazon Rainforest (permanent)",
       "price": 100000000000,
       "category": "social_impact",
@@ -1624,15 +2168,23 @@
       "unit": "one-time"
     },
     {
-      "id": "homeless_housing_us",
-      "name": "Build Housing for Every US Homeless Person",
-      "price": 20000000000,
+      "id": "fund_opioid_treatment_us_1yr",
+      "name": "Fund Opioid Treatment for All US (1 year)",
+      "price": 15000000000,
       "category": "social_impact",
       "source_type": "curated_estimate",
-      "unit": "one-time"
+      "unit": "per year"
     },
     {
-      "id": "teacher_raise_us",
+      "id": "free_school_lunch_us_1yr",
+      "name": "Free School Lunch for All US K-12 (1 year)",
+      "price": 26000000000,
+      "category": "social_impact",
+      "source_type": "usda_estimate",
+      "unit": "per year"
+    },
+    {
+      "id": "give_teachers_10k_raise_us",
       "name": "Give Every US Teacher a $10K Raise (1 year)",
       "price": 40000000000,
       "category": "social_impact",
@@ -1640,20 +2192,36 @@
       "unit": "per year"
     },
     {
-      "id": "vaccinate_africa",
-      "name": "Fully Vaccinate All African Children (1 year)",
-      "price": 2000000000,
-      "category": "social_impact",
-      "source_type": "who_estimate",
-      "unit": "per year"
-    },
-    {
-      "id": "eliminate_mosquito_disease",
+      "id": "end_mosquito_borne_disease",
       "name": "End All Mosquito-Borne Diseases",
       "price": 12000000000,
       "category": "social_impact",
       "source_type": "gates_foundation",
       "unit": "one-time"
+    },
+    {
+      "id": "reforest_1_billion_acres",
+      "name": "Reforest 1 Billion Acres",
+      "price": 50000000000,
+      "category": "social_impact",
+      "source_type": "curated_estimate",
+      "unit": "one-time"
+    },
+    {
+      "id": "fund_global_orphan_care_1yr",
+      "name": "Fund Global Orphan Care (1 year)",
+      "price": 8000000000,
+      "category": "social_impact",
+      "source_type": "unicef_estimate",
+      "unit": "per year"
+    },
+    {
+      "id": "vaccinate_all_africa_children_1yr",
+      "name": "Fully Vaccinate All African Children (1 year)",
+      "price": 2000000000,
+      "category": "social_impact",
+      "source_type": "who_estimate",
+      "unit": "per year"
     }
   ]
 }

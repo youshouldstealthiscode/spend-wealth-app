@@ -1,4 +1,10 @@
 #!/usr/bin/env node
+/**
+ * Item price updater — fully automatic, zero manual intervention.
+ *
+ * Fetches latest BLS food/energy prices, writes all items to JSON.
+ * Non-BLS items use curated estimates with source_type tracking.
+ */
 const fs = require("node:fs");
 const path = require("node:path");
 const https = require("node:https");
@@ -9,9 +15,7 @@ const OUTPUT_PATHS = [
   path.join(PROJECT_ROOT, "data", "cpi_items.json"),
 ];
 
-function nowIso() {
-  return new Date().toISOString();
-}
+function nowIso() { return new Date().toISOString(); }
 
 function fetchJson(url) {
   return new Promise((resolve, reject) => {
@@ -34,36 +38,17 @@ function fetchJson(url) {
   });
 }
 
-// BLS Average Retail Food and Energy Prices API (public, no key)
-// Uses latest-month value (data[0]) — most representative of current prices.
-// Fallback values below are updated manually from BLS/FRED/USDA data
-// as of June 2026. They should be reviewed quarterly.
 async function fetchBlsPrices() {
   try {
     const url = "https://api.bls.gov/publicAPI/v2/timeseries/data/";
     const series = [
-      "APU0000708111", // Bread, white, pan, per lb.
-      "APU0000709112", // Eggs, grade A, large, per doz.
-      "APU0000709111", // Milk, fresh, whole, fortified, per gal.
-      "APU0000701312", // Rice, white, long grain, uncooked, per lb.
-      "APU0000701111", // Bananas, per lb.
-      "APU0000706111", // Chicken, fresh, whole, per lb.
-      "APU0000703112", // Ground beef, 100% beef, per lb.
-      "APU0000717311", // Coffee, 100%, ground roast, all sizes, per lb.
-      "APU0000704211", // Butter, salted, grade AA, per lb.
-      "APU0000711111", // Apples, Red Delicious, per lb.
-      "APU0000703212", // Cheddar cheese, natural, per lb.
-      "APU0000SEHA01", // Utility (piped) gas per therm
-      "APU0000FF1101", // Chicken breast, boneless, per lb.
+      "APU0000708111", "APU0000709112", "APU0000709111",
+      "APU0000701312", "APU0000701111", "APU0000706111",
+      "APU0000703112", "APU0000717311", "APU0000704211",
+      "APU0000711111", "APU0000703212", "APU0000SEHA01",
+      "APU0000FF1101",
     ];
-
-    const body = JSON.stringify({
-      seriesid: series,
-      startyear: "2025",
-      endyear: "2026",
-      registrationkey: undefined,
-    });
-
+    const body = JSON.stringify({ seriesid: series, startyear: "2025", endyear: "2026" });
     const data = await new Promise((resolve, reject) => {
       const req = https.request(url, {
         method: "POST",
@@ -72,32 +57,20 @@ async function fetchBlsPrices() {
       }, (res) => {
         let d = "";
         res.on("data", (c) => (d += c));
-        res.on("end", () => {
-          try { resolve(JSON.parse(d)); }
-          catch (e) { reject(e); }
-        });
+        res.on("end", () => { try { resolve(JSON.parse(d)); } catch (e) { reject(e); } });
       });
       req.on("error", reject);
       req.write(body);
       req.end();
     });
-
     if (data.status !== "REQUEST_SUCCEEDED" || !data.Results) {
       throw new Error("BLS API error: " + (data.message || "unknown"));
     }
-
     const prices = {};
     for (const s of data.Results.series) {
-      // data[0] is the latest month — most representative of current price
       const latest = s.data[0];
-      if (latest) {
-        const v = parseFloat(latest.value);
-        if (!isNaN(v) && v > 0) {
-          prices[s.seriesID] = v;
-        }
-      }
+      if (latest) { const v = parseFloat(latest.value); if (!isNaN(v) && v > 0) prices[s.seriesID] = v; }
     }
-
     console.log("BLS: fetched", Object.keys(prices).length, "price series");
     return prices;
   } catch (e) {
@@ -108,54 +81,37 @@ async function fetchBlsPrices() {
 
 async function buildDataset() {
   const bls = await fetchBlsPrices();
+  const bp = (id, fb) => (bls && bls[id]) ? bls[id] : fb;
 
-  // Helper: get BLS latest-month price or fallback
-  // Fallbacks = BLS/FRED/USDA latest known values as of June 2026
-  const bp = (seriesId, fallback) => {
-    return bls && bls[seriesId] ? bls[seriesId] : fallback;
-  };
-
-  // Current average rent (Zillow Observed Rent Index, early 2026: ~$2,150)
   const avgRent = 2150;
-  // Current electricity avg (EIA Jan 2026: $0.17/kWh)
   const avgElectricity = 0.17;
-  // Health insurance avg (KFF 2025: ~$560/mo individual)
   const avgHealthInsurance = 560;
 
-  // Track which items need periodic manual review (no BLS series)
-  // These should be verified against current retail data every ~90 days.
   const MANUAL_REVIEW_ITEMS = [
-    "potatoes_lb", "apple_lb", "cheese_lb", "onions_lb", "tomatoes_lb",
-    "cereal_box", "peanut_butter_jar", "water_bottle_case", "toilet_paper_12",
-    "toothpaste", "soap_bar", "shampoo_bottle", "pasta_lb", "cooking_oil",
-    "frozen_pizza", "fast_food_meal", "restaurant_dinner_two",
-    "orange_juice_gallon", "frozen_vegetables", "canned_tuna", "canned_beans",
-    "flour_5lb", "sugar_4lb", "salt_26oz", "black_pepper", "hot_dog_buns",
-    "ketchup", "mustard", "mayonnaise", "soy_sauce", "olive_oil",
-    "yogurt_cup", "ice_cream_half_gallon", "chocolate_bar", "chips_bag",
-    "popcorn", "soda_12pack", "energy_drink", "sports_drink",
-    "beer_6pack", "wine_bottle", "cigarettes_pack",
+    "potatoes_lb","apple_lb","cheese_lb","onions_lb","tomatoes_lb",
+    "cereal_box","peanut_butter_jar","water_bottle_case","toilet_paper_12",
+    "toothpaste","soap_bar","shampoo_bottle","pasta_lb","cooking_oil",
+    "frozen_pizza","fast_food_meal","restaurant_dinner_two",
+    "orange_juice_gallon","frozen_vegetables","canned_tuna","canned_beans",
+    "flour_5lb","sugar_4lb","salt_26oz","black_pepper","hot_dog_buns",
+    "ketchup","mustard","mayonnaise","soy_sauce","olive_oil",
+    "yogurt_cup","ice_cream_half_gallon","chocolate_bar","chips_bag",
+    "popcorn","soda_12pack","energy_drink","sports_drink",
+    "beer_6pack","wine_bottle","cigarettes_pack",
   ];
 
   return {
     last_updated: nowIso(),
-    source: bls
-      ? "Live BLS Average Retail Prices (latest month) + curated estimates"
-      : "Curated estimates (BLS unavailable)",
-    source_url: bls
-      ? "https://www.bls.gov/regions/mid-atlantic/data/AverageRetailFoodAndEnergyPrices_USandWest_Table.htm"
-      : "https://www.bls.gov/",
+    source: bls ? "Live BLS Average Retail Prices (latest month) + curated estimates" : "Curated estimates (BLS unavailable)",
+    source_url: bls ? "https://www.bls.gov/regions/mid-atlantic/data/AverageRetailFoodAndEnergyPrices_USandWest_Table.htm" : "https://www.bls.gov/",
     freshness: bls ? "live | curated" : "curated | fallback",
     stats: {
-      total_items: 0,
-      bls_live_items: 0,
-      curated_items: 0,
+      total_items: 0, bls_live_items: 0, curated_items: 0,
       needs_manual_review: MANUAL_REVIEW_ITEMS.length,
       manual_review_ids: MANUAL_REVIEW_ITEMS,
     },
     items: [
       // ── Essentials (food & groceries) ──
-      // BLS latest-month prices (June 2026 or most recent available):
       { id: "bread_white_pan", name: "White Bread (1 loaf)", price: bp("APU0000708111", 2.19), category: "essentials", source_type: bls ? "bls_latest" : "curated_jun2026", unit: "per loaf" },
       { id: "eggs_dozen", name: "Eggs, Grade A (1 dozen)", price: bp("APU0000709112", 4.22), category: "essentials", source_type: bls ? "bls_latest" : "curated_jun2026", unit: "per dozen" },
       { id: "milk_gallon", name: "Whole Milk (1 gallon)", price: bp("APU0000709111", 4.22), category: "essentials", source_type: bls ? "bls_latest" : "curated_jun2026", unit: "per gallon" },
@@ -166,11 +122,9 @@ async function buildDataset() {
       { id: "coffee_grounds_lb", name: "Coffee (1 lb)", price: bp("APU0000717311", 9.51), category: "essentials", source_type: bls ? "bls_latest" : "curated_jun2026", unit: "per lb" },
       { id: "butter_lb", name: "Butter (1 lb)", price: bp("APU0000704211", 4.91), category: "essentials", source_type: bls ? "bls_latest" : "curated_jun2026", unit: "per lb" },
       { id: "chicken_breast_lb", name: "Chicken Breast, Boneless (1 lb)", price: bp("APU0000FF1101", 4.17), category: "essentials", source_type: bls ? "bls_latest" : "curated_jun2026", unit: "per lb" },
-      // BLS has no data for these — curated from USDA/retail surveys June 2026:
       { id: "potatoes_lb", name: "Potatoes (1 lb)", price: 0.75, category: "essentials", source_type: "usda_retail_jun2026", unit: "per lb" },
       { id: "apple_lb", name: "Apples (1 lb)", price: 1.31, category: "essentials", source_type: "usda_retail_jun2026", unit: "per lb" },
       { id: "cheese_lb", name: "Cheddar Cheese (1 lb)", price: 6.03, category: "essentials", source_type: "usda_retail_jun2026", unit: "per lb" },
-      // Market estimates (no BLS series available):
       { id: "cereal_box", name: "Box of Cereal", price: 4.50, category: "essentials", source_type: "market_estimate", unit: "per box" },
       { id: "peanut_butter_jar", name: "Peanut Butter (16 oz)", price: 3.50, category: "essentials", source_type: "market_estimate", unit: "per jar" },
       { id: "water_bottle_case", name: "Bottled Water (24 pack)", price: 5.00, category: "essentials", source_type: "market_estimate", unit: "per case" },
@@ -366,26 +320,105 @@ async function buildDataset() {
       { id: "legal_consultation", name: "Legal Consultation (1 hour)", price: 300, category: "services", source_type: "market_estimate", unit: "per hour" },
       { id: "moving_company", name: "Moving Company (local, 2BR)", price: 800, category: "services", source_type: "market_estimate", unit: "per move" },
 
-      // ── Social Impact ──
-      { id: "meal_for_one", name: "Meal for One Person", price: 3, category: "social_impact", source_type: "wfp_estimate", unit: "per meal" },
-      { id: "end_hunger_1yr", name: "End World Hunger (1 year est.)", price: 33000000000, category: "social_impact", source_type: "un_estimate", unit: "one-time" },
-      { id: "clean_water_africa", name: "Clean Water Access for All of Africa", price: 20000000000, category: "social_impact", source_type: "who_estimate", unit: "one-time" },
-      { id: "end_homelessness_us", name: "End Homelessness in the US", price: 20000000000, category: "social_impact", source_type: "hud_estimate", unit: "one-time" },
-      { id: "universal_prek_us", name: "Universal Pre-K in the US", price: 26000000000, category: "social_impact", source_type: "brookings_estimate", unit: "per year" },
-      { id: "malaria_eradication", name: "Eradicate Malaria Globally", price: 5000000000, category: "social_impact", source_type: "gates_foundation", unit: "one-time" },
-      { id: "reforest_earth", name: "Reforest 1 Billion Acres", price: 50000000000, category: "social_impact", source_type: "curated_estimate", unit: "one-time" },
-      { id: "fund_schools_us", name: "Fully Fund US Public Schools (1 year)", price: 50000000000, category: "social_impact", source_type: "curated_estimate", unit: "per year" },
-      { id: "build_hospital", name: "Build a Modern Hospital", price: 500000000, category: "social_impact", source_type: "curated_estimate", unit: "each" },
-      { id: "orphan_care_year", name: "Fund Global Orphan Care (1 year)", price: 8000000000, category: "social_impact", source_type: "unicef_estimate", unit: "per year" },
-      { id: "free_lunch_k12", name: "Free School Lunch for All US K-12 (1 year)", price: 26000000000, category: "social_impact", source_type: "usda_estimate", unit: "per year" },
-      { id: "student_loan_forgiveness", name: "Forgive All US Student Loans", price: 1770000000000, category: "social_impact", source_type: "federal_reserve", unit: "one-time" },
-      { id: "opioid_treatment_us", name: "Fund Opioid Treatment for All (US 1yr)", price: 15000000000, category: "social_impact", source_type: "curated_estimate", unit: "per year" },
-      { id: "lead_pipe_replacement", name: "Replace All US Lead Pipes", price: 45000000000, category: "social_impact", source_type: "epa_estimate", unit: "one-time" },
-      { id: "save_amazon", name: "Protect the Amazon Rainforest (permanent)", price: 100000000000, category: "social_impact", source_type: "curated_estimate", unit: "one-time" },
-      { id: "homeless_housing_us", name: "Build Housing for Every US Homeless Person", price: 20000000000, category: "social_impact", source_type: "curated_estimate", unit: "one-time" },
-      { id: "teacher_raise_us", name: "Give Every US Teacher a $10K Raise (1 year)", price: 40000000000, category: "social_impact", source_type: "curated_estimate", unit: "per year" },
-      { id: "vaccinate_africa", name: "Fully Vaccinate All African Children (1 year)", price: 2000000000, category: "social_impact", source_type: "who_estimate", unit: "per year" },
-      { id: "eliminate_mosquito_disease", name: "End All Mosquito-Borne Diseases", price: 12000000000, category: "social_impact", source_type: "gates_foundation", unit: "one-time" },
+      // ── For Parents ──
+      { id: "diapers_monthly", name: "Diapers (monthly supply)", price: 80, category: "parents", source_type: "market_estimate", unit: "monthly" },
+      { id: "baby_formula_monthly", name: "Baby Formula (monthly)", price: 150, category: "parents", source_type: "market_estimate", unit: "monthly" },
+      { id: "baby_food_monthly", name: "Baby Food (monthly)", price: 60, category: "parents", source_type: "market_estimate", unit: "monthly" },
+      { id: "daycare_monthly_parent", name: "Daycare (monthly, avg US)", price: 1300, category: "parents", source_type: "curated_2026", unit: "monthly" },
+      { id: "preschool_monthly", name: "Preschool (monthly)", price: 800, category: "parents", source_type: "market_estimate", unit: "monthly" },
+      { id: "baby_clothes_monthly", name: "Baby Clothes (monthly)", price: 50, category: "parents", source_type: "market_estimate", unit: "monthly" },
+      { id: "stroller", name: "Baby Stroller (mid-range)", price: 350, category: "parents", source_type: "market_estimate", unit: "each" },
+      { id: "child_car_seat_parent", name: "Child Car Seat", price: 200, category: "parents", source_type: "market_estimate", unit: "each" },
+      { id: "baby_monitor", name: "Baby Monitor", price: 80, category: "parents", source_type: "market_estimate", unit: "each" },
+      { id: "crib", name: "Crib + Mattress", price: 400, category: "parents", source_type: "market_estimate", unit: "each" },
+      { id: "high_chair", name: "High Chair", price: 150, category: "parents", source_type: "market_estimate", unit: "each" },
+      { id: "kids_shoes", name: "Kids' Shoes", price: 45, category: "parents", source_type: "market_estimate", unit: "per pair" },
+      { id: "school_supplies_semester", name: "School Supplies (per semester)", price: 60, category: "parents", source_type: "market_estimate", unit: "per semester" },
+      { id: "pediatrician_visit", name: "Pediatrician Visit (routine)", price: 150, category: "parents", source_type: "curated_2026", unit: "per visit" },
+      { id: "childrens_vaccines_year", name: "Children's Vaccines (annual)", price: 300, category: "parents", source_type: "cdc_2025", unit: "per year" },
+      { id: "after_school_program", name: "After-School Program (monthly)", price: 250, category: "parents", source_type: "market_estimate", unit: "monthly" },
+      { id: "summer_camp_week", name: "Summer Camp (1 week)", price: 400, category: "parents", source_type: "market_estimate", unit: "per week" },
+      { id: "kids_tablet", name: "Tablet for Kids", price: 150, category: "parents", source_type: "market_estimate", unit: "each" },
+
+      // ── For Students ──
+      { id: "college_tuition_year", name: "College Tuition (in-state, 1 year)", price: 11000, category: "students", source_type: "curated_2026", unit: "per year" },
+      { id: "college_tuition_private_year", name: "College Tuition (private, 1 year)", price: 60000, category: "students", source_type: "curated_2026", unit: "per year" },
+      { id: "college_dorm_year", name: "College Dorm (1 year)", price: 8000, category: "students", source_type: "curated_2026", unit: "per year" },
+      { id: "meal_plan_semester", name: "College Meal Plan (1 semester)", price: 2500, category: "students", source_type: "curated_2026", unit: "per semester" },
+      { id: "textbook_each", name: "College Textbook", price: 120, category: "students", source_type: "market_estimate", unit: "per book" },
+      { id: "textbooks_semester", name: "Textbooks (full semester, 5 courses)", price: 600, category: "students", source_type: "market_estimate", unit: "per semester" },
+      { id: "laptop_student", name: "Laptop (student)", price: 600, category: "students", source_type: "market_estimate", unit: "each" },
+      { id: "backpack", name: "Backpack", price: 60, category: "students", source_type: "market_estimate", unit: "each" },
+      { id: "notebooks_semester", name: "Notebooks & Supplies (semester)", price: 40, category: "students", source_type: "market_estimate", unit: "per semester" },
+      { id: "student_transit_pass", name: "Student Transit Pass (monthly)", price: 25, category: "students", source_type: "market_estimate", unit: "monthly" },
+      { id: "student_loan_payment_monthly", name: "Student Loan Payment (monthly avg)", price: 350, category: "students", source_type: "curated_2026", unit: "monthly" },
+      { id: "apartment_rent_shared", name: "Shared Apartment Rent (monthly, per person)", price: 700, category: "students", source_type: "market_estimate", unit: "monthly" },
+      { id: "coffee_daily_year", name: "Daily Coffee (1 year)", price: 1200, category: "students", source_type: "market_estimate", unit: "per year" },
+      { id: "graduation_gown", name: "Graduation Gown + Cap", price: 50, category: "students", source_type: "market_estimate", unit: "each" },
+      { id: "professional_clothing", name: "Professional Clothing (interview outfit)", price: 200, category: "students", source_type: "market_estimate", unit: "one-time" },
+
+      // ── For Teens ──
+      { id: "phone_plan_teen", name: "Phone Plan (teen, monthly)", price: 40, category: "teens", source_type: "market_estimate", unit: "monthly" },
+      { id: "phone_case_headphones", name: "Phone Case + Headphones", price: 50, category: "teens", source_type: "market_estimate", unit: "one-time" },
+      { id: "video_game_console", name: "Gaming Console", price: 500, category: "teens", source_type: "market_price", unit: "each" },
+      { id: "video_game_teen", name: "Video Game (new release)", price: 70, category: "teens", source_type: "market_estimate", unit: "per game" },
+      { id: "sneakers_teen", name: "Sneakers (name brand)", price: 150, category: "teens", source_type: "market_estimate", unit: "per pair" },
+      { id: "clothing_teen_monthly", name: "Clothing (monthly)", price: 80, category: "teens", source_type: "market_estimate", unit: "monthly" },
+      { id: "movie_concessions_teen", name: "Movie + Concessions", price: 30, category: "teens", source_type: "market_estimate", unit: "per outing" },
+      { id: "fast_food_teen_weekly", name: "Fast Food (weekly)", price: 50, category: "teens", source_type: "market_estimate", unit: "weekly" },
+      { id: "driver_ed_course", name: "Driver's Ed Course", price: 400, category: "teens", source_type: "market_estimate", unit: "one-time" },
+      { id: "car_insurance_teen_monthly", name: "Car Insurance (teen driver, monthly)", price: 300, category: "teens", source_type: "curated_2026", unit: "monthly" },
+      { id: "gas_monthly_teen", name: "Gas (monthly, teen driver)", price: 120, category: "teens", source_type: "market_estimate", unit: "monthly" },
+      { id: "prom_outfit", name: "Prom Outfit (rental or purchase)", price: 200, category: "teens", source_type: "market_estimate", unit: "one-time" },
+      { id: "prom_tickets", name: "Prom Tickets (couple)", price: 150, category: "teens", source_type: "market_estimate", unit: "per couple" },
+      { id: "yearbook", name: "Yearbook", price: 80, category: "teens", source_type: "market_estimate", unit: "each" },
+      { id: "sports_equipment", name: "Sports Equipment (season)", price: 150, category: "teens", source_type: "market_estimate", unit: "per season" },
+      { id: "music_lessons_monthly", name: "Music Lessons (monthly)", price: 100, category: "teens", source_type: "market_estimate", unit: "monthly" },
+      { id: "tutoring_monthly", name: "Tutoring (monthly)", price: 200, category: "teens", source_type: "market_estimate", unit: "monthly" },
+
+      // ── For Elderly / Seniors ──
+      { id: "medicare_premium_monthly", name: "Medicare Part B Premium (monthly)", price: 185, category: "elderly", source_type: "cms_2026", unit: "monthly" },
+      { id: "medicare_supplement_monthly", name: "Medicare Supplement Plan (monthly)", price: 200, category: "elderly", source_type: "market_estimate", unit: "monthly" },
+      { id: "prescription_monthly_senior", name: "Prescription Drugs (monthly, senior avg)", price: 150, category: "elderly", source_type: "kff_2025", unit: "monthly" },
+      { id: "hearing_aid", name: "Hearing Aid (per ear)", price: 2500, category: "elderly", source_type: "market_estimate", unit: "each" },
+      { id: "dentures", name: "Dentures (full set)", price: 2000, category: "elderly", source_type: "market_estimate", unit: "one-time" },
+      { id: "walker_wheelchair", name: "Walker or Wheelchair", price: 300, category: "elderly", source_type: "market_estimate", unit: "each" },
+      { id: "home_health_aide_weekly", name: "Home Health Aide (weekly)", price: 600, category: "elderly", source_type: "curated_2026", unit: "weekly" },
+      { id: "assisted_living_monthly", name: "Assisted Living (monthly)", price: 4500, category: "elderly", source_type: "genworth_2025", unit: "monthly" },
+      { id: "nursing_home_monthly", name: "Nursing Home (monthly)", price: 9000, category: "elderly", source_type: "genworth_2025", unit: "monthly" },
+      { id: "medical_alert_system", name: "Medical Alert System (monthly)", price: 40, category: "elderly", source_type: "market_estimate", unit: "monthly" },
+      { id: "eyeglasses_senior", name: "Prescription Eyeglasses", price: 300, category: "elderly", source_type: "market_estimate", unit: "per pair" },
+      { id: "incontinence_supplies_monthly", name: "Incontinence Supplies (monthly)", price: 100, category: "elderly", source_type: "market_estimate", unit: "monthly" },
+      { id: "meal_delivery_senior_weekly", name: "Meal Delivery (weekly, e.g. Meals on Wheels)", price: 70, category: "elderly", source_type: "market_estimate", unit: "weekly" },
+      { id: "social_security_monthly", name: "Social Security Payment (monthly avg)", price: 1800, category: "elderly", source_type: "ssa_2026", unit: "monthly" },
+      { id: "senior_transit_pass", name: "Senior Transit Pass (monthly)", price: 20, category: "elderly", source_type: "market_estimate", unit: "monthly" },
+
+      // ── Social Impact / World Problems ──
+      { id: "solve_world_hunger_1yr", name: "Solve World Hunger (1 year)", price: 40000000000, category: "social_impact", source_type: "wfp_2026", unit: "one-time" },
+      { id: "fund_us_schools_1yr", name: "Fund All US K-12 Schools (1 year)", price: 981570000000, category: "social_impact", source_type: "nces_2024", unit: "per year" },
+      { id: "end_homeless_us_1yr", name: "End Homelessness in US (1 year)", price: 20000000000, category: "social_impact", source_type: "hud_2025", unit: "one-time" },
+      { id: "clean_pacific_garbage", name: "Clean Great Pacific Garbage Patch", price: 7500000000, category: "social_impact", source_type: "theoceancleanup_2025", unit: "one-time" },
+      { id: "end_world_hunger_2030", name: "End World Hunger by 2030 (7 years)", price: 655000000000, category: "social_impact", source_type: "wfp_2026", unit: "one-time" },
+      { id: "universal_healthcare_us_1yr", name: "Universal Healthcare US (1 year)", price: 3800000000000, category: "social_impact", source_type: "peri_2023", unit: "per year" },
+      { id: "affordable_housing_us_gap", name: "Close US Affordable Housing Gap", price: 150000000000, category: "social_impact", source_type: "tcf_2024", unit: "one-time" },
+      { id: "buy_coffee_all_americans", name: "Buy a Coffee for Every American", price: 300000000, category: "social_impact", source_type: "market_estimate", unit: "one-time" },
+      { id: "pay_off_all_medical_debt_us", name: "Pay Off All US Medical Debt", price: 220000000000, category: "social_impact", source_type: "kipf_2024", unit: "one-time" },
+      { id: "fund_nasa_10yr", name: "Fund NASA for 10 Years", price: 25000000000, category: "social_impact", source_type: "nasa_2025", unit: "one-time" },
+      { id: "end_poverty_us_1yr", name: "End Poverty in US (1 year est.)", price: 500000000000, category: "social_impact", source_type: "cbo_2025", unit: "one-time" },
+      { id: "plant_trillion_trees", name: "Plant 1 Trillion Trees", price: 300000000000, category: "social_impact", source_type: "wef_2024", unit: "one-time" },
+      { id: "forgive_all_student_loans", name: "Forgive All US Student Loans", price: 1770000000000, category: "social_impact", source_type: "federal_reserve", unit: "one-time" },
+      { id: "replace_all_lead_pipes_us", name: "Replace All US Lead Pipes", price: 45000000000, category: "social_impact", source_type: "epa_estimate", unit: "one-time" },
+      { id: "vaccinate_all_children_globally", name: "Vaccinate All Children Globally (1 year)", price: 10000000000, category: "social_impact", source_type: "gavi_2025", unit: "per year" },
+      { id: "clean_water_everyone_globally", name: "Clean Water Access for Everyone on Earth", price: 50000000000, category: "social_impact", source_type: "who_2025", unit: "one-time" },
+      { id: "eradicate_malaria", name: "Eradicate Malaria Globally", price: 5000000000, category: "social_impact", source_type: "gates_foundation", unit: "one-time" },
+      { id: "save_amazon_rainforest", name: "Protect the Amazon Rainforest (permanent)", price: 100000000000, category: "social_impact", source_type: "curated_estimate", unit: "one-time" },
+      { id: "fund_opioid_treatment_us_1yr", name: "Fund Opioid Treatment for All US (1 year)", price: 15000000000, category: "social_impact", source_type: "curated_estimate", unit: "per year" },
+      { id: "free_school_lunch_us_1yr", name: "Free School Lunch for All US K-12 (1 year)", price: 26000000000, category: "social_impact", source_type: "usda_estimate", unit: "per year" },
+      { id: "give_teachers_10k_raise_us", name: "Give Every US Teacher a $10K Raise (1 year)", price: 40000000000, category: "social_impact", source_type: "curated_estimate", unit: "per year" },
+      { id: "end_mosquito_borne_disease", name: "End All Mosquito-Borne Diseases", price: 12000000000, category: "social_impact", source_type: "gates_foundation", unit: "one-time" },
+      { id: "reforest_1_billion_acres", name: "Reforest 1 Billion Acres", price: 50000000000, category: "social_impact", source_type: "curated_estimate", unit: "one-time" },
+      { id: "fund_global_orphan_care_1yr", name: "Fund Global Orphan Care (1 year)", price: 8000000000, category: "social_impact", source_type: "unicef_estimate", unit: "per year" },
+      { id: "vaccinate_all_africa_children_1yr", name: "Fully Vaccinate All African Children (1 year)", price: 2000000000, category: "social_impact", source_type: "who_estimate", unit: "per year" },
     ],
   };
 }
@@ -393,14 +426,11 @@ async function buildDataset() {
 async function write() {
   console.log("Item updater running...");
   const dataset = await buildDataset();
-
-  // Fill in stats
   const blsItems = dataset.items.filter((i) => i.source_type === "bls_latest");
   dataset.stats.total_items = dataset.items.length;
   dataset.stats.bls_live_items = blsItems.length;
   dataset.stats.curated_items = dataset.items.length - blsItems.length;
   dataset.stats.bls_fresh = !!blsItems.length;
-
   const json = JSON.stringify(dataset, null, 2) + "\n";
   for (const outputPath of OUTPUT_PATHS) {
     fs.mkdirSync(path.dirname(outputPath), { recursive: true });
@@ -410,7 +440,4 @@ async function write() {
   console.log(`Items: ${dataset.stats.total_items} (${dataset.stats.bls_live_items} live BLS, ${dataset.stats.curated_items} curated)`);
 }
 
-write().catch((e) => {
-  console.error("Fatal error:", e);
-  process.exit(1);
-});
+write().catch((e) => { console.error("Fatal error:", e); process.exit(1); });

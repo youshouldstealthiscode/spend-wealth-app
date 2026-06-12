@@ -41,6 +41,16 @@ const els = {
   stashStacks: $("#stashStacks"),
   stashRemaining: $("#stashRemaining"),
   fortuneStash: $("#fortuneStash"),
+  // Gap metrics
+  gapBillionaireSeconds: $("#gapBillionaireSeconds"),
+  gapLifetimeRatio: $("#gapLifetimeRatio"),
+  gapPeopleNeeded: $("#gapPeopleNeeded"),
+  gapCountYears: $("#gapCountYears"),
+  gapWorldHunger: $("#gapWorldHunger"),
+  gapSchools: $("#gapSchools"),
+  gapStudentLoans: $("#gapStudentLoans"),
+  gapHomeless: $("#gapHomeless"),
+  gapDailyIncome: $("#gapDailyIncome"),
 };
 
 // ─── Helpers ───
@@ -454,4 +464,131 @@ export function updateUI(state) {
   renderReceipt(state);
   renderPresetButtons(state);
   renderStashStacks(state);
+  renderGapMetrics(state);
+}
+
+// ─── Render: Gap Metrics — What could this wealth actually do? ───
+export function renderGapMetrics(state) {
+  const person = state.selectedPerson;
+  if (!person) return;
+
+  const wealth = person.net_worth || 0;
+  if (wealth <= 0) return;
+
+  const { hourlyWage, hoursPerWeek, weeksPerYear } = state.userFinance;
+  const annualIncome = (hourlyWage && hoursPerWeek && weeksPerYear)
+    ? hourlyWage * hoursPerWeek * weeksPerYear
+    : 0;
+  const dailyIncome = annualIncome / 365;
+  const billionaireDailyIncome = wealth / 365;
+  const billionaireHourlyIncome = wealth / (365 * 24);
+  const billionaireSecondIncome = billionaireHourlyIncome / 3600;
+
+  // Billionaire-seconds: how many seconds for them to earn your hourly wage
+  if (els.gapBillionaireSeconds) {
+    const secs = hourlyWage > 0 ? (hourlyWage / billionaireSecondIncome) : 0;
+    if (secs > 0 && secs < 1) {
+      els.gapBillionaireSeconds.textContent = (secs * 1000).toFixed(1) + " milliseconds";
+    } else if (secs >= 1 && secs < 60) {
+      els.gapBillionaireSeconds.textContent = secs.toFixed(2) + " seconds";
+    } else if (secs >= 60 && secs < 3600) {
+      els.gapBillionaireSeconds.textContent = (secs / 60).toFixed(2) + " minutes";
+    } else {
+      els.gapBillionaireSeconds.textContent = numberFormatter.format(secs) + " seconds";
+    }
+  }
+
+  // Your lifetime income vs their net worth
+  if (els.gapLifetimeRatio && annualIncome > 0) {
+    const lifetimeYears = 40; // working years
+    const lifetimeIncome = annualIncome * lifetimeYears;
+    const ratio = wealth / lifetimeIncome;
+    if (ratio >= 1e6) {
+      els.gapLifetimeRatio.textContent = numberFormatter.format(Math.round(ratio)) + " of you";
+    } else if (ratio >= 1000) {
+      els.gapLifetimeRatio.textContent = (ratio / 1000).toFixed(1) + "K of you";
+    } else {
+      els.gapLifetimeRatio.textContent = ratio.toFixed(1) + " of you";
+    }
+  } else if (els.gapLifetimeRatio) {
+    els.gapLifetimeRatio.textContent = "Enter your wage above";
+  }
+
+  // People needed to match their wealth (at median US household net worth ~$192K)
+  if (els.gapPeopleNeeded) {
+    const medianHouseholdNetWorth = 192700; // Federal Reserve 2025
+    const peopleNeeded = wealth / medianHouseholdNetWorth;
+    if (peopleNeeded >= 1e9) {
+      els.gapPeopleNeeded.textContent = (peopleNeeded / 1e9).toFixed(2) + " billion people";
+    } else if (peopleNeeded >= 1e6) {
+      els.gapPeopleNeeded.textContent = (peopleNeeded / 1e6).toFixed(1) + " million people";
+    } else {
+      els.gapPeopleNeeded.textContent = numberFormatter.format(Math.round(peopleNeeded)) + " people";
+    }
+  }
+
+  // Years to count their wealth at $1/second
+  if (els.gapCountYears) {
+    const seconds = wealth;
+    const years = seconds / (365.25 * 24 * 3600);
+    if (years >= 1e9) {
+      els.gapCountYears.textContent = (years / 1e9).toFixed(2) + " billion years";
+    } else if (years >= 1e6) {
+      els.gapCountYears.textContent = (years / 1e6).toFixed(1) + " million years";
+    } else {
+      els.gapCountYears.textContent = numberFormatter.format(Math.round(years)) + " years";
+    }
+  }
+
+  // World hunger (1 year = $40B)
+  if (els.gapWorldHunger) {
+    const hungerCost = 40000000000;
+    const times = wealth / hungerCost;
+    els.gapWorldHunger.textContent = times >= 1
+      ? numberFormatter.format(Math.round(times)) + "×"
+      : "Not enough";
+  }
+
+  // US schools (1 year = $981.57B)
+  if (els.gapSchools) {
+    const schoolsCost = 981570000000;
+    const times = wealth / schoolsCost;
+    els.gapSchools.textContent = times >= 1
+      ? times.toFixed(1) + "×"
+      : "Not enough";
+  }
+
+  // Student loans ($1.77T)
+  if (els.gapStudentLoans) {
+    const loanCost = 1770000000000;
+    const times = wealth / loanCost;
+    els.gapStudentLoans.textContent = times >= 1
+      ? times.toFixed(2) + "×"
+      : "Not enough";
+  }
+
+  // End homelessness ($20B)
+  if (els.gapHomeless) {
+    const homelessCost = 20000000000;
+    const times = wealth / homelessCost;
+    els.gapHomeless.textContent = times >= 1
+      ? numberFormatter.format(Math.round(times)) + " years"
+      : "Not enough";
+  }
+
+  // Daily income comparison
+  if (els.gapDailyIncome) {
+    if (dailyIncome > 0) {
+      const ratio = billionaireDailyIncome / dailyIncome;
+      if (ratio >= 1e6) {
+        els.gapDailyIncome.textContent = (ratio / 1e6).toFixed(1) + "M× your daily income";
+      } else if (ratio >= 1000) {
+        els.gapDailyIncome.textContent = (ratio / 1000).toFixed(1) + "K× your daily income";
+      } else {
+        els.gapDailyIncome.textContent = ratio.toFixed(0) + "× your daily income";
+      }
+    } else {
+      els.gapDailyIncome.textContent = numberFormatter.format(Math.round(billionaireDailyIncome)) + "/day (enter wage for ratio)";
+    }
+  }
 }
