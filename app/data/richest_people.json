@@ -11,7 +11,7 @@
       "net_worth": 835000000000,
       "company": "Tesla, SpaceX",
       "country": "United States",
-      "daily_change_pct": 0.154,
+      "daily_change_pct": 0.00154,
       "daily_change_usd": 1211921000
     },
     {
@@ -21,7 +21,7 @@
       "net_worth": 309000000000,
       "company": "Google",
       "country": "United States",
-      "daily_change_pct": -0.013,
+      "daily_change_pct": -0.0013,
       "daily_change_usd": -4000000000
     },
     {
@@ -31,7 +31,7 @@
       "net_worth": 285000000000,
       "company": "Google",
       "country": "United States",
-      "daily_change_pct": -0.014,
+      "daily_change_pct": -0.0014,
       "daily_change_usd": -4000000000
     },
     {
@@ -41,7 +41,7 @@
       "net_worth": 277000000000,
       "company": "Amazon",
       "country": "United States",
-      "daily_change_pct": 0.018,
+      "daily_change_pct": 0.0018,
       "daily_change_usd": 5000000000
     },
     {
@@ -51,7 +51,7 @@
       "net_worth": 276000000000,
       "company": "Oracle",
       "country": "United States",
-      "daily_change_pct": 0.209,
+      "daily_change_pct": 0.0209,
       "daily_change_usd": 47670000000
     },
     {
@@ -61,7 +61,7 @@
       "net_worth": 244000000000,
       "company": "Dell Technologies",
       "country": "United States",
-      "daily_change_pct": 0.275,
+      "daily_change_pct": 0.0275,
       "daily_change_usd": 52700000000
     },
     {
@@ -71,7 +71,7 @@
       "net_worth": 217000000000,
       "company": "Meta",
       "country": "United States",
-      "daily_change_pct": 0.033,
+      "daily_change_pct": 0.0033,
       "daily_change_usd": 7000000000
     },
     {
@@ -81,7 +81,7 @@
       "net_worth": 182000000000,
       "company": "Nvidia",
       "country": "United States",
-      "daily_change_pct": 0.052,
+      "daily_change_pct": 0.0052,
       "daily_change_usd": 9000000000
     },
     {
@@ -91,7 +91,7 @@
       "net_worth": 148000000000,
       "company": "LVMH",
       "country": "France",
-      "daily_change_pct": 0.035,
+      "daily_change_pct": 0.0035,
       "daily_change_usd": 5000000000
     },
     {
@@ -101,7 +101,7 @@
       "net_worth": 141000000000,
       "company": "Microsoft",
       "country": "United States",
-      "daily_change_pct": 0.085,
+      "daily_change_pct": 0.0085,
       "daily_change_usd": 11000000000
     }
   ]

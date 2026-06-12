@@ -10,16 +10,16 @@ const OUTPUT_PATHS = [
 ];
 
 const FALLBACK = [
-  { id: "elon_musk", rank: 1, name: "Elon Musk", net_worth: 839000000000, company: "SpaceX, Tesla, xAI", country: "United States" },
-  { id: "larry_page", rank: 2, name: "Larry Page", net_worth: 257000000000, company: "Google", country: "United States" },
-  { id: "sergey_brin", rank: 3, name: "Sergey Brin", net_worth: 237000000000, company: "Google", country: "United States" },
-  { id: "jeff_bezos", rank: 4, name: "Jeff Bezos", net_worth: 224000000000, company: "Amazon", country: "United States" },
-  { id: "mark_zuckerberg", rank: 5, name: "Mark Zuckerberg", net_worth: 222000000000, company: "Meta", country: "United States" },
-  { id: "larry_ellison", rank: 6, name: "Larry Ellison", net_worth: 190000000000, company: "Oracle", country: "United States" },
-  { id: "bernard_arnault", rank: 7, name: "Bernard Arnault & family", net_worth: 171000000000, company: "LVMH", country: "France" },
-  { id: "jensen_huang", rank: 8, name: "Jensen Huang", net_worth: 154000000000, company: "Nvidia", country: "United States" },
-  { id: "warren_buffett", rank: 9, name: "Warren Buffett", net_worth: 149000000000, company: "Berkshire Hathaway", country: "United States" },
-  { id: "amancio_ortega", rank: 10, name: "Amancio Ortega", net_worth: 148000000000, company: "Zara / Inditex", country: "Spain" },
+  { id: "elon-musk", rank: 1, name: "Elon Musk", net_worth: 835000000000, company: "Tesla, SpaceX", country: "United States" },
+  { id: "larry-page", rank: 2, name: "Larry Page", net_worth: 309000000000, company: "Google", country: "United States" },
+  { id: "sergey-brin", rank: 3, name: "Sergey Brin", net_worth: 285000000000, company: "Google", country: "United States" },
+  { id: "jeff-bezos", rank: 4, name: "Jeff Bezos", net_worth: 277000000000, company: "Amazon", country: "United States" },
+  { id: "larry-ellison", rank: 5, name: "Larry Ellison", net_worth: 276000000000, company: "Oracle", country: "United States" },
+  { id: "michael-dell", rank: 6, name: "Michael Dell", net_worth: 244000000000, company: "Dell Technologies", country: "United States" },
+  { id: "mark-zuckerberg", rank: 7, name: "Mark Zuckerberg", net_worth: 217000000000, company: "Meta", country: "United States" },
+  { id: "jensen-huang", rank: 8, name: "Jensen Huang", net_worth: 182000000000, company: "Nvidia", country: "United States" },
+  { id: "bernard-arnault", rank: 9, name: "Bernard Arnault & family", net_worth: 148000000000, company: "LVMH", country: "France" },
+  { id: "steve-ballmer", rank: 10, name: "Steve Ballmer", net_worth: 141000000000, company: "Microsoft", country: "United States" },
 ];
 
 function nowIso() {
@@ -28,7 +28,7 @@ function nowIso() {
 
 function fetchJson(url) {
   return new Promise((resolve, reject) => {
-    https.get(url, { headers: { "User-Agent": "spend-wealth-app/1.0" } }, (res) => {
+    https.get(url, { headers: { "User-Agent": "spend-wealth-app/1.0" }, timeout: 15000 }, (res) => {
       let data = "";
       res.on("data", (chunk) => (data += chunk));
       res.on("end", () => {
@@ -50,17 +50,59 @@ async function fetchFromApi() {
     throw new Error("API returned unexpected format");
   }
 
+  // Check API data freshness — warn if older than 7 days
+  const apiDate = data.date ? new Date(data.date) : null;
+  const now = new Date();
+  const maxAgeMs = 7 * 24 * 60 * 60 * 1000; // 7 days
+  if (apiDate) {
+    const ageMs = now - apiDate;
+    const ageDays = Math.round(ageMs / (24 * 60 * 60 * 1000));
+    if (ageMs > maxAgeMs) {
+      console.warn(`API data is ${ageDays} days old (dated ${data.date}). Data may be stale.`);
+      console.warn("Consider updating manually. Proceeding with API data anyway.");
+    } else {
+      console.log(`API data is ${ageDays} day(s) old. Within freshness window.`);
+    }
+  } else {
+    console.warn("API response missing date field — cannot verify freshness.");
+  }
+
   const top10 = data.list.slice(0, 10).map((p) => {
+    // Guard against zero/missing net worth
+    const rawNetWorth = p.networth || 0;
+    if (rawNetWorth <= 0) {
+      console.warn(`Warning: ${p.name} has net_worth=0 in API response — may be a data issue.`);
+    }
+
     const source = Array.isArray(p.source) ? p.source.join(", ") : (p.source || "");
-    return {
+
+    const entry = {
       id: p.uri,
       rank: p.rank,
       name: p.name,
-      net_worth: Math.round((p.networth || 0) * 1e6),
+      net_worth: Math.round(rawNetWorth * 1e6),
       company: source,
       country: (p.citizenship || "").toUpperCase(),
     };
+
+    // Include daily change data if available
+    if (p.change && typeof p.change === "object") {
+      if (typeof p.change.pct === "number") {
+        entry.daily_change_pct = p.change.pct / 100; // convert pct (e.g. 0.154) to decimal
+      }
+      if (typeof p.change.value === "number") {
+        entry.daily_change_usd = Math.round(p.change.value * 1e6);
+      }
+    }
+
+    return entry;
   });
+
+  // Validate: abort if all net worths are 0 (API is broken)
+  const allZero = top10.every((p) => p.net_worth === 0);
+  if (allZero) {
+    throw new Error("All billionaire net worths are 0 — API appears to be broken.");
+  }
 
   return {
     last_updated: nowIso(),
@@ -84,7 +126,7 @@ async function write() {
     source = "fallback";
     dataset = {
       last_updated: nowIso(),
-      source: "Forbes Top 10 Richest People (fallback, static)",
+      source: "Forbes Top 10 Richest People (fallback, static — June 2026)",
       source_url: "https://www.forbes.com/",
       people: FALLBACK,
     };

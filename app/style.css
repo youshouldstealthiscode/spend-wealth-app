@@ -315,7 +315,7 @@ code {
 }
 
 .receipt-body {
-  max-height: 260px;
+  max-height: 320px;
   overflow-y: auto;
   scrollbar-width: thin;
   scrollbar-color: var(--panel-border) transparent;
