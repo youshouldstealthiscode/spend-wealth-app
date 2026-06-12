@@ -261,18 +261,6 @@ code {
   box-shadow: 0 4px 12px rgba(248, 113, 113, 0.1);
 }
 
-.dashboard-grid {
-  display: grid;
-  gap: 1rem;
-  grid-template-columns: 2fr 1fr;
-  align-items: start;
-}
-
-.stack {
-  display: grid;
-  gap: 1rem;
-}
-
 .panel-subtle {
   background: rgba(74, 222, 128, 0.015);
 }
@@ -313,13 +301,22 @@ code {
   background: rgba(251, 191, 36, 0.04);
 }
 
+/* Position comparison grid — 4 columns to match items */
+.position-grid {
+  grid-template-columns: repeat(4, 1fr);
+}
+
 @media (max-width: 900px) {
   body {
     padding: 1rem;
   }
 
-  .dashboard-grid {
-    grid-template-columns: 1fr;
+  #itemsGrid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+  .position-grid {
+    grid-template-columns: repeat(2, 1fr);
   }
 }
 
