@@ -3,7 +3,7 @@
 import { playKaching, playSubtleTick } from "./audio.js";
 import { applyPresetBundle, PRESETS } from "./presets.js";
 import { setShareStatus, setPresetStatus } from "./render.js";
-import { renderSearchSuggestions, renderPresetButtons, updateUI, flyBills, renderStashStacks } from "./render.js";
+import { renderSearchSuggestions, renderPresetButtons, updateUI, flyBills, renderStashStacks, highlightActiveSort } from "./render.js";
 import { saveState } from "./state.js";
 import { encodeShareState } from "./utils.js";
 
@@ -311,6 +311,28 @@ export function attachEvents(state, updateUICfg) {
       if (!isVisible) {
         renderStashStacks(state);
       }
+    });
+  }
+
+  // ─── Sort buttons ───
+  const sortRow = document.querySelector(".sort-row");
+  if (sortRow) {
+    sortRow.addEventListener("click", (e) => {
+      const btn = e.target.closest(".sortBtn");
+      if (!btn) return;
+      state.sortBy = btn.dataset.sort;
+      saveStateFn(state);
+      highlightActiveSort(state);
+      updateUI(state);
+    });
+  }
+
+  // ─── Scroll to Sources ───
+  const scrollSourcesBtn = $("#scrollToSources");
+  if (scrollSourcesBtn) {
+    scrollSourcesBtn.addEventListener("click", () => {
+      const panel = $("#sourcesPanel");
+      if (panel) panel.scrollIntoView({ behavior: "smooth", block: "start" });
     });
   }
 }

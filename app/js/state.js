@@ -24,6 +24,7 @@ export function createInitialState() {
     exchangeRates: { USD: 1 },
     ratesLoaded: false,
     customItems: DEFAULT_CUSTOM_ITEMS.map((c) => ({ ...c })),
+    sortBy: "default",
   };
 }
 
@@ -46,8 +47,8 @@ export function loadState(state) {
     if (typeof parsed.soundEnabled === "boolean") state.soundEnabled = parsed.soundEnabled;
     if (parsed.activePreset) state.activePreset = parsed.activePreset;
     if (parsed.selectedCurrency) state.selectedCurrency = parsed.selectedCurrency;
+    if (parsed.sortBy) state.sortBy = parsed.sortBy;
     if (Array.isArray(parsed.customItems)) {
-      // Merge saved custom items into default slots (up to 10)
       for (let i = 0; i < 10; i++) {
         const saved = parsed.customItems[i];
         state.customItems[i] = saved ? { ...saved } : { id: `custom_${i + 1}`, name: "", price: 0 };
@@ -62,6 +63,7 @@ export function resetAppState(state, people) {
   state.cart = {};
   state.activeCategory = "all";
   state.activePreset = null;
+  state.sortBy = "default";
   state.userFinance = { hourlyWage: 0, hoursPerWeek: 40, weeksPerYear: 52, savings: 0 };
   state.selectedPerson = people[0] || null;
   try {

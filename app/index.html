@@ -29,8 +29,8 @@
 </div>
     <div class="panel action-bar">
       <button type="button" id="resetAppBtn">Reset</button>
-      <button type="button" id="shareResultsBtn">Share Results</button>
-      <button type="button" id="printReceiptBtn">Print Receipt</button>
+      <button type="button" id="shareResultsBtn">📤 Share</button>
+      <button type="button" id="printReceiptBtn">🖨️ Receipt</button>
       <button type="button" id="soundToggleBtn" title="Toggle purchase sounds on/off">
         <span id="soundIcon">🔊</span> <span class="btn-label">Sound</span>
       </button>
@@ -50,14 +50,16 @@
         </select>
       </label>
       <button type="button" id="locationBtn" title="Auto-configure for your area">📍 My Location</button>
+      <button type="button" id="scrollToSources" title="Jump to data sources">📄 Sources ↓</button>
       <span id="shareStatus" class="muted">&nbsp;</span>
     </div>
-      <h1 class="hero-title">Spend Wealth App <span style="font-size: 0.5em; opacity: 0.4;">— $pend their fortune</span></h1>
-
-      <div class="panel">
-        <h2>Data status</h2>
-        <p id="status">Loading...</p>
-        <p class="muted" id="meta"></p>
+      <h1 class="hero-title">Spend Wealth App</h1>
+      <div class="panel panel-subtle" style="margin-top: -0.5rem; margin-bottom: 1.5rem;">
+        <p style="font-size: 0.85rem; line-height: 1.6; margin: 0; color: var(--muted);">
+          <span style="color: var(--accent-2); font-weight: 600;">One person on this page</span> has more wealth than the bottom 50% of Americans combined.
+          Their money earns more in <em>interest while you sleep</em> than you'll make in a lifetime.
+          Try to spend it. You can't.
+        </p>
       </div>
 
       <div class="panel">
@@ -204,14 +206,22 @@
           <input id="searchInput" type="text" placeholder="Search items..." autocomplete="off" style="margin: 0;" />
           <div id="searchSuggestions" class="search-suggestions" style="display: none;"></div>
         </div>
+        <div class="sort-row">
+          <span class="sort-label">Sort:</span>
+          <button type="button" class="sortBtn" data-sort="default">Default</button>
+          <button type="button" class="sortBtn" data-sort="name-asc">Name ↑</button>
+          <button type="button" class="sortBtn" data-sort="name-desc">Name ↓</button>
+          <button type="button" class="sortBtn" data-sort="price-asc">Price ↑</button>
+          <button type="button" class="sortBtn" data-sort="price-desc">Price ↓</button>
+        </div>
         <div id="itemsCount" class="muted"></div>
-        <div id="itemsGrid" class="grid" style="margin-top: 1rem;"></div>
+        <div id="itemsGrid" class="grid" style="margin-top: 0.5rem;"></div>
       </div>
 
       <div id="receipt" class="panel receipt-panel"></div>
 
-      <div class="panel">
-        <h2>Sources</h2>
+      <div class="panel" id="sourcesPanel">
+        <h2>Sources & Data Status</h2>
         <div class="grid" style="grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));">
           <div>
             <strong>Wealth data</strong>
@@ -220,6 +230,11 @@
           <div>
             <strong>Item data</strong>
             <div id="itemSourceDisplay" class="muted" style="margin-top: 0.35rem;">--</div>
+          </div>
+          <div>
+            <strong>Status</strong>
+            <div id="status" class="muted" style="margin-top: 0.35rem;">Loading...</div>
+            <div id="meta" class="muted" style="margin-top: 0.2rem; font-size: 0.78rem;"></div>
           </div>
         </div>
       </div>

@@ -301,6 +301,42 @@ code {
   background: rgba(251, 191, 36, 0.04);
 }
 
+/* Sort controls */
+.sort-row {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  margin-top: 0.6rem;
+  flex-wrap: wrap;
+}
+.sort-label {
+  font-size: 0.78rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--muted);
+  margin-right: 0.2rem;
+}
+.sortBtn {
+  font-size: 0.75rem;
+  padding: 0.3rem 0.55rem;
+  border-radius: 6px;
+  border: 1px solid rgba(74, 222, 128, 0.1);
+  background: rgba(74, 222, 128, 0.03);
+  color: var(--muted);
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+.sortBtn:hover {
+  border-color: rgba(74, 222, 128, 0.3);
+  color: var(--text);
+}
+.sortBtn.sort-active {
+  border-color: var(--accent);
+  background: rgba(74, 222, 128, 0.12);
+  color: var(--accent);
+  font-weight: 600;
+}
+
 /* Position comparison grid — 4 columns to match items */
 .position-grid {
   grid-template-columns: repeat(4, 1fr);

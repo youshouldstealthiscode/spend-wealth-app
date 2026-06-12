@@ -107,6 +107,17 @@ export function getVisibleItems(state) {
   if (state.searchText && state.searchText.length >= 2) {
     items = items.filter((item) => fuzzyMatch(state.searchText, item.name));
   }
+  // Apply sorting
+  const sortBy = state.sortBy || "default";
+  if (sortBy === "name-asc") {
+    items = [...items].sort((a, b) => a.name.localeCompare(b.name));
+  } else if (sortBy === "name-desc") {
+    items = [...items].sort((a, b) => b.name.localeCompare(a.name));
+  } else if (sortBy === "price-asc") {
+    items = [...items].sort((a, b) => a.price - b.price);
+  } else if (sortBy === "price-desc") {
+    items = [...items].sort((a, b) => b.price - a.price);
+  }
   return items;
 }
 
@@ -465,6 +476,7 @@ export function updateUI(state) {
   renderPresetButtons(state);
   renderStashStacks(state);
   renderGapMetrics(state);
+  highlightActiveSort(state);
 }
 
 // ─── Render: Gap Metrics — What could this wealth actually do? ───
@@ -591,4 +603,13 @@ export function renderGapMetrics(state) {
       els.gapDailyIncome.textContent = numberFormatter.format(Math.round(billionaireDailyIncome)) + "/day (enter wage for ratio)";
     }
   }
+}
+
+// ─── Render: Highlight active sort button ───
+export function highlightActiveSort(state) {
+  const sortBy = state.sortBy || "default";
+  document.querySelectorAll(".sortBtn").forEach((btn) => {
+    const active = btn.dataset.sort === sortBy;
+    btn.classList.toggle("sort-active", active);
+  });
 }
