@@ -122,10 +122,78 @@ export function attachEvents(state, updateUICfg) {
       updateUI(state);
     });
   };
-  bindFinanceInput($("#wage"), "hourlyWage");
-  bindFinanceInput($("#hoursPerWeek"), "hoursPerWeek");
-  bindFinanceInput($("#weeksPerYear"), "weeksPerYear");
   bindFinanceInput($("#savings"), "savings");
+
+  // Bi-directional hourly ↔ annual salary
+  const wageEl = $("#wage");
+  const annualEl = $("#annualSalary");
+  const hoursEl = $("#hoursPerWeek");
+  const weeksEl = $("#weeksPerYear");
+
+  function recalcFromHourly() {
+    const wage = state.userFinance.hourlyWage || 0;
+    const h = state.userFinance.hoursPerWeek || 40;
+    const w = state.userFinance.weeksPerYear || 52;
+    const annual = wage * h * w;
+    state.userFinance.annualSalary = annual;
+    if (annualEl) annualEl.value = annual > 0 ? annual : "";
+    saveStateFn(state);
+    updateUI(state);
+  }
+
+  function recalcFromAnnual() {
+    const annual = state.userFinance.annualSalary || 0;
+    const h = state.userFinance.hoursPerWeek || 40;
+    const w = state.userFinance.weeksPerYear || 52;
+    if (h > 0 && w > 0) {
+      state.userFinance.hourlyWage = annual / (h * w);
+    }
+    saveStateFn(state);
+    updateUI(state);
+  }
+
+  function recalcHoursWeeks() {
+    const annual = state.userFinance.annualSalary || 0;
+    const wage = state.userFinance.hourlyWage || 0;
+    if (annual > 0 && wage === 0) {
+      // Annual was set, no hourly → compute hourly from annual
+      recalcFromAnnual();
+    } else if (wage > 0) {
+      // Hourly is set → compute annual from hourly
+      recalcFromHourly();
+    }
+  }
+
+  // Wire up custom handlers
+  if (wageEl) {
+    wageEl.addEventListener("input", () => {
+      const val = parseFloat(wageEl.value);
+      state.userFinance.hourlyWage = Number.isFinite(val) ? val : 0;
+      recalcFromHourly();
+    });
+  }
+  if (annualEl) {
+    annualEl.addEventListener("input", () => {
+      const val = parseFloat(annualEl.value);
+      state.userFinance.annualSalary = Number.isFinite(val) ? val : 0;
+      recalcFromAnnual();
+    });
+  }
+  // Recalculate when hours/weeks change
+  if (hoursEl) {
+    hoursEl.addEventListener("input", () => {
+      const val = parseFloat(hoursEl.value);
+      state.userFinance.hoursPerWeek = Number.isFinite(val) ? val : 0;
+      recalcHoursWeeks();
+    });
+  }
+  if (weeksEl) {
+    weeksEl.addEventListener("input", () => {
+      const val = parseFloat(weeksEl.value);
+      state.userFinance.weeksPerYear = Number.isFinite(val) ? val : 0;
+      recalcHoursWeeks();
+    });
+  }
 
   // ─── Reset ───
   const resetBtn = $("#resetAppBtn");

@@ -15,7 +15,7 @@ export function createInitialState() {
     selectedPerson: null,
     cart: {},
     activeCategory: "all",
-    userFinance: { hourlyWage: 0, hoursPerWeek: 40, weeksPerYear: 52, savings: 0 },
+    userFinance: { hourlyWage: 0, hoursPerWeek: 40, weeksPerYear: 52, savings: 0, annualSalary: 0 },
     dataMeta: { wealth: null, items: null },
     soundEnabled: true,
     activePreset: null,

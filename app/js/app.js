@@ -12,12 +12,14 @@ async function main() {
   const metaEl = document.querySelector("#meta");
 
   function syncFinanceInputsFromState() {
-    const { hourlyWage, hoursPerWeek, weeksPerYear, savings } = STATE.userFinance;
+    const { hourlyWage, annualSalary, hoursPerWeek, weeksPerYear, savings } = STATE.userFinance;
     const w = document.querySelector("#wage");
+    const a = document.querySelector("#annualSalary");
     const h = document.querySelector("#hoursPerWeek");
     const y = document.querySelector("#weeksPerYear");
     const s = document.querySelector("#savings");
     if (w) w.value = hourlyWage || "";
+    if (a) a.value = annualSalary || "";
     if (h) h.value = hoursPerWeek || 40;
     if (y) y.value = weeksPerYear || 52;
     if (s) s.value = savings || "";
