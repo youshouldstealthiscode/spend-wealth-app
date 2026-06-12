@@ -181,6 +181,7 @@ export function renderItems(state) {
     const qty = state.cart[item.id] || 0;
     const card = document.createElement("div");
     card.className = "item";
+    if (qty > 0) card.classList.add("in-cart");
     card.dataset.category = item.category;
     card.dataset.price = item.price;
     card.innerHTML = `
