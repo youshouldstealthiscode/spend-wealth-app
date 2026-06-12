@@ -357,7 +357,26 @@ async function buildDataset() {
       { id: "graduation_gown", name: "Graduation Gown + Cap", price: 50, category: "students", source_type: "market_estimate", unit: "each" },
       { id: "professional_clothing", name: "Professional Clothing (interview outfit)", price: 200, category: "students", source_type: "market_estimate", unit: "one-time" },
 
-      // ── For Teens ──
+      // ── Cannabis & Alcohol (essentials-adjacent) ──
+      { id: "cannabis_ounce_premium", name: "Ounce of Premium Cannabis", price: 295, category: "essentials", source_type: "market_2026", unit: "per ounce" },
+      { id: "imported_beer_12pk", name: "Imported Beer (12-pack)", price: 22, category: "essentials", source_type: "market_2026", unit: "per 12-pack" },
+
+      // ── Community / Giving Back — things you could do for others ──
+      { id: "pay_friend_rent_year", name: "Pay a Friend's Rent for a Year", price: 25800, category: "community", source_type: "market_estimate", unit: "one-time" },
+      { id: "gift_toyota_corolla", name: "Gift a Brand New Toyota Corolla", price: 23125, category: "community", source_type: "toyota_2026", unit: "per car" },
+      { id: "pet_lifetime_dog", name: "Buy & Support a Dog for Its Lifetime", price: 25000, category: "community", source_type: "market_2026", unit: "one-time" },
+      { id: "pet_lifetime_cat", name: "Buy & Support a Cat for Its Lifetime", price: 30000, category: "community", source_type: "market_2026", unit: "one-time" },
+      { id: "host_block_party", name: "Host a Neighborhood Block Party", price: 5000, category: "community", source_type: "market_estimate", unit: "one-time" },
+      { id: "friend_student_loans_year", name: "Cover a Friend's Student Loans (1 year)", price: 6000, category: "community", source_type: "market_estimate", unit: "one-time" },
+      { id: "stranger_groceries_month", name: "Buy a Stranger's Groceries for a Month", price: 600, category: "community", source_type: "market_estimate", unit: "monthly" },
+      { id: "stock_community_pantry", name: "Fully Stock a Community Food Pantry", price: 2500, category: "community", source_type: "market_estimate", unit: "one-time" },
+      { id: "library_childrens_program", name: "Fund a Library's Children's Program (1 yr)", price: 5000, category: "community", source_type: "market_estimate", unit: "per year" },
+      { id: "youth_sports_team", name: "Sponsor a Youth Sports Team (season)", price: 1500, category: "community", source_type: "market_estimate", unit: "per season" },
+      { id: "pay_neighbor_er_bill", name: "Pay a Neighbor's ER Bill", price: 2200, category: "community", source_type: "curated_2026", unit: "one-time" },
+      { id: "adopt_classroom_year", name: "Adopt & Supply a Classroom for a Year", price: 1000, category: "community", source_type: "market_estimate", unit: "per year" },
+      { id: "community_garden_year", name: "Fund a Community Garden for a Year", price: 3000, category: "community", source_type: "market_estimate", unit: "per year" },
+      { id: "animal_shelter_month", name: "Support a Local Animal Shelter for a Month", price: 10000, category: "community", source_type: "market_estimate", unit: "monthly" },
+      { id: "senior_meal_delivery_year", name: "Fund Meals on Wheels for 10 Seniors (1 yr)", price: 15000, category: "community", source_type: "market_estimate", unit: "per year" },
       { id: "phone_plan_teen", name: "Phone Plan (teen, monthly)", price: 40, category: "teens", source_type: "market_estimate", unit: "monthly" },
       { id: "phone_case_headphones", name: "Phone Case + Headphones", price: 50, category: "teens", source_type: "market_estimate", unit: "one-time" },
       { id: "video_game_console", name: "Gaming Console", price: 500, category: "teens", source_type: "market_price", unit: "each" },
