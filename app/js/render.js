@@ -28,11 +28,10 @@ const els = {
   wealthSourceDisplay: $("#wealthSourceDisplay"),
   itemSourceDisplay: $("#itemSourceDisplay"),
   stickyPerson: $("#stickyPerson"),
-  stickyTotal: $("#stickyTotal"),
-  stickyRemaining: $("#stickyRemaining"),
-  stickyPercent: $("#stickyPercent"),
-  stickyWorkTime: $("#stickyWorkTime"),
-  stickyYearsToWealth: $("#stickyYearsToWealth"),
+  stickyPosition: $("#stickyPosition"),
+  stickyWage: $("#stickyWage"),
+  stickyCart: $("#stickyCart"),
+  stickyWork: $("#stickyWork"),
   // Compact stats bar
   totalCompact: $("#totalCompact"),
   percentCompact: $("#percentCompact"),
@@ -282,27 +281,43 @@ export function renderWorkTime(state) {
 // ─── Render: Sticky summary ───
 export function renderStickySummary(state) {
   const person = state.selectedPerson;
-  const { total, percent, remaining } = getDerivedMetrics(state);
+  const { total, percent, remaining, yearsToReachWealth, yearsToAffordCart } = getDerivedMetrics(state);
   const fmt = moneyFmt(state);
-  if (els.stickyPerson) els.stickyPerson.textContent = person ? person.name : "--";
-  if (els.stickyTotal) els.stickyTotal.textContent = fmt(total);
-  if (els.stickyRemaining) els.stickyRemaining.textContent = fmt(remaining);
-  if (els.stickyPercent) els.stickyPercent.textContent = percent < 0.000001 ? "<0.000001%" : percent.toFixed(6) + "%";
-  // Years to reach their wealth
-  if (els.stickyYearsToWealth) {
-    const m = getDerivedMetrics(state);
-    els.stickyYearsToWealth.textContent = m.yearsToReachWealth
-      ? numberFormatter.format(m.yearsToReachWealth) + " yrs"
-      : "Enter wage";
-  }
-  renderStickyWorkTime(state);
-}
+  const hourlyWage = state.userFinance?.hourlyWage || 0;
 
-function renderStickyWorkTime(state) {
-  if (!els.stickyWorkTime) return;
-  const { hourlyWage } = state.userFinance;
-  const { yearsToAffordCart } = getDerivedMetrics(state);
-  els.stickyWorkTime.textContent = (!hourlyWage || hourlyWage <= 0) ? "--" : `${yearsToAffordCart.toFixed(2)} yrs`;
+  // Person name
+  if (els.stickyPerson) {
+    els.stickyPerson.textContent = person ? person.name : "--";
+  }
+
+  // Composite: $spent / $remaining (percent%)
+  if (els.stickyPosition) {
+    els.stickyPosition.textContent = `${fmt(total)} / ${fmt(remaining)} (${percent < 0.000001 ? "<0.000001%" : percent.toFixed(6) + "%"})`;
+  }
+
+  // Wage → years to wealth, or prompt link
+  if (els.stickyWage) {
+    if (hourlyWage > 0 && yearsToReachWealth) {
+      els.stickyWage.innerHTML = `$${hourlyWage}/hr → <strong>${numberFormatter.format(Math.round(yearsToReachWealth))} yrs</strong>`;
+    } else {
+      els.stickyWage.innerHTML = `<a href="#" id="stickyWageLink" style="color:var(--accent-2);text-decoration:none;">Enter income ⬆</a>`;
+    }
+  }
+
+  // Cart item count
+  if (els.stickyCart) {
+    const count = Object.values(state.cart).reduce((a, b) => a + b, 0);
+    els.stickyCart.textContent = count + " item" + (count !== 1 ? "s" : "");
+  }
+
+  // Work time
+  if (els.stickyWork) {
+    if (hourlyWage > 0) {
+      els.stickyWork.textContent = yearsToAffordCart.toFixed(2) + " yrs work";
+    } else {
+      els.stickyWork.textContent = "--";
+    }
+  }
 }
 
 // ─── Render: Position comparison ───

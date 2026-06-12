@@ -21,14 +21,13 @@
       </div>
     </div>
 
-    <!-- Sticky bar — follows scroll -->
+    <!-- Sticky bar — follows scroll, compact info -->
     <div id="stickySummary" class="panel sticky-summary">
-      <div><strong>Selected:</strong> <span id="stickyPerson">--</span></div>
-      <div><strong>Spent:</strong> <span id="stickyTotal">$0</span></div>
-      <div><strong>Left:</strong> <span id="stickyRemaining">$0</span></div>
-      <div><strong>%:</strong> <span id="stickyPercent">--</span></div>
-      <div><strong>→ Wealth:</strong> <span id="stickyYearsToWealth">--</span></div>
-      <div><strong>Work:</strong> <span id="stickyWorkTime">--</span></div>
+      <div id="stickyPerson" class="sticky-name">--</div>
+      <div id="stickyPosition">$0 / $0 (0%)</div>
+      <div id="stickyWage">Enter income ⬆</div>
+      <div id="stickyCart">0 items</div>
+      <div id="stickyWork">--</div>
     </div>
 
     <div class="panel action-bar">
@@ -76,7 +75,7 @@
     </div>
 
     <!-- Your Income -->
-    <div class="panel">
+    <div class="panel" id="incomePanel">
       <h2>Your Income</h2>
       <div class="grid" style="grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));">
         <label>Hourly wage <input id="wage" type="number" min="0" step="0.01" placeholder="20" style="width: 100%; margin-top: 0.35rem;" /></label>

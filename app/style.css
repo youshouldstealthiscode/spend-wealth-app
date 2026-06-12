@@ -235,15 +235,22 @@ code {
   color: var(--text);
   box-shadow: 0 18px 30px rgba(0, 0, 0, 0.4);
   margin-bottom: 1rem;
-  display: grid;
-  gap: 0.75rem;
-  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.25rem 0.6rem;
   border-top: 2px solid var(--accent);
-}
-
-.sticky-summary div {
-  min-width: 0;
-}
+     font-size: 0.78rem;
+     padding: 0.35rem 0.75rem;
+   }
+ 
+   .sticky-summary div {
+     min-width: 0;
+   }
+   .sticky-name {
+     font-weight: 700;
+     color: var(--accent-2);
+   }
 
 .action-bar {
   display: flex;

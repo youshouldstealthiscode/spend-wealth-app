@@ -315,6 +315,16 @@ export function attachEvents(state, updateUICfg) {
     });
   }
 
+  // ─── Sticky wage link — scroll to income panel ───
+  document.addEventListener("click", (e) => {
+    const link = e.target.closest("#stickyWageLink");
+    if (link) {
+      e.preventDefault();
+      const panel = document.querySelector("#incomePanel");
+      if (panel) panel.scrollIntoView({ behavior: "smooth", block: "start" });
+    }
+  });
+
   // ─── Scroll to Sources ───
   const scrollSourcesBtn = $("#scrollToSources");
   if (scrollSourcesBtn) {
