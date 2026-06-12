@@ -1,5 +1,5 @@
 {
-  "last_updated": "2026-06-12T14:39:13.125Z",
+  "last_updated": "2026-06-12T14:53:39.631Z",
   "source": "Live BLS Average Retail Prices + curated estimates",
   "source_url": "https://www.bls.gov/regions/mid-atlantic/data/AverageRetailFoodAndEnergyPrices_USandWest_Table.htm",
   "freshness": "live | curated",
@@ -157,6 +157,70 @@
       "unit": "per bottle"
     },
     {
+      "id": "chicken_breast_lb",
+      "name": "Chicken Breast, Boneless (1 lb)",
+      "price": 4.5,
+      "category": "essentials",
+      "source_type": "market_estimate",
+      "unit": "per lb"
+    },
+    {
+      "id": "pasta_lb",
+      "name": "Spaghetti / Pasta (1 lb)",
+      "price": 1.5,
+      "category": "essentials",
+      "source_type": "market_estimate",
+      "unit": "per lb"
+    },
+    {
+      "id": "cooking_oil",
+      "name": "Vegetable Cooking Oil (48 oz)",
+      "price": 4.5,
+      "category": "essentials",
+      "source_type": "market_estimate",
+      "unit": "per bottle"
+    },
+    {
+      "id": "onions_lb",
+      "name": "Onions (1 lb)",
+      "price": 1.2,
+      "category": "essentials",
+      "source_type": "market_estimate",
+      "unit": "per lb"
+    },
+    {
+      "id": "tomatoes_lb",
+      "name": "Tomatoes (1 lb)",
+      "price": 2.5,
+      "category": "essentials",
+      "source_type": "market_estimate",
+      "unit": "per lb"
+    },
+    {
+      "id": "frozen_pizza",
+      "name": "Frozen Pizza (large)",
+      "price": 5,
+      "category": "essentials",
+      "source_type": "market_estimate",
+      "unit": "each"
+    },
+    {
+      "id": "fast_food_meal",
+      "name": "Fast Food Meal (combo)",
+      "price": 12,
+      "category": "essentials",
+      "source_type": "market_estimate",
+      "unit": "per meal"
+    },
+    {
+      "id": "restaurant_dinner_two",
+      "name": "Restaurant Dinner (mid-range, 2 people)",
+      "price": 75,
+      "category": "essentials",
+      "source_type": "market_estimate",
+      "unit": "per dinner"
+    },
+    {
       "id": "rent_month",
       "name": "One Month Rent (avg US)",
       "price": 2150,
@@ -221,6 +285,30 @@
       "unit": "per set"
     },
     {
+      "id": "water_sewer_monthly",
+      "name": "Water & Sewer Bill (monthly)",
+      "price": 65,
+      "category": "housing",
+      "source_type": "market_estimate",
+      "unit": "monthly"
+    },
+    {
+      "id": "home_insurance_annual",
+      "name": "Homeowner's Insurance (annual)",
+      "price": 1800,
+      "category": "housing",
+      "source_type": "market_estimate",
+      "unit": "per year"
+    },
+    {
+      "id": "property_tax_annual",
+      "name": "Property Tax (annual, avg US home)",
+      "price": 4200,
+      "category": "housing",
+      "source_type": "census_2025",
+      "unit": "per year"
+    },
+    {
       "id": "doctor_visit",
       "name": "Doctor Visit (copay)",
       "price": 150,
@@ -275,6 +363,38 @@
       "category": "health",
       "source_type": "curated_2026",
       "unit": "per session"
+    },
+    {
+      "id": "otc_medicine",
+      "name": "OTC Pain Reliever (ibuprofen, 100ct)",
+      "price": 12,
+      "category": "health",
+      "source_type": "market_estimate",
+      "unit": "per bottle"
+    },
+    {
+      "id": "vitamins",
+      "name": "Multivitamin (60ct)",
+      "price": 15,
+      "category": "health",
+      "source_type": "market_estimate",
+      "unit": "per bottle"
+    },
+    {
+      "id": "urgent_care_visit",
+      "name": "Urgent Care Visit",
+      "price": 250,
+      "category": "health",
+      "source_type": "curated_2026",
+      "unit": "per visit"
+    },
+    {
+      "id": "ambulance_ride",
+      "name": "Ambulance Ride (avg)",
+      "price": 1200,
+      "category": "health",
+      "source_type": "curated_2026",
+      "unit": "per ride"
     },
     {
       "id": "college_semester",
@@ -373,6 +493,22 @@
       "unit": "monthly"
     },
     {
+      "id": "bus_fare",
+      "name": "Bus Fare (single ride)",
+      "price": 2.5,
+      "category": "transportation",
+      "source_type": "market_estimate",
+      "unit": "per ride"
+    },
+    {
+      "id": "bicycle",
+      "name": "Bicycle (basic commuter)",
+      "price": 350,
+      "category": "transportation",
+      "source_type": "market_estimate",
+      "unit": "each"
+    },
+    {
       "id": "used_car",
       "name": "Used Reliable Car",
       "price": 15000,
@@ -458,6 +594,38 @@
       "price": 50,
       "category": "entertainment",
       "source_type": "market_estimate",
+      "unit": "monthly"
+    },
+    {
+      "id": "book_paperback",
+      "name": "Paperback Book",
+      "price": 16,
+      "category": "entertainment",
+      "source_type": "market_estimate",
+      "unit": "each"
+    },
+    {
+      "id": "board_game",
+      "name": "Board Game",
+      "price": 35,
+      "category": "entertainment",
+      "source_type": "market_estimate",
+      "unit": "each"
+    },
+    {
+      "id": "hulu_monthly",
+      "name": "Hulu (monthly, no ads)",
+      "price": 18,
+      "category": "entertainment",
+      "source_type": "market_price",
+      "unit": "monthly"
+    },
+    {
+      "id": "disney_plus_monthly",
+      "name": "Disney+ (monthly)",
+      "price": 10,
+      "category": "entertainment",
+      "source_type": "market_price",
       "unit": "monthly"
     },
     {
@@ -649,6 +817,94 @@
       "name": "NYC Skyscraper",
       "price": 2000000000,
       "category": "luxury",
+      "source_type": "market_estimate",
+      "unit": "each"
+    },
+    {
+      "id": "laundry_detergent",
+      "name": "Laundry Detergent (100 oz)",
+      "price": 12,
+      "category": "personal",
+      "source_type": "market_estimate",
+      "unit": "per bottle"
+    },
+    {
+      "id": "dish_soap",
+      "name": "Dish Soap (24 oz)",
+      "price": 4,
+      "category": "personal",
+      "source_type": "market_estimate",
+      "unit": "per bottle"
+    },
+    {
+      "id": "light_bulbs",
+      "name": "LED Light Bulbs (4-pack)",
+      "price": 8,
+      "category": "personal",
+      "source_type": "market_estimate",
+      "unit": "per pack"
+    },
+    {
+      "id": "batteries_aa",
+      "name": "AA Batteries (8-pack)",
+      "price": 7,
+      "category": "personal",
+      "source_type": "market_estimate",
+      "unit": "per pack"
+    },
+    {
+      "id": "razor_refill",
+      "name": "Razor Blade Refill (8-pack)",
+      "price": 25,
+      "category": "personal",
+      "source_type": "market_estimate",
+      "unit": "per pack"
+    },
+    {
+      "id": "sunscreen",
+      "name": "Sunscreen (SPF 50, 3 oz)",
+      "price": 12,
+      "category": "personal",
+      "source_type": "market_estimate",
+      "unit": "per bottle"
+    },
+    {
+      "id": "diapers_box",
+      "name": "Diapers (box of 100)",
+      "price": 35,
+      "category": "childcare",
+      "source_type": "market_estimate",
+      "unit": "per box"
+    },
+    {
+      "id": "baby_formula",
+      "name": "Baby Formula (30 oz)",
+      "price": 32,
+      "category": "childcare",
+      "source_type": "market_estimate",
+      "unit": "per container"
+    },
+    {
+      "id": "daycare_monthly",
+      "name": "Daycare (monthly, avg US)",
+      "price": 1300,
+      "category": "childcare",
+      "source_type": "curated_2026",
+      "unit": "monthly"
+    },
+    {
+      "id": "baby_stroller",
+      "name": "Baby Stroller (mid-range)",
+      "price": 350,
+      "category": "childcare",
+      "source_type": "market_estimate",
+      "unit": "each"
+    },
+    {
+      "id": "child_car_seat",
+      "name": "Child Car Seat",
+      "price": 200,
+      "category": "childcare",
       "source_type": "market_estimate",
       "unit": "each"
     },

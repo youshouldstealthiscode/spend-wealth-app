@@ -157,6 +157,14 @@ async function buildDataset() {
       { id: "toothpaste", name: "Toothpaste (tube)", price: 4.0, category: "essentials", source_type: "market_estimate", unit: "each" },
       { id: "soap_bar", name: "Bar of Soap", price: 1.5, category: "essentials", source_type: "market_estimate", unit: "each" },
       { id: "shampoo_bottle", name: "Shampoo (12 oz)", price: 6.0, category: "essentials", source_type: "market_estimate", unit: "per bottle" },
+      { id: "chicken_breast_lb", name: "Chicken Breast, Boneless (1 lb)", price: 4.5, category: "essentials", source_type: "market_estimate", unit: "per lb" },
+      { id: "pasta_lb", name: "Spaghetti / Pasta (1 lb)", price: 1.5, category: "essentials", source_type: "market_estimate", unit: "per lb" },
+      { id: "cooking_oil", name: "Vegetable Cooking Oil (48 oz)", price: 4.5, category: "essentials", source_type: "market_estimate", unit: "per bottle" },
+      { id: "onions_lb", name: "Onions (1 lb)", price: 1.2, category: "essentials", source_type: "market_estimate", unit: "per lb" },
+      { id: "tomatoes_lb", name: "Tomatoes (1 lb)", price: 2.5, category: "essentials", source_type: "market_estimate", unit: "per lb" },
+      { id: "frozen_pizza", name: "Frozen Pizza (large)", price: 5.0, category: "essentials", source_type: "market_estimate", unit: "each" },
+      { id: "fast_food_meal", name: "Fast Food Meal (combo)", price: 12.0, category: "essentials", source_type: "market_estimate", unit: "per meal" },
+      { id: "restaurant_dinner_two", name: "Restaurant Dinner (mid-range, 2 people)", price: 75.0, category: "essentials", source_type: "market_estimate", unit: "per dinner" },
 
       // ── Housing & Utilities ──
       { id: "rent_month", name: "One Month Rent (avg US)", price: avgRent, category: "housing", source_type: "curated_2026", unit: "monthly" },
@@ -167,6 +175,9 @@ async function buildDataset() {
       { id: "mattress_queen", name: "Queen Mattress", price: 800, category: "housing", source_type: "market_estimate", unit: "each" },
       { id: "couch", name: "Couch", price: 1200, category: "housing", source_type: "market_estimate", unit: "each" },
       { id: "washer_dryer", name: "Washer & Dryer Set", price: 1500, category: "housing", source_type: "market_estimate", unit: "per set" },
+      { id: "water_sewer_monthly", name: "Water & Sewer Bill (monthly)", price: 65, category: "housing", source_type: "market_estimate", unit: "monthly" },
+      { id: "home_insurance_annual", name: "Homeowner's Insurance (annual)", price: 1800, category: "housing", source_type: "market_estimate", unit: "per year" },
+      { id: "property_tax_annual", name: "Property Tax (annual, avg US home)", price: 4200, category: "housing", source_type: "census_2025", unit: "per year" },
 
       // ── Health ──
       { id: "doctor_visit", name: "Doctor Visit (copay)", price: 150, category: "health", source_type: "curated_2026", unit: "per visit" },
@@ -176,6 +187,10 @@ async function buildDataset() {
       { id: "health_insurance_monthly", name: "Health Insurance (monthly)", price: avgHealthInsurance, category: "health", source_type: "kff_2025", unit: "monthly" },
       { id: "glasses_pair", name: "Prescription Glasses", price: 200, category: "health", source_type: "market_estimate", unit: "per pair" },
       { id: "therapy_session", name: "Therapy Session", price: 150, category: "health", source_type: "curated_2026", unit: "per session" },
+      { id: "otc_medicine", name: "OTC Pain Reliever (ibuprofen, 100ct)", price: 12, category: "health", source_type: "market_estimate", unit: "per bottle" },
+      { id: "vitamins", name: "Multivitamin (60ct)", price: 15, category: "health", source_type: "market_estimate", unit: "per bottle" },
+      { id: "urgent_care_visit", name: "Urgent Care Visit", price: 250, category: "health", source_type: "curated_2026", unit: "per visit" },
+      { id: "ambulance_ride", name: "Ambulance Ride (avg)", price: 1200, category: "health", source_type: "curated_2026", unit: "per ride" },
 
       // ── Education ──
       { id: "college_semester", name: "College Semester (in-state)", price: 12000, category: "education", source_type: "curated_2026", unit: "per semester" },
@@ -192,6 +207,8 @@ async function buildDataset() {
       { id: "uber_ride", name: "Uber Ride (avg 5 mi)", price: 20, category: "transportation", source_type: "market_estimate", unit: "per ride" },
       { id: "domestic_flight", name: "Domestic Flight (avg)", price: 350, category: "transportation", source_type: "market_estimate", unit: "one-way" },
       { id: "train_pass_monthly", name: "Monthly Train Pass", price: 150, category: "transportation", source_type: "market_estimate", unit: "monthly" },
+      { id: "bus_fare", name: "Bus Fare (single ride)", price: 2.5, category: "transportation", source_type: "market_estimate", unit: "per ride" },
+      { id: "bicycle", name: "Bicycle (basic commuter)", price: 350, category: "transportation", source_type: "market_estimate", unit: "each" },
 
       // ── Stability ──
       { id: "used_car", name: "Used Reliable Car", price: 15000, category: "stability", source_type: "curated_2026", unit: "one-time" },
@@ -207,6 +224,10 @@ async function buildDataset() {
       { id: "concert_ticket", name: "Concert Ticket (avg)", price: 120, category: "entertainment", source_type: "market_estimate", unit: "per ticket" },
       { id: "disney_family", name: "Disney World (family of 4)", price: 6000, category: "entertainment", source_type: "market_estimate", unit: "per trip" },
       { id: "gym_membership_monthly", name: "Gym Membership (monthly)", price: 50, category: "entertainment", source_type: "market_estimate", unit: "monthly" },
+      { id: "book_paperback", name: "Paperback Book", price: 16, category: "entertainment", source_type: "market_estimate", unit: "each" },
+      { id: "board_game", name: "Board Game", price: 35, category: "entertainment", source_type: "market_estimate", unit: "each" },
+      { id: "hulu_monthly", name: "Hulu (monthly, no ads)", price: 18, category: "entertainment", source_type: "market_price", unit: "monthly" },
+      { id: "disney_plus_monthly", name: "Disney+ (monthly)", price: 10, category: "entertainment", source_type: "market_price", unit: "monthly" },
 
       // ── Tech ──
       { id: "iphone_16", name: "iPhone 16", price: 800, category: "tech", source_type: "market_price", unit: "each" },
@@ -237,6 +258,21 @@ async function buildDataset() {
       { id: "private_island", name: "Private Island (Caribbean)", price: 50000000, category: "luxury", source_type: "market_estimate", unit: "each" },
       { id: "art_masterpiece", name: "Famous Painting (auction avg)", price: 100000000, category: "luxury", source_type: "market_estimate", unit: "each" },
       { id: "skyscraper_nyc", name: "NYC Skyscraper", price: 2000000000, category: "luxury", source_type: "market_estimate", unit: "each" },
+
+      // ── Personal & Household ──
+      { id: "laundry_detergent", name: "Laundry Detergent (100 oz)", price: 12, category: "personal", source_type: "market_estimate", unit: "per bottle" },
+      { id: "dish_soap", name: "Dish Soap (24 oz)", price: 4, category: "personal", source_type: "market_estimate", unit: "per bottle" },
+      { id: "light_bulbs", name: "LED Light Bulbs (4-pack)", price: 8, category: "personal", source_type: "market_estimate", unit: "per pack" },
+      { id: "batteries_aa", name: "AA Batteries (8-pack)", price: 7, category: "personal", source_type: "market_estimate", unit: "per pack" },
+      { id: "razor_refill", name: "Razor Blade Refill (8-pack)", price: 25, category: "personal", source_type: "market_estimate", unit: "per pack" },
+      { id: "sunscreen", name: "Sunscreen (SPF 50, 3 oz)", price: 12, category: "personal", source_type: "market_estimate", unit: "per bottle" },
+
+      // ── Childcare ──
+      { id: "diapers_box", name: "Diapers (box of 100)", price: 35, category: "childcare", source_type: "market_estimate", unit: "per box" },
+      { id: "baby_formula", name: "Baby Formula (30 oz)", price: 32, category: "childcare", source_type: "market_estimate", unit: "per container" },
+      { id: "daycare_monthly", name: "Daycare (monthly, avg US)", price: 1300, category: "childcare", source_type: "curated_2026", unit: "monthly" },
+      { id: "baby_stroller", name: "Baby Stroller (mid-range)", price: 350, category: "childcare", source_type: "market_estimate", unit: "each" },
+      { id: "child_car_seat", name: "Child Car Seat", price: 200, category: "childcare", source_type: "market_estimate", unit: "each" },
 
       // ── Social Impact ──
       { id: "meal_for_one", name: "Meal for One Person", price: 3, category: "social_impact", source_type: "wfp_estimate", unit: "per meal" },

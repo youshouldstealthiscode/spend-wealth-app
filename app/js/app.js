@@ -533,6 +533,13 @@ const PRESET_DEFINITIONS = {
 		label: "College Start",
 		items: { college_semester: 1, rent_month: 1, doctor_visit: 1 },
 	},
+	child_first_year: {
+		label: "Child's First Year",
+		items: {
+			diapers_box: 12, baby_formula: 12, daycare_monthly: 12,
+			baby_stroller: 1, child_car_seat: 1, doctor_visit: 4,
+		},
+	},
 };
 
 function applyPresetBundle(presetKey) {
