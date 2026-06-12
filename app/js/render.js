@@ -255,7 +255,7 @@ export function renderWealthStats(state) {
     </div>
     <div style="margin-top:10px;"><strong>Impact:</strong><br>Could support ${Math.floor(m.households).toLocaleString()} people for a year</div>
     <div style="margin-top:10px;"><strong>Compared to your savings:</strong><br>${m.savingsMultiple ? `${m.savingsMultiple.toFixed(2)}x your current savings` : "Add your savings to compare"}</div>
-    <div style="margin-top:10px;"><strong>Time to reach this billionaire's wealth:</strong><br>${m.yearsToReachWealth ? `${numberFormatter.format(m.yearsToReachWealth)} years at your current income` : "Add income details to compare"}</div>
+    <div style="margin-top:10px;"><strong>Time to reach their wealth:</strong><br>${m.yearsToReachWealth ? `${numberFormatter.format(m.yearsToReachWealth)} years at your current income` : "Add income details to compare"}</div>
     <div style="margin-top:10px;"><strong>Time to afford this cart using savings first:</strong><br>${state.userFinance.hourlyWage > 0 ? `${m.yearsToAffordCartWithSavings.toFixed(2)} years after using ${fmt(state.userFinance.savings)} in savings` : "Add income details to compare"}<br><span style="opacity:0.8;">Remaining after savings: ${fmt(m.remainingAfterSavings)}</span></div>`;
 }
 
