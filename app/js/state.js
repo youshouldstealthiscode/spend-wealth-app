@@ -2,7 +2,7 @@
 
 const STORAGE_KEY = "spendWealthState";
 
-const DEFAULT_CUSTOM_ITEMS = Array.from({ length: 5 }, (_, i) => ({
+const DEFAULT_CUSTOM_ITEMS = Array.from({ length: 10 }, (_, i) => ({
   id: `custom_${i + 1}`,
   name: "",
   price: 0,
@@ -47,8 +47,8 @@ export function loadState(state) {
     if (parsed.activePreset) state.activePreset = parsed.activePreset;
     if (parsed.selectedCurrency) state.selectedCurrency = parsed.selectedCurrency;
     if (Array.isArray(parsed.customItems)) {
-      // Merge saved custom items into default slots (up to 5)
-      for (let i = 0; i < 5; i++) {
+      // Merge saved custom items into default slots (up to 10)
+      for (let i = 0; i < 10; i++) {
         const saved = parsed.customItems[i];
         state.customItems[i] = saved ? { ...saved } : { id: `custom_${i + 1}`, name: "", price: 0 };
       }
