@@ -1,108 +1,108 @@
 {
-  "last_updated": "2026-06-12T00:00:00.000Z",
+  "last_updated": "2026-06-12T15:45:00.000Z",
   "source": "Forbes Real-Time Billionaires (manual update, June 2026)",
   "source_url": "https://www.forbes.com/real-time-billionaires/",
-  "api_date": "2026-06-01",
+  "api_date": "2026-06-12",
   "people": [
     {
       "id": "elon-musk",
       "rank": 1,
       "name": "Elon Musk",
-      "net_worth": 835000000000,
+      "net_worth": 981600000000,
       "company": "Tesla, SpaceX",
       "country": "United States",
-      "daily_change_pct": 0.00154,
-      "daily_change_usd": 1211921000
+      "daily_change_pct": -0.0010,
+      "daily_change_usd": -968100000
     },
     {
       "id": "larry-page",
       "rank": 2,
       "name": "Larry Page",
-      "net_worth": 309000000000,
+      "net_worth": 296400000000,
       "company": "Google",
       "country": "United States",
-      "daily_change_pct": -0.0013,
-      "daily_change_usd": -4000000000
+      "daily_change_pct": 0.0126,
+      "daily_change_usd": 3700000000
     },
     {
       "id": "sergey-brin",
       "rank": 3,
       "name": "Sergey Brin",
-      "net_worth": 285000000000,
+      "net_worth": 273400000000,
       "company": "Google",
       "country": "United States",
-      "daily_change_pct": -0.0014,
-      "daily_change_usd": -4000000000
+      "daily_change_pct": 0.0126,
+      "daily_change_usd": 3400000000
     },
     {
       "id": "jeff-bezos",
       "rank": 4,
       "name": "Jeff Bezos",
-      "net_worth": 277000000000,
+      "net_worth": 248400000000,
       "company": "Amazon",
       "country": "United States",
-      "daily_change_pct": 0.0018,
-      "daily_change_usd": 5000000000
+      "daily_change_pct": -0.0125,
+      "daily_change_usd": -3100000000
     },
     {
       "id": "larry-ellison",
       "rank": 5,
       "name": "Larry Ellison",
-      "net_worth": 276000000000,
+      "net_worth": 228500000000,
       "company": "Oracle",
       "country": "United States",
-      "daily_change_pct": 0.0209,
-      "daily_change_usd": 47670000000
+      "daily_change_pct": -0.0071,
+      "daily_change_usd": -1600000000
     },
     {
       "id": "michael-dell",
       "rank": 6,
       "name": "Michael Dell",
-      "net_worth": 244000000000,
+      "net_worth": 228300000000,
       "company": "Dell Technologies",
       "country": "United States",
-      "daily_change_pct": 0.0275,
-      "daily_change_usd": 52700000000
+      "daily_change_pct": 0.0173,
+      "daily_change_usd": 3900000000
     },
     {
       "id": "mark-zuckerberg",
       "rank": 7,
       "name": "Mark Zuckerberg",
-      "net_worth": 217000000000,
+      "net_worth": 196300000000,
       "company": "Meta",
       "country": "United States",
-      "daily_change_pct": 0.0033,
-      "daily_change_usd": 7000000000
+      "daily_change_pct": 0.0056,
+      "daily_change_usd": 1100000000
     },
     {
       "id": "jensen-huang",
       "rank": 8,
       "name": "Jensen Huang",
-      "net_worth": 182000000000,
+      "net_worth": 178400000000,
       "company": "Nvidia",
       "country": "United States",
-      "daily_change_pct": 0.0052,
-      "daily_change_usd": 9000000000
+      "daily_change_pct": 0.0073,
+      "daily_change_usd": 1300000000
     },
     {
       "id": "bernard-arnault",
       "rank": 9,
       "name": "Bernard Arnault & family",
-      "net_worth": 148000000000,
+      "net_worth": 157200000000,
       "company": "LVMH",
       "country": "France",
-      "daily_change_pct": 0.0035,
-      "daily_change_usd": 5000000000
+      "daily_change_pct": 0.0358,
+      "daily_change_usd": 5400000000
     },
     {
-      "id": "steve-ballmer",
+      "id": "warren-buffett",
       "rank": 10,
-      "name": "Steve Ballmer",
-      "net_worth": 141000000000,
-      "company": "Microsoft",
+      "name": "Warren Buffett",
+      "net_worth": 144400000000,
+      "company": "Berkshire Hathaway",
       "country": "United States",
-      "daily_change_pct": 0.0085,
-      "daily_change_usd": 11000000000
+      "daily_change_pct": 0.0069,
+      "daily_change_usd": 1000000000
     }
   ]
 }

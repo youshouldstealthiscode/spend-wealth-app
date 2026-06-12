@@ -10,16 +10,16 @@ const OUTPUT_PATHS = [
 ];
 
 const FALLBACK = [
-  { id: "elon-musk", rank: 1, name: "Elon Musk", net_worth: 835000000000, company: "Tesla, SpaceX", country: "United States" },
-  { id: "larry-page", rank: 2, name: "Larry Page", net_worth: 309000000000, company: "Google", country: "United States" },
-  { id: "sergey-brin", rank: 3, name: "Sergey Brin", net_worth: 285000000000, company: "Google", country: "United States" },
-  { id: "jeff-bezos", rank: 4, name: "Jeff Bezos", net_worth: 277000000000, company: "Amazon", country: "United States" },
-  { id: "larry-ellison", rank: 5, name: "Larry Ellison", net_worth: 276000000000, company: "Oracle", country: "United States" },
-  { id: "michael-dell", rank: 6, name: "Michael Dell", net_worth: 244000000000, company: "Dell Technologies", country: "United States" },
-  { id: "mark-zuckerberg", rank: 7, name: "Mark Zuckerberg", net_worth: 217000000000, company: "Meta", country: "United States" },
-  { id: "jensen-huang", rank: 8, name: "Jensen Huang", net_worth: 182000000000, company: "Nvidia", country: "United States" },
-  { id: "bernard-arnault", rank: 9, name: "Bernard Arnault & family", net_worth: 148000000000, company: "LVMH", country: "France" },
-  { id: "steve-ballmer", rank: 10, name: "Steve Ballmer", net_worth: 141000000000, company: "Microsoft", country: "United States" },
+  { id: "elon-musk", rank: 1, name: "Elon Musk", net_worth: 981600000000, company: "Tesla, SpaceX", country: "United States" },
+  { id: "larry-page", rank: 2, name: "Larry Page", net_worth: 296400000000, company: "Google", country: "United States" },
+  { id: "sergey-brin", rank: 3, name: "Sergey Brin", net_worth: 273400000000, company: "Google", country: "United States" },
+  { id: "jeff-bezos", rank: 4, name: "Jeff Bezos", net_worth: 248400000000, company: "Amazon", country: "United States" },
+  { id: "larry-ellison", rank: 5, name: "Larry Ellison", net_worth: 228500000000, company: "Oracle", country: "United States" },
+  { id: "michael-dell", rank: 6, name: "Michael Dell", net_worth: 228300000000, company: "Dell Technologies", country: "United States" },
+  { id: "mark-zuckerberg", rank: 7, name: "Mark Zuckerberg", net_worth: 196300000000, company: "Meta", country: "United States" },
+  { id: "jensen-huang", rank: 8, name: "Jensen Huang", net_worth: 178400000000, company: "Nvidia", country: "United States" },
+  { id: "bernard-arnault", rank: 9, name: "Bernard Arnault & family", net_worth: 157200000000, company: "LVMH", country: "France" },
+  { id: "warren-buffett", rank: 10, name: "Warren Buffett", net_worth: 144400000000, company: "Berkshire Hathaway", country: "United States" },
 ];
 
 function nowIso() {
