@@ -26,6 +26,8 @@ jobs:
       - name: Run billionaire updater
         id: billionaires
         run: |
+          # Fetches from Forbes Real-Time Billionaires API (official endpoint)
+          # Falls back to static snapshot if API is unreachable
           npm run update:billionaires
           echo "exit_code=$?" >> $GITHUB_OUTPUT
         continue-on-error: true
