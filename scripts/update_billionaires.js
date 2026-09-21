@@ -60,7 +60,7 @@ function httpGet(url, opts = {}) {
  * We request top 50 to safely cover the top 10.
  */
 async function fetchFromForbesApi() {
-  const fields = "rank,personName,finalWorth,country,industries,source";
+  const fields = "rank,personName,finalWorth,countryOfCitizenship,industries,source";
   const url = `https://www.forbes.com/forbesapi/person/rtb/0/-estWorthPrev/true.json?fields=${fields}&limit=50`;
 
   const { body, status } = await httpGet(url);
@@ -82,20 +82,29 @@ async function fetchFromForbesApi() {
 
   if (list.length === 0) throw new Error("Empty billionaire list");
 
-  const top10 = list.slice(0, 10).map((p) => {
-    const netWorthMillions = p.finalWorth || p.netWorth || p.net_worth || 0;
-    const name = p.personName || p.name || "Unknown";
-    return {
-      id: name.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/-$/, ""),
-      rank: p.rank || 0,
-      name: name,
-      net_worth: Math.round(netWorthMillions * 1e6), // Convert millions to dollars
-      country: p.country || "",
-      company: p.source || p.industries?.[0] || p.company || "",
-    };
-  });
+  // Normalize, then sort by net worth descending and re-rank 1..10.
+  // Never trust upstream ordering: the API is queried by -estWorthPrev and a
+  // stale cache or shape change would otherwise publish a wrong "top ten".
+  const normalized = list
+    .map((p) => {
+      const netWorthMillions = p.finalWorth || p.netWorth || p.net_worth || 0;
+      const name = p.personName || p.name || "Unknown";
+      return {
+        id: name.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/-$/, ""),
+        rank: p.rank || 0,
+        name: name,
+        net_worth: Math.round(netWorthMillions * 1e6), // Convert millions to dollars
+        country: p.countryOfCitizenship || p.country || "",
+        company: p.source || p.industries?.[0] || p.company || "",
+      };
+    })
+    .filter((p) => p.net_worth > 0 && p.name !== "Unknown");
 
-  const valid = top10.filter((p) => p.net_worth > 0);
+  const valid = normalized
+    .sort((a, b) => b.net_worth - a.net_worth)
+    .slice(0, 10)
+    .map((p, i) => ({ ...p, rank: i + 1 }));
+
   if (valid.length === 0) throw new Error("All net worths are 0");
 
   console.log(`[✓] Forbes API: ${list.length} people fetched, #1 ${valid[0].name} $${(valid[0].net_worth / 1e12).toFixed(2)}T`);
@@ -105,7 +114,7 @@ async function fetchFromForbesApi() {
     source: "Forbes Real-Time Billionaires (official API)",
     source_url: "https://www.forbes.com/real-time-billionaires/",
     stale: false,
-    people: top10,
+    people: valid,
   };
 }
 

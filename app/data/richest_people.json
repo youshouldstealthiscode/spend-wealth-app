@@ -1,5 +1,5 @@
 {
-  "last_updated": "2026-06-12T21:15:11.110Z",
+  "last_updated": "2026-09-21T15:04:30.734Z",
   "source": "Forbes Real-Time Billionaires (official API)",
   "source_url": "https://www.forbes.com/real-time-billionaires/",
   "stale": false,
@@ -8,80 +8,80 @@
       "id": "elon-musk",
       "rank": 1,
       "name": "Elon Musk",
-      "net_worth": 1120389387000,
-      "country": "",
+      "net_worth": 968479184000,
+      "country": "United States",
       "company": "Tesla, SpaceX"
     },
     {
-      "id": "larry-page",
-      "rank": 2,
-      "name": "Larry Page",
-      "net_worth": 294083626000,
-      "country": "",
-      "company": "Google"
-    },
-    {
-      "id": "sergey-brin",
-      "rank": 3,
-      "name": "Sergey Brin",
-      "net_worth": 271251891000,
-      "country": "",
-      "company": "Google"
-    },
-    {
       "id": "jeff-bezos",
-      "rank": 4,
+      "rank": 2,
       "name": "Jeff Bezos",
-      "net_worth": 248928887000,
-      "country": "",
+      "net_worth": 375135360000,
+      "country": "United States",
       "company": "Amazon"
     },
     {
-      "id": "larry-ellison",
-      "rank": 5,
-      "name": "Larry Ellison",
-      "net_worth": 231495357000,
-      "country": "",
-      "company": "Oracle"
+      "id": "larry-page",
+      "rank": 3,
+      "name": "Larry Page",
+      "net_worth": 291066118000,
+      "country": "United States",
+      "company": "Google"
     },
     {
       "id": "michael-dell",
-      "rank": 6,
+      "rank": 4,
       "name": "Michael Dell",
-      "net_worth": 225015481000,
-      "country": "",
+      "net_worth": 277750108000,
+      "country": "United States",
       "company": "Dell Technologies"
     },
     {
+      "id": "sergey-brin",
+      "rank": 5,
+      "name": "Sergey Brin",
+      "net_worth": 267846611000,
+      "country": "United States",
+      "company": "Google"
+    },
+    {
       "id": "mark-zuckerberg",
-      "rank": 7,
+      "rank": 6,
       "name": "Mark Zuckerberg",
-      "net_worth": 194768821000,
-      "country": "",
+      "net_worth": 243279017000,
+      "country": "United States",
       "company": "Facebook"
     },
     {
       "id": "jensen-huang",
-      "rank": 8,
+      "rank": 7,
       "name": "Jensen Huang",
-      "net_worth": 177379079000,
-      "country": "",
-      "company": "Semiconductors"
+      "net_worth": 194443778000,
+      "country": "United States",
+      "company": "Nvidia"
     },
     {
-      "id": "bernard-arnault-family",
+      "id": "larry-ellison",
+      "rank": 8,
+      "name": "Larry Ellison",
+      "net_worth": 192634686000,
+      "country": "United States",
+      "company": "Oracle"
+    },
+    {
+      "id": "steve-ballmer",
       "rank": 9,
-      "name": "Bernard Arnault & family",
-      "net_worth": 156838444000,
-      "country": "",
-      "company": "LVMH"
+      "name": "Steve Ballmer",
+      "net_worth": 154406424000,
+      "country": "United States",
+      "company": "Microsoft"
     },
     {
       "id": "warren-buffett",
       "rank": 10,
       "name": "Warren Buffett",
-      "net_worth": 144468733000,
-      "country": "",
+      "net_worth": 144438528000,
+      "country": "United States",
       "company": "Berkshire Hathaway"
     }
   ]

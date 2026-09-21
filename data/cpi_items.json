@@ -1,5 +1,5 @@
 {
-  "last_updated": "2026-06-12T23:27:43.127Z",
+  "last_updated": "2026-09-21T15:04:31.783Z",
   "source": "Live BLS Average Retail Prices (latest month) + curated estimates",
   "source_url": "https://www.bls.gov/regions/mid-atlantic/data/AverageRetailFoodAndEnergyPrices_USandWest_Table.htm",
   "freshness": "live | curated",
@@ -58,7 +58,7 @@
     {
       "id": "bread_white_pan",
       "name": "White Bread (1 loaf)",
-      "price": 2.191,
+      "price": 2.272,
       "category": "essentials",
       "source_type": "bls_latest",
       "unit": "per loaf"
@@ -66,7 +66,7 @@
     {
       "id": "eggs_dozen",
       "name": "Eggs, Grade A (1 dozen)",
-      "price": 4.217,
+      "price": 4.229,
       "category": "essentials",
       "source_type": "bls_latest",
       "unit": "per dozen"
@@ -82,7 +82,7 @@
     {
       "id": "rice_long_grain",
       "name": "White Rice (1 lb)",
-      "price": 1.071,
+      "price": 1.111,
       "category": "essentials",
       "source_type": "bls_latest",
       "unit": "per lb"
@@ -90,7 +90,7 @@
     {
       "id": "bananas_lb",
       "name": "Bananas (1 lb)",
-      "price": 0.544,
+      "price": 0.548,
       "category": "essentials",
       "source_type": "bls_latest",
       "unit": "per lb"
@@ -98,7 +98,7 @@
     {
       "id": "chicken_whole_lb",
       "name": "Whole Chicken (1 lb)",
-      "price": 2.036,
+      "price": 2.012,
       "category": "essentials",
       "source_type": "bls_latest",
       "unit": "per lb"
@@ -106,7 +106,7 @@
     {
       "id": "ground_beef_lb",
       "name": "Ground Beef (1 lb)",
-      "price": 6.745,
+      "price": 6.923,
       "category": "essentials",
       "source_type": "bls_latest",
       "unit": "per lb"
@@ -114,7 +114,7 @@
     {
       "id": "coffee_grounds_lb",
       "name": "Coffee (1 lb)",
-      "price": 9.511,
+      "price": 9.299,
       "category": "essentials",
       "source_type": "bls_latest",
       "unit": "per lb"
@@ -130,7 +130,7 @@
     {
       "id": "chicken_breast_lb",
       "name": "Chicken Breast, Boneless (1 lb)",
-      "price": 4.171,
+      "price": 4.173,
       "category": "essentials",
       "source_type": "bls_latest",
       "unit": "per lb"
