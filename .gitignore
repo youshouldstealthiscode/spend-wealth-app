@@ -1,0 +1,17 @@
+# macOS Finder metadata — never commit, and never publish to GitHub Pages
+.DS_Store
+**/.DS_Store
+
+# Editor / OS noise
+.vscode/*
+!.vscode/settings.json
+Thumbs.db
+desktop.ini
+
+# Node (scripts/ are dependency-free, but keep local installs out)
+node_modules/
+npm-debug.log*
+
+# Local scratch
+*.log
+tmp/

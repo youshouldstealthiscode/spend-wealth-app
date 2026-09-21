@@ -1,12 +1,15 @@
 {
-  "last_updated": "2026-09-21T15:13:38.535Z",
-  "source": "Live BLS Average Retail Prices (latest month) + curated estimates",
-  "source_url": "https://www.bls.gov/regions/mid-atlantic/data/AverageRetailFoodAndEnergyPrices_USandWest_Table.htm",
-  "freshness": "live | curated",
+  "last_updated": "2026-09-21T15:42:33.977Z",
+  "source": "BLS Average Retail Prices (official, U.S. city average) + curated estimates",
+  "source_url": "https://www.bls.gov/cpi/factsheets/average-prices.htm",
+  "freshness": "live BLS | curated",
+  "bls_reference_period": "2026-August",
   "stats": {
     "total_items": 307,
-    "bls_live_items": 11,
-    "curated_items": 296,
+    "bls_live_items": 25,
+    "curated_items": 282,
+    "bls_mapped_items": 25,
+    "bls_series_unavailable": [],
     "needs_manual_review": 42,
     "manual_review_ids": [
       "potatoes_lb",
@@ -58,26 +61,38 @@
     {
       "id": "bread_white_pan",
       "name": "White Bread (1 loaf)",
-      "price": 2.272,
+      "price": 1.823,
       "category": "essentials",
       "source_type": "bls_latest",
-      "unit": "per loaf"
+      "unit": "per lb",
+      "bls_series": "APU0000702111",
+      "bls_title": "Bread, white, pan, per lb.",
+      "bls_period": "2026-August",
+      "bls_multiplier": 1
     },
     {
       "id": "eggs_dozen",
       "name": "Eggs, Grade A (1 dozen)",
-      "price": 4.229,
+      "price": 2.272,
       "category": "essentials",
       "source_type": "bls_latest",
-      "unit": "per dozen"
+      "unit": "per dozen",
+      "bls_series": "APU0000708111",
+      "bls_title": "Eggs, grade A, large, per doz.",
+      "bls_period": "2026-August",
+      "bls_multiplier": 1
     },
     {
       "id": "milk_gallon",
       "name": "Whole Milk (1 gallon)",
-      "price": 4.22,
+      "price": 4.229,
       "category": "essentials",
       "source_type": "bls_latest",
-      "unit": "per gallon"
+      "unit": "per gallon",
+      "bls_series": "APU0000709112",
+      "bls_title": "Milk, fresh, whole, fortified, per gal.",
+      "bls_period": "2026-August",
+      "bls_multiplier": 1
     },
     {
       "id": "rice_long_grain",
@@ -85,15 +100,23 @@
       "price": 1.111,
       "category": "essentials",
       "source_type": "bls_latest",
-      "unit": "per lb"
+      "unit": "per lb",
+      "bls_series": "APU0000701312",
+      "bls_title": "Rice, white, long grain, uncooked, per lb.",
+      "bls_period": "2026-August",
+      "bls_multiplier": 1
     },
     {
       "id": "bananas_lb",
       "name": "Bananas (1 lb)",
-      "price": 0.548,
+      "price": 0.652,
       "category": "essentials",
       "source_type": "bls_latest",
-      "unit": "per lb"
+      "unit": "per lb",
+      "bls_series": "APU0000711211",
+      "bls_title": "Bananas, per lb.",
+      "bls_period": "2026-August",
+      "bls_multiplier": 1
     },
     {
       "id": "chicken_whole_lb",
@@ -101,7 +124,11 @@
       "price": 2.012,
       "category": "essentials",
       "source_type": "bls_latest",
-      "unit": "per lb"
+      "unit": "per lb",
+      "bls_series": "APU0000706111",
+      "bls_title": "Chicken, fresh, whole, per lb.",
+      "bls_period": "2026-August",
+      "bls_multiplier": 1
     },
     {
       "id": "ground_beef_lb",
@@ -109,7 +136,11 @@
       "price": 6.923,
       "category": "essentials",
       "source_type": "bls_latest",
-      "unit": "per lb"
+      "unit": "per lb",
+      "bls_series": "APU0000703112",
+      "bls_title": "Ground beef, 100% beef, per lb.",
+      "bls_period": "2026-August",
+      "bls_multiplier": 1
     },
     {
       "id": "coffee_grounds_lb",
@@ -117,15 +148,23 @@
       "price": 9.299,
       "category": "essentials",
       "source_type": "bls_latest",
-      "unit": "per lb"
+      "unit": "per lb",
+      "bls_series": "APU0000717311",
+      "bls_title": "Coffee, 100% ground roast, all sizes, per lb.",
+      "bls_period": "2026-August",
+      "bls_multiplier": 1
     },
     {
       "id": "butter_lb",
       "name": "Butter (1 lb)",
-      "price": 4.905,
+      "price": 4.021,
       "category": "essentials",
       "source_type": "bls_latest",
-      "unit": "per lb"
+      "unit": "per lb",
+      "bls_series": "APU0000FS1101",
+      "bls_title": "Butter, stick, per lb.",
+      "bls_period": "2026-August",
+      "bls_multiplier": 1
     },
     {
       "id": "chicken_breast_lb",
@@ -133,15 +172,23 @@
       "price": 4.173,
       "category": "essentials",
       "source_type": "bls_latest",
-      "unit": "per lb"
+      "unit": "per lb",
+      "bls_series": "APU0000FF1101",
+      "bls_title": "Chicken breast, boneless, per lb.",
+      "bls_period": "2026-August",
+      "bls_multiplier": 1
     },
     {
       "id": "potatoes_lb",
       "name": "Potatoes (1 lb)",
-      "price": 0.75,
+      "price": 0.976,
       "category": "essentials",
-      "source_type": "usda_retail_jun2026",
-      "unit": "per lb"
+      "source_type": "bls_latest",
+      "unit": "per lb",
+      "bls_series": "APU0000712112",
+      "bls_title": "Potatoes, white, per lb.",
+      "bls_period": "2026-August",
+      "bls_multiplier": 1
     },
     {
       "id": "apple_lb",
@@ -154,10 +201,14 @@
     {
       "id": "cheese_lb",
       "name": "Cheddar Cheese (1 lb)",
-      "price": 6.03,
+      "price": 5.983,
       "category": "essentials",
-      "source_type": "usda_retail_jun2026",
-      "unit": "per lb"
+      "source_type": "bls_latest",
+      "unit": "per lb",
+      "bls_series": "APU0000710212",
+      "bls_title": "Cheddar cheese, natural, per lb.",
+      "bls_period": "2026-August",
+      "bls_multiplier": 1
     },
     {
       "id": "cereal_box",
@@ -218,10 +269,14 @@
     {
       "id": "pasta_lb",
       "name": "Spaghetti / Pasta (1 lb)",
-      "price": 1.5,
+      "price": 1.374,
       "category": "essentials",
-      "source_type": "market_estimate",
-      "unit": "per lb"
+      "source_type": "bls_latest",
+      "unit": "per lb",
+      "bls_series": "APU0000701322",
+      "bls_title": "Spaghetti and macaroni, per lb.",
+      "bls_period": "2026-August",
+      "bls_multiplier": 1
     },
     {
       "id": "cooking_oil",
@@ -242,10 +297,14 @@
     {
       "id": "tomatoes_lb",
       "name": "Tomatoes (1 lb)",
-      "price": 2.5,
+      "price": 1.977,
       "category": "essentials",
-      "source_type": "market_estimate",
-      "unit": "per lb"
+      "source_type": "bls_latest",
+      "unit": "per lb",
+      "bls_series": "APU0000712311",
+      "bls_title": "Tomatoes, field grown, per lb.",
+      "bls_period": "2026-August",
+      "bls_multiplier": 1
     },
     {
       "id": "frozen_pizza",
@@ -306,18 +365,26 @@
     {
       "id": "flour_5lb",
       "name": "All-Purpose Flour (5 lb)",
-      "price": 4.5,
+      "price": 2.74,
       "category": "essentials",
-      "source_type": "market_estimate",
-      "unit": "per bag"
+      "source_type": "bls_latest",
+      "unit": "per 5 lb bag",
+      "bls_series": "APU0000701111",
+      "bls_title": "Flour, white, all purpose, per lb.",
+      "bls_period": "2026-August",
+      "bls_multiplier": 5
     },
     {
       "id": "sugar_4lb",
       "name": "Granulated Sugar (4 lb)",
-      "price": 3.5,
+      "price": 4.096,
       "category": "essentials",
-      "source_type": "market_estimate",
-      "unit": "per bag"
+      "source_type": "bls_latest",
+      "unit": "per 4 lb bag",
+      "bls_series": "APU0000715211",
+      "bls_title": "Sugar, white, all sizes, per lb.",
+      "bls_period": "2026-August",
+      "bls_multiplier": 4
     },
     {
       "id": "salt_26oz",
@@ -386,18 +453,26 @@
     {
       "id": "yogurt_cup",
       "name": "Yogurt (32 oz tub)",
-      "price": 5.5,
+      "price": 6.336,
       "category": "essentials",
-      "source_type": "market_estimate",
-      "unit": "per tub"
+      "source_type": "bls_latest",
+      "unit": "per 32 oz tub",
+      "bls_series": "APU0000FJ4101",
+      "bls_title": "Yogurt, per 8 oz.",
+      "bls_period": "2026-August",
+      "bls_multiplier": 4
     },
     {
       "id": "ice_cream_half_gallon",
       "name": "Ice Cream (half gallon)",
-      "price": 5,
+      "price": 5.854,
       "category": "essentials",
-      "source_type": "market_estimate",
-      "unit": "per carton"
+      "source_type": "bls_latest",
+      "unit": "per carton",
+      "bls_series": "APU0000710411",
+      "bls_title": "Ice cream, prepackaged, bulk, regular, per 1/2 gal.",
+      "bls_period": "2026-August",
+      "bls_multiplier": 1
     },
     {
       "id": "chocolate_bar",
@@ -410,10 +485,14 @@
     {
       "id": "chips_bag",
       "name": "Potato Chips (8 oz bag)",
-      "price": 4.5,
+      "price": 3.376,
       "category": "essentials",
-      "source_type": "market_estimate",
-      "unit": "per bag"
+      "source_type": "bls_latest",
+      "unit": "per 8 oz bag",
+      "bls_series": "APU0000718311",
+      "bls_title": "Potato chips, per 16 oz.",
+      "bls_period": "2026-August",
+      "bls_multiplier": 0.5
     },
     {
       "id": "popcorn",
@@ -426,10 +505,14 @@
     {
       "id": "soda_12pack",
       "name": "Soda (12-pack cans)",
-      "price": 6,
+      "price": 7.236,
       "category": "essentials",
-      "source_type": "market_estimate",
-      "unit": "per 12-pack"
+      "source_type": "bls_latest",
+      "unit": "per 12-pack",
+      "bls_series": "APU0000FN1102",
+      "bls_title": "All soft drinks, 12 pk, 12 oz. cans, per 12 oz.",
+      "bls_period": "2026-August",
+      "bls_multiplier": 12
     },
     {
       "id": "energy_drink",
@@ -450,18 +533,26 @@
     {
       "id": "beer_6pack",
       "name": "Beer (6-pack domestic)",
-      "price": 9,
+      "price": 8.456,
       "category": "essentials",
-      "source_type": "market_estimate",
-      "unit": "per 6-pack"
+      "source_type": "bls_latest",
+      "unit": "per 6-pack",
+      "bls_series": "APU0000720111",
+      "bls_title": "Malt beverages, all types, per 16 oz.",
+      "bls_period": "2026-August",
+      "bls_multiplier": 4.5
     },
     {
       "id": "wine_bottle",
       "name": "Wine (mid-range, 750ml)",
-      "price": 12,
+      "price": 10.31,
       "category": "essentials",
-      "source_type": "market_estimate",
-      "unit": "per bottle"
+      "source_type": "bls_latest",
+      "unit": "per 750 ml bottle",
+      "bls_series": "APU0000720311",
+      "bls_title": "Wine, red and white table, per 1 liter",
+      "bls_period": "2026-August",
+      "bls_multiplier": 0.75
     },
     {
       "id": "cigarettes_pack",
@@ -482,18 +573,26 @@
     {
       "id": "electricity_kwh",
       "name": "Electricity (1 kWh)",
-      "price": 0.17,
+      "price": 0.196,
       "category": "housing",
-      "source_type": "eia_2026",
-      "unit": "per kWh"
+      "source_type": "bls_latest",
+      "unit": "per kWh",
+      "bls_series": "APU000072610",
+      "bls_title": "Electricity per kilowatt-hour",
+      "bls_period": "2026-August",
+      "bls_multiplier": 1
     },
     {
       "id": "natural_gas_therm",
       "name": "Natural Gas (1 therm)",
-      "price": 1.5,
+      "price": 1.714,
       "category": "housing",
       "source_type": "bls_latest",
-      "unit": "per therm"
+      "unit": "per therm",
+      "bls_series": "APU000072620",
+      "bls_title": "Utility (piped) natural gas, per therm",
+      "bls_period": "2026-August",
+      "bls_multiplier": 1
     },
     {
       "id": "internet_monthly",
@@ -794,10 +893,14 @@
     {
       "id": "gas_regular_gallon",
       "name": "Gasoline, Regular (1 gallon)",
-      "price": 3.55,
+      "price": 4.2,
       "category": "transportation",
-      "source_type": "aaa_2026_avg",
-      "unit": "per gallon"
+      "source_type": "bls_latest",
+      "unit": "per gallon",
+      "bls_series": "APU000074714",
+      "bls_title": "Gasoline, all types, per gal.",
+      "bls_period": "2026-August",
+      "bls_multiplier": 1
     },
     {
       "id": "car_payment_monthly",

@@ -115,6 +115,40 @@ lines.push(
   } curated | — | — | ${stats.needs_manual_review || 0} need review |`
 );
 
+// BLS coverage: how many mapped items actually got an official price, and how
+// old the published reference month is.
+const blsMapped = stats.bls_mapped_items || 0;
+const blsLive = stats.bls_live_items || 0;
+if (items.bls_reference_period) {
+  lines.push(
+    `| BLS reference period | ${items.bls_reference_period} | — | — | ${blsLive}/${blsMapped} mapped series live |`
+  );
+}
+if (blsMapped > 0 && blsLive < blsMapped) {
+  const missing = Array.isArray(stats.bls_series_unavailable) ? stats.bls_series_unavailable : [];
+  warnings.push(
+    `${blsMapped - blsLive} of ${blsMapped} BLS-mapped items fell back to curated prices${
+      missing.length ? ": " + missing.join(", ") : ""
+    }.`
+  );
+}
+
+const MONTHS = ["January","February","March","April","May","June","July","August","September","October","November","December"];
+if (items.bls_reference_period) {
+  const m = /^(\d{4})-([A-Za-z]+)$/.exec(items.bls_reference_period);
+  if (m) {
+    const mi = MONTHS.indexOf(m[2]);
+    if (mi >= 0) {
+      const ageMonths = (new Date().getUTCFullYear() - Number(m[1])) * 12 + (new Date().getUTCMonth() - mi);
+      // BLS publishes the prior month's average price mid-month, so one month
+      // behind is normal and two is the edge of acceptable.
+      if (ageMonths > 2) {
+        warnings.push(`BLS reference period ${items.bls_reference_period} is ${ageMonths} months old — the BLS fetch is likely failing.`);
+      }
+    }
+  }
+}
+
 if (itemList.length === 0) {
   warnings.push("Item dataset has no entries.");
   fatal.push("Item dataset is empty.");

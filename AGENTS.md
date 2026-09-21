@@ -107,7 +107,12 @@ backups/               # Working snapshots (do not touch)
 
 ## CI/CD
 
-GitHub Actions (`.github/workflows/update-data.yml`): runs daily at 5:17 UTC to regenerate data snapshots and auto-commit changes. Deployed via GitHub Pages from `main` branch root.
+GitHub Actions (`.github/workflows/update-data.yml`): runs twice daily at 05:00 and 17:00 UTC to regenerate data snapshots (Forbes Real-Time Billionaires API + BLS Average Retail Prices), auto-commits them, then explicitly dispatches `deploy.yml` — a push made with `GITHUB_TOKEN` does not trigger other workflows, so without the dispatch the repo updates while the live site keeps serving the old artifact. Pages publishes the **`app/` subdirectory** via an Actions artifact, not the branch root. A `check_freshness.js --strict` gate runs last so a stalled pipeline shows up as a red build instead of silently serving stale numbers.
+
+BLS item prices are mapped in `BLS_ITEMS` inside `scripts/update_items.js` (item id → official series id + unit multiplier). Every mapping is verified against the BLS APU catalog for the U.S. city average (area code `0000`). Two rules matter:
+
+- Never trust a series id from memory — check the published title. `APU0000708111` is *eggs*, not bread.
+- The keyless BLS API accepts only 25 series per request and reports the overflow as "no data", so requests are chunked (`BLS_CHUNK`).
 
 ## What Does NOT Exist
 

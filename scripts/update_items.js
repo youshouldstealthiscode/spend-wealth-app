@@ -38,53 +38,134 @@ function fetchJson(url) {
   });
 }
 
+// BLS series the app draws on, mapped to the exact item each series measures.
+// Every entry is verified against the official BLS APU catalog (U.S. city
+// average, area code 0000). "mult" converts the series' published unit into the
+// unit this app displays (1 = same unit). A series with no current value falls
+// back to the curated price and is labelled curated, never bls_latest.
+const BLS_ITEMS = {
+  bread_white_pan:        { series: "APU0000702111", mult: 1,    title: "Bread, white, pan, per lb." },
+  eggs_dozen:             { series: "APU0000708111", mult: 1,    title: "Eggs, grade A, large, per doz." },
+  milk_gallon:            { series: "APU0000709112", mult: 1,    title: "Milk, fresh, whole, fortified, per gal." },
+  rice_long_grain:        { series: "APU0000701312", mult: 1,    title: "Rice, white, long grain, uncooked, per lb." },
+  bananas_lb:             { series: "APU0000711211", mult: 1,    title: "Bananas, per lb." },
+  flour_5lb:              { series: "APU0000701111", mult: 5,    title: "Flour, white, all purpose, per lb." },
+  chicken_whole_lb:       { series: "APU0000706111", mult: 1,    title: "Chicken, fresh, whole, per lb." },
+  chicken_breast_lb:      { series: "APU0000FF1101", mult: 1,    title: "Chicken breast, boneless, per lb." },
+  ground_beef_lb:         { series: "APU0000703112", mult: 1,    title: "Ground beef, 100% beef, per lb." },
+  coffee_grounds_lb:      { series: "APU0000717311", mult: 1,    title: "Coffee, 100% ground roast, all sizes, per lb." },
+  butter_lb:              { series: "APU0000FS1101", mult: 1,    title: "Butter, stick, per lb." },
+  cheese_lb:              { series: "APU0000710212", mult: 1,    title: "Cheddar cheese, natural, per lb." },
+  potatoes_lb:            { series: "APU0000712112", mult: 1,    title: "Potatoes, white, per lb." },
+  tomatoes_lb:            { series: "APU0000712311", mult: 1,    title: "Tomatoes, field grown, per lb." },
+  pasta_lb:               { series: "APU0000701322", mult: 1,    title: "Spaghetti and macaroni, per lb." },
+  chips_bag:              { series: "APU0000718311", mult: 0.5,  title: "Potato chips, per 16 oz." },
+  sugar_4lb:              { series: "APU0000715211", mult: 4,    title: "Sugar, white, all sizes, per lb." },
+  ice_cream_half_gallon:  { series: "APU0000710411", mult: 1,    title: "Ice cream, prepackaged, bulk, regular, per 1/2 gal." },
+  yogurt_cup:             { series: "APU0000FJ4101", mult: 4,    title: "Yogurt, per 8 oz." },
+  soda_12pack:            { series: "APU0000FN1102", mult: 12,   title: "All soft drinks, 12 pk, 12 oz. cans, per 12 oz." },
+  beer_6pack:             { series: "APU0000720111", mult: 4.5,  title: "Malt beverages, all types, per 16 oz." },
+  wine_bottle:            { series: "APU0000720311", mult: 0.75, title: "Wine, red and white table, per 1 liter" },
+  electricity_kwh:        { series: "APU000072610",  mult: 1,    title: "Electricity per kilowatt-hour" },
+  natural_gas_therm:      { series: "APU000072620",  mult: 1,    title: "Utility (piped) natural gas, per therm" },
+  gas_regular_gallon:     { series: "APU000074714",  mult: 1,    title: "Gasoline, all types, per gal." },
+};
+
+const BLS_SERIES = [...new Set(Object.values(BLS_ITEMS).map((m) => m.series))];
+
+// The BLS public API without a key allows only 25 series per request, and
+// silently reports "no data" for the overflow, so requests are chunked.
+const BLS_CHUNK = 20;
+
+function blsRequest(seriesChunk) {
+  const url = "https://api.bls.gov/publicAPI/v2/timeseries/data/";
+  const body = JSON.stringify({ seriesid: seriesChunk, startyear: "2025", endyear: "2026" });
+  return new Promise((resolve, reject) => {
+    const req = https.request(url, {
+      method: "POST",
+      headers: { "Content-Type": "application/json", "Content-Length": Buffer.byteLength(body) },
+      timeout: 20000,
+    }, (res) => {
+      let d = "";
+      res.on("data", (c) => (d += c));
+      res.on("end", () => { try { resolve(JSON.parse(d)); } catch (e) { reject(e); } });
+    });
+    req.on("error", reject);
+    req.on("timeout", () => { req.destroy(); reject(new Error("timeout")); });
+    req.write(body);
+    req.end();
+  });
+}
+
 async function fetchBlsPrices() {
   try {
-    const url = "https://api.bls.gov/publicAPI/v2/timeseries/data/";
-    const series = [
-      "APU0000708111", "APU0000709112", "APU0000709111",
-      "APU0000701312", "APU0000701111", "APU0000706111",
-      "APU0000703112", "APU0000717311", "APU0000704211",
-      "APU0000711111", "APU0000703212", "APU0000SEHA01",
-      "APU0000FF1101",
-    ];
-    const body = JSON.stringify({ seriesid: series, startyear: "2025", endyear: "2026" });
-    const data = await new Promise((resolve, reject) => {
-      const req = https.request(url, {
-        method: "POST",
-        headers: { "Content-Type": "application/json", "Content-Length": Buffer.byteLength(body) },
-        timeout: 10000,
-      }, (res) => {
-        let d = "";
-        res.on("data", (c) => (d += c));
-        res.on("end", () => { try { resolve(JSON.parse(d)); } catch (e) { reject(e); } });
-      });
-      req.on("error", reject);
-      req.write(body);
-      req.end();
-    });
-    if (data.status !== "REQUEST_SUCCEEDED" || !data.Results) {
-      throw new Error("BLS API error: " + (data.message || "unknown"));
+    const values = {};
+    const periods = {};
+    let ok = 0;
+
+    for (let i = 0; i < BLS_SERIES.length; i += BLS_CHUNK) {
+      const chunk = BLS_SERIES.slice(i, i + BLS_CHUNK);
+      const data = await blsRequest(chunk);
+      if (data.status !== "REQUEST_SUCCEEDED" || !data.Results) {
+        console.warn("BLS chunk failed:", (data.message || []).join("; ") || "unknown");
+        continue;
+      }
+      ok++;
+      for (const s of data.Results.series) {
+        const latest = (s.data || []).find((d) => d.value && d.value !== "-");
+        if (!latest) continue;
+        const v = parseFloat(latest.value);
+        if (!isNaN(v) && v > 0) {
+          values[s.seriesID] = v;
+          periods[s.seriesID] = `${latest.year}-${latest.periodName}`;
+        }
+      }
     }
-    const prices = {};
-    for (const s of data.Results.series) {
-      const latest = s.data[0];
-      if (latest) { const v = parseFloat(latest.value); if (!isNaN(v) && v > 0) prices[s.seriesID] = v; }
-    }
-    console.log("BLS: fetched", Object.keys(prices).length, "price series");
-    return prices;
+
+    if (ok === 0) throw new Error("all BLS requests failed");
+
+    const latestPeriod = Object.values(periods).sort().pop() || null;
+    console.log(`BLS: fetched ${Object.keys(values).length}/${BLS_SERIES.length} price series (latest ${latestPeriod})`);
+    return { values, periods, latestPeriod };
   } catch (e) {
     console.warn("BLS fetch failed, using fallback prices:", e.message);
     return null;
   }
 }
 
+/**
+ * Overlay live BLS prices onto the item list.
+ *
+ * Only items whose mapped series actually returned a value are marked
+ * "bls_latest"; everything else keeps its curated price and a curated
+ * source_type. Publishing a hardcoded fallback under a "bls_latest" label is
+ * how the app previously showed the price of eggs as bread.
+ */
+function applyBls(items, bls) {
+  return items.map((item) => {
+    const map = BLS_ITEMS[item.id];
+    if (!map) return item;
+    const value = bls && bls.values[map.series];
+    if (!value) {
+      return { ...item, source_type: "curated_fallback", bls_series: map.series, bls_unavailable: true };
+    }
+    return {
+      ...item,
+      price: Math.round(value * map.mult * 1000) / 1000,
+      source_type: "bls_latest",
+      bls_series: map.series,
+      bls_title: map.title,
+      bls_period: bls.periods[map.series],
+      bls_multiplier: map.mult,
+    };
+  });
+}
+
 async function buildDataset() {
   const bls = await fetchBlsPrices();
-  const bp = (id, fb) => (bls && bls[id]) ? bls[id] : fb;
 
   const avgRent = 2150;
-  const avgElectricity = 0.17;
+  const avgElectricity = 0.17; // fallback only; live value comes from BLS
   const avgHealthInsurance = 560;
 
   const MANUAL_REVIEW_ITEMS = [
@@ -100,31 +181,21 @@ async function buildDataset() {
     "beer_6pack","wine_bottle","cigarettes_pack",
   ];
 
-  return {
-    last_updated: nowIso(),
-    source: bls ? "Live BLS Average Retail Prices (latest month) + curated estimates" : "Curated estimates (BLS unavailable)",
-    source_url: bls ? "https://www.bls.gov/regions/mid-atlantic/data/AverageRetailFoodAndEnergyPrices_USandWest_Table.htm" : "https://www.bls.gov/",
-    freshness: bls ? "live | curated" : "curated | fallback",
-    stats: {
-      total_items: 0, bls_live_items: 0, curated_items: 0,
-      needs_manual_review: MANUAL_REVIEW_ITEMS.length,
-      manual_review_ids: MANUAL_REVIEW_ITEMS,
-    },
-    items: [
+  const items = applyBls([
       // ── Essentials (food & groceries) ──
-      { id: "bread_white_pan", name: "White Bread (1 loaf)", price: bp("APU0000708111", 2.19), category: "essentials", source_type: bls ? "bls_latest" : "curated_jun2026", unit: "per loaf" },
-      { id: "eggs_dozen", name: "Eggs, Grade A (1 dozen)", price: bp("APU0000709112", 4.22), category: "essentials", source_type: bls ? "bls_latest" : "curated_jun2026", unit: "per dozen" },
-      { id: "milk_gallon", name: "Whole Milk (1 gallon)", price: bp("APU0000709111", 4.22), category: "essentials", source_type: bls ? "bls_latest" : "curated_jun2026", unit: "per gallon" },
-      { id: "rice_long_grain", name: "White Rice (1 lb)", price: bp("APU0000701312", 1.07), category: "essentials", source_type: bls ? "bls_latest" : "curated_jun2026", unit: "per lb" },
-      { id: "bananas_lb", name: "Bananas (1 lb)", price: bp("APU0000701111", 0.54), category: "essentials", source_type: bls ? "bls_latest" : "curated_jun2026", unit: "per lb" },
-      { id: "chicken_whole_lb", name: "Whole Chicken (1 lb)", price: bp("APU0000706111", 2.04), category: "essentials", source_type: bls ? "bls_latest" : "curated_jun2026", unit: "per lb" },
-      { id: "ground_beef_lb", name: "Ground Beef (1 lb)", price: bp("APU0000703112", 6.75), category: "essentials", source_type: bls ? "bls_latest" : "curated_jun2026", unit: "per lb" },
-      { id: "coffee_grounds_lb", name: "Coffee (1 lb)", price: bp("APU0000717311", 9.51), category: "essentials", source_type: bls ? "bls_latest" : "curated_jun2026", unit: "per lb" },
-      { id: "butter_lb", name: "Butter (1 lb)", price: bp("APU0000704211", 4.91), category: "essentials", source_type: bls ? "bls_latest" : "curated_jun2026", unit: "per lb" },
-      { id: "chicken_breast_lb", name: "Chicken Breast, Boneless (1 lb)", price: bp("APU0000FF1101", 4.17), category: "essentials", source_type: bls ? "bls_latest" : "curated_jun2026", unit: "per lb" },
-      { id: "potatoes_lb", name: "Potatoes (1 lb)", price: 0.75, category: "essentials", source_type: "usda_retail_jun2026", unit: "per lb" },
+      { id: "bread_white_pan", name: "White Bread (1 loaf)", price: 2.19, category: "essentials", source_type: "curated_fallback", unit: "per lb" },
+      { id: "eggs_dozen", name: "Eggs, Grade A (1 dozen)", price: 4.22, category: "essentials", source_type: "curated_fallback", unit: "per dozen" },
+      { id: "milk_gallon", name: "Whole Milk (1 gallon)", price: 4.22, category: "essentials", source_type: "curated_fallback", unit: "per gallon" },
+      { id: "rice_long_grain", name: "White Rice (1 lb)", price: 1.07, category: "essentials", source_type: "curated_fallback", unit: "per lb" },
+      { id: "bananas_lb", name: "Bananas (1 lb)", price: 0.54, category: "essentials", source_type: "curated_fallback", unit: "per lb" },
+      { id: "chicken_whole_lb", name: "Whole Chicken (1 lb)", price: 2.04, category: "essentials", source_type: "curated_fallback", unit: "per lb" },
+      { id: "ground_beef_lb", name: "Ground Beef (1 lb)", price: 6.75, category: "essentials", source_type: "curated_fallback", unit: "per lb" },
+      { id: "coffee_grounds_lb", name: "Coffee (1 lb)", price: 9.51, category: "essentials", source_type: "curated_fallback", unit: "per lb" },
+      { id: "butter_lb", name: "Butter (1 lb)", price: 4.91, category: "essentials", source_type: "curated_fallback", unit: "per lb" },
+      { id: "chicken_breast_lb", name: "Chicken Breast, Boneless (1 lb)", price: 4.17, category: "essentials", source_type: "curated_fallback", unit: "per lb" },
+      { id: "potatoes_lb", name: "Potatoes (1 lb)", price: 0.75, category: "essentials", source_type: "curated_fallback", unit: "per lb" },
       { id: "apple_lb", name: "Apples (1 lb)", price: 1.31, category: "essentials", source_type: "usda_retail_jun2026", unit: "per lb" },
-      { id: "cheese_lb", name: "Cheddar Cheese (1 lb)", price: 6.03, category: "essentials", source_type: "usda_retail_jun2026", unit: "per lb" },
+      { id: "cheese_lb", name: "Cheddar Cheese (1 lb)", price: 6.03, category: "essentials", source_type: "curated_fallback", unit: "per lb" },
       { id: "cereal_box", name: "Box of Cereal", price: 4.50, category: "essentials", source_type: "market_estimate", unit: "per box" },
       { id: "peanut_butter_jar", name: "Peanut Butter (16 oz)", price: 3.50, category: "essentials", source_type: "market_estimate", unit: "per jar" },
       { id: "water_bottle_case", name: "Bottled Water (24 pack)", price: 5.00, category: "essentials", source_type: "market_estimate", unit: "per case" },
@@ -132,10 +203,10 @@ async function buildDataset() {
       { id: "toothpaste", name: "Toothpaste (tube)", price: 4.00, category: "essentials", source_type: "market_estimate", unit: "each" },
       { id: "soap_bar", name: "Bar of Soap", price: 1.50, category: "essentials", source_type: "market_estimate", unit: "each" },
       { id: "shampoo_bottle", name: "Shampoo (12 oz)", price: 6.00, category: "essentials", source_type: "market_estimate", unit: "per bottle" },
-      { id: "pasta_lb", name: "Spaghetti / Pasta (1 lb)", price: 1.50, category: "essentials", source_type: "market_estimate", unit: "per lb" },
+      { id: "pasta_lb", name: "Spaghetti / Pasta (1 lb)", price: 1.50, category: "essentials", source_type: "curated_fallback", unit: "per lb" },
       { id: "cooking_oil", name: "Vegetable Cooking Oil (48 oz)", price: 4.50, category: "essentials", source_type: "market_estimate", unit: "per bottle" },
       { id: "onions_lb", name: "Onions (1 lb)", price: 1.27, category: "essentials", source_type: "usda_retail_jun2026", unit: "per lb" },
-      { id: "tomatoes_lb", name: "Tomatoes (1 lb)", price: 2.50, category: "essentials", source_type: "market_estimate", unit: "per lb" },
+      { id: "tomatoes_lb", name: "Tomatoes (1 lb)", price: 2.50, category: "essentials", source_type: "curated_fallback", unit: "per lb" },
       { id: "frozen_pizza", name: "Frozen Pizza (large)", price: 5.00, category: "essentials", source_type: "market_estimate", unit: "each" },
       { id: "fast_food_meal", name: "Fast Food Meal (combo)", price: 12.00, category: "essentials", source_type: "market_estimate", unit: "per meal" },
       { id: "restaurant_dinner_two", name: "Restaurant Dinner (mid-range, 2 people)", price: 75.00, category: "essentials", source_type: "market_estimate", unit: "per dinner" },
@@ -143,8 +214,8 @@ async function buildDataset() {
       { id: "frozen_vegetables", name: "Frozen Vegetables (1 lb bag)", price: 2.00, category: "essentials", source_type: "market_estimate", unit: "per bag" },
       { id: "canned_tuna", name: "Canned Tuna (5 oz)", price: 1.50, category: "essentials", source_type: "market_estimate", unit: "per can" },
       { id: "canned_beans", name: "Canned Beans (15 oz)", price: 1.20, category: "essentials", source_type: "market_estimate", unit: "per can" },
-      { id: "flour_5lb", name: "All-Purpose Flour (5 lb)", price: 4.50, category: "essentials", source_type: "market_estimate", unit: "per bag" },
-      { id: "sugar_4lb", name: "Granulated Sugar (4 lb)", price: 3.50, category: "essentials", source_type: "market_estimate", unit: "per bag" },
+      { id: "flour_5lb", name: "All-Purpose Flour (5 lb)", price: 4.50, category: "essentials", source_type: "curated_fallback", unit: "per 5 lb bag" },
+      { id: "sugar_4lb", name: "Granulated Sugar (4 lb)", price: 3.50, category: "essentials", source_type: "curated_fallback", unit: "per 4 lb bag" },
       { id: "salt_26oz", name: "Table Salt (26 oz)", price: 1.50, category: "essentials", source_type: "market_estimate", unit: "per container" },
       { id: "black_pepper", name: "Black Pepper (4 oz)", price: 5.00, category: "essentials", source_type: "market_estimate", unit: "per container" },
       { id: "hot_dog_buns", name: "Hot Dog Buns (8-pack)", price: 2.50, category: "essentials", source_type: "market_estimate", unit: "per pack" },
@@ -153,22 +224,22 @@ async function buildDataset() {
       { id: "mayonnaise", name: "Mayonnaise (30 oz)", price: 4.50, category: "essentials", source_type: "market_estimate", unit: "per jar" },
       { id: "soy_sauce", name: "Soy Sauce (15 oz)", price: 3.50, category: "essentials", source_type: "market_estimate", unit: "per bottle" },
       { id: "olive_oil", name: "Extra Virgin Olive Oil (16 oz)", price: 8.00, category: "essentials", source_type: "market_estimate", unit: "per bottle" },
-      { id: "yogurt_cup", name: "Yogurt (32 oz tub)", price: 5.50, category: "essentials", source_type: "market_estimate", unit: "per tub" },
-      { id: "ice_cream_half_gallon", name: "Ice Cream (half gallon)", price: 5.00, category: "essentials", source_type: "market_estimate", unit: "per carton" },
+      { id: "yogurt_cup", name: "Yogurt (32 oz tub)", price: 5.50, category: "essentials", source_type: "curated_fallback", unit: "per 32 oz tub" },
+      { id: "ice_cream_half_gallon", name: "Ice Cream (half gallon)", price: 5.00, category: "essentials", source_type: "curated_fallback", unit: "per carton" },
       { id: "chocolate_bar", name: "Chocolate Bar (Hershey's, 1.55 oz)", price: 1.50, category: "essentials", source_type: "market_estimate", unit: "per bar" },
-      { id: "chips_bag", name: "Potato Chips (8 oz bag)", price: 4.50, category: "essentials", source_type: "market_estimate", unit: "per bag" },
+      { id: "chips_bag", name: "Potato Chips (8 oz bag)", price: 4.50, category: "essentials", source_type: "curated_fallback", unit: "per 8 oz bag" },
       { id: "popcorn", name: "Microwave Popcorn (3-pack)", price: 3.50, category: "essentials", source_type: "market_estimate", unit: "per pack" },
-      { id: "soda_12pack", name: "Soda (12-pack cans)", price: 6.00, category: "essentials", source_type: "market_estimate", unit: "per 12-pack" },
+      { id: "soda_12pack", name: "Soda (12-pack cans)", price: 6.00, category: "essentials", source_type: "curated_fallback", unit: "per 12-pack" },
       { id: "energy_drink", name: "Energy Drink (16 oz can)", price: 3.00, category: "essentials", source_type: "market_estimate", unit: "per can" },
       { id: "sports_drink", name: "Sports Drink (20 oz)", price: 2.00, category: "essentials", source_type: "market_estimate", unit: "per bottle" },
-      { id: "beer_6pack", name: "Beer (6-pack domestic)", price: 9.00, category: "essentials", source_type: "market_estimate", unit: "per 6-pack" },
-      { id: "wine_bottle", name: "Wine (mid-range, 750ml)", price: 12.00, category: "essentials", source_type: "market_estimate", unit: "per bottle" },
+      { id: "beer_6pack", name: "Beer (6-pack domestic)", price: 9.00, category: "essentials", source_type: "curated_fallback", unit: "per 6-pack" },
+      { id: "wine_bottle", name: "Wine (mid-range, 750ml)", price: 12.00, category: "essentials", source_type: "curated_fallback", unit: "per 750 ml bottle" },
       { id: "cigarettes_pack", name: "Cigarettes (1 pack)", price: 8.00, category: "essentials", source_type: "market_estimate", unit: "per pack" },
 
       // ── Housing & Utilities ──
       { id: "rent_month", name: "One Month Rent (avg US)", price: avgRent, category: "housing", source_type: "zillow_2026", unit: "monthly" },
-      { id: "electricity_kwh", name: "Electricity (1 kWh)", price: avgElectricity, category: "housing", source_type: "eia_2026", unit: "per kWh" },
-      { id: "natural_gas_therm", name: "Natural Gas (1 therm)", price: bp("APU0000SEHA01", 1.50), category: "housing", source_type: bls ? "bls_latest" : "curated_jun2026", unit: "per therm" },
+      { id: "electricity_kwh", name: "Electricity (1 kWh)", price: avgElectricity, category: "housing", source_type: "curated_fallback", unit: "per kWh" },
+      { id: "natural_gas_therm", name: "Natural Gas (1 therm)", price: 1.50, category: "housing", source_type: "curated_fallback", unit: "per therm" },
       { id: "internet_monthly", name: "Home Internet (monthly)", price: 75, category: "housing", source_type: "market_estimate", unit: "monthly" },
       { id: "phone_plan_monthly", name: "Phone Plan (monthly)", price: 75, category: "housing", source_type: "market_estimate", unit: "monthly" },
       { id: "mattress_queen", name: "Queen Mattress", price: 800, category: "housing", source_type: "market_estimate", unit: "each" },
@@ -212,7 +283,7 @@ async function buildDataset() {
       { id: "kindergarten_year", name: "Private Kindergarten (1 year)", price: 12000, category: "education", source_type: "curated_2026", unit: "per year" },
 
       // ── Transportation ──
-      { id: "gas_regular_gallon", name: "Gasoline, Regular (1 gallon)", price: 3.55, category: "transportation", source_type: "aaa_2026_avg", unit: "per gallon" },
+      { id: "gas_regular_gallon", name: "Gasoline, Regular (1 gallon)", price: 3.55, category: "transportation", source_type: "curated_fallback", unit: "per gallon" },
       { id: "car_payment_monthly", name: "Avg Car Payment (monthly)", price: 730, category: "transportation", source_type: "curated_2026", unit: "monthly" },
       { id: "car_insurance_monthly", name: "Car Insurance (monthly)", price: 200, category: "transportation", source_type: "curated_2026", unit: "monthly" },
       { id: "uber_ride", name: "Uber Ride (avg 5 mi)", price: 20, category: "transportation", source_type: "market_estimate", unit: "per ride" },
@@ -459,7 +530,30 @@ async function buildDataset() {
       { id: "reforest_1_billion_acres", name: "Reforest 1 Billion Acres", price: 50000000000, category: "social_impact", source_type: "curated_estimate", unit: "one-time" },
       { id: "fund_global_orphan_care_1yr", name: "Fund Global Orphan Care (1 year)", price: 8000000000, category: "social_impact", source_type: "unicef_estimate", unit: "per year" },
       { id: "vaccinate_all_africa_children_1yr", name: "Fully Vaccinate All African Children (1 year)", price: 2000000000, category: "social_impact", source_type: "who_estimate", unit: "per year" },
-    ],
+  ], bls);
+
+  const blsItems = items.filter((i) => i.source_type === "bls_latest");
+  const unavailable = items.filter((i) => i.bls_unavailable).map((i) => i.id);
+
+  return {
+    last_updated: nowIso(),
+    source: blsItems.length
+      ? "BLS Average Retail Prices (official, U.S. city average) + curated estimates"
+      : "Curated estimates (BLS unavailable)",
+    source_url: "https://www.bls.gov/cpi/factsheets/average-prices.htm",
+    freshness: blsItems.length ? "live BLS | curated" : "curated | fallback",
+    bls_reference_period: bls ? bls.latestPeriod : null,
+    stats: {
+      total_items: items.length,
+      bls_live_items: blsItems.length,
+      curated_items: items.length - blsItems.length,
+      bls_mapped_items: Object.keys(BLS_ITEMS).length,
+      bls_series_unavailable: unavailable,
+      needs_manual_review: MANUAL_REVIEW_ITEMS.length,
+      manual_review_ids: MANUAL_REVIEW_ITEMS,
+      bls_fresh: blsItems.length > 0,
+    },
+    items,
   };
 }
 
