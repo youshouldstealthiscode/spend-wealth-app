@@ -168,18 +168,6 @@ async function buildDataset() {
   const avgElectricity = 0.17; // fallback only; live value comes from BLS
   const avgHealthInsurance = 560;
 
-  const MANUAL_REVIEW_ITEMS = [
-    "potatoes_lb","apple_lb","cheese_lb","onions_lb","tomatoes_lb",
-    "cereal_box","peanut_butter_jar","water_bottle_case","toilet_paper_12",
-    "toothpaste","soap_bar","shampoo_bottle","pasta_lb","cooking_oil",
-    "frozen_pizza","fast_food_meal","restaurant_dinner_two",
-    "orange_juice_gallon","frozen_vegetables","canned_tuna","canned_beans",
-    "flour_5lb","sugar_4lb","salt_26oz","black_pepper","hot_dog_buns",
-    "ketchup","mustard","mayonnaise","soy_sauce","olive_oil",
-    "yogurt_cup","ice_cream_half_gallon","chocolate_bar","chips_bag",
-    "popcorn","soda_12pack","energy_drink","sports_drink",
-    "beer_6pack","wine_bottle","cigarettes_pack",
-  ];
 
   const items = applyBls([
       // ── Essentials (food & groceries) ──
@@ -535,6 +523,32 @@ async function buildDataset() {
   const blsItems = items.filter((i) => i.source_type === "bls_latest");
   const unavailable = items.filter((i) => i.bls_unavailable).map((i) => i.id);
 
+  // Everyday-goods items priced from an undated estimate. These are the ones a
+  // human could still improve, as opposed to luxury/consumer goods that have no
+  // official series by nature. Computed, never a hardcoded list, so it cannot
+  // drift out of sync with the item table the way the old list did.
+  const ESTIMATE_TYPES = /^(market_estimate|market_price|curated_jun2026|curated_estimate|market_2026)$/;
+  const manualReview = items
+    .filter((i) => i.category === "essentials" && !i.bls_series && ESTIMATE_TYPES.test(i.source_type))
+    .map((i) => i.id);
+
+  // Any item whose source label carries a vintage at least two years old — the
+  // figure has had time to drift and nobody has re-checked it.
+  const currentYear = new Date().getUTCFullYear();
+  const vintageOf = (st) => {
+    const m = /(19|20)(\d{2})/.exec(st);
+    return m ? Number(m[1] + m[2]) : null;
+  };
+  const reviewDue = items
+    .map((i) => ({ id: i.id, year: vintageOf(i.source_type), source_type: i.source_type }))
+    .filter((x) => x.year !== null && x.year <= currentYear - 2)
+    .map((x) => x.id);
+
+  const sourceBreakdown = items.reduce((acc, i) => {
+    acc[i.source_type] = (acc[i.source_type] || 0) + 1;
+    return acc;
+  }, {});
+
   return {
     last_updated: nowIso(),
     source: blsItems.length
@@ -546,11 +560,13 @@ async function buildDataset() {
     stats: {
       total_items: items.length,
       bls_live_items: blsItems.length,
-      curated_items: items.length - blsItems.length,
       bls_mapped_items: Object.keys(BLS_ITEMS).length,
       bls_series_unavailable: unavailable,
-      needs_manual_review: MANUAL_REVIEW_ITEMS.length,
-      manual_review_ids: MANUAL_REVIEW_ITEMS,
+      curated_items: items.length - blsItems.length,
+      estimated_grocery_items: manualReview.length,
+      manual_review_ids: manualReview,
+      review_due_stale_sources: reviewDue,
+      source_breakdown: sourceBreakdown,
       bls_fresh: blsItems.length > 0,
     },
     items,

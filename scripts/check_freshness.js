@@ -112,7 +112,7 @@ lines.push(
 lines.push(
   `| Item stats | ${stats.total_items || itemList.length} total, ${stats.bls_live_items || 0} live BLS, ${
     stats.curated_items || 0
-  } curated | — | — | ${stats.needs_manual_review || 0} need review |`
+  } curated | — | — | ${stats.bls_mapped_items || 0} mapped series |`
 );
 
 // BLS coverage: how many mapped items actually got an official price, and how
@@ -130,6 +130,21 @@ if (blsMapped > 0 && blsLive < blsMapped) {
     `${blsMapped - blsLive} of ${blsMapped} BLS-mapped items fell back to curated prices${
       missing.length ? ": " + missing.join(", ") : ""
     }.`
+  );
+}
+
+// What is NOT official is reported plainly, so the "live BLS" status on the
+// line above cannot be read as "the whole dataset is sourced".
+lines.push(
+  `| Estimated prices | ${stats.curated_items || 0} curated | — | no official series exists | ${
+    stats.estimated_grocery_items || 0
+  } everyday-goods items estimated |`
+);
+
+const reviewDue = Array.isArray(stats.review_due_stale_sources) ? stats.review_due_stale_sources : [];
+if (reviewDue.length > 0) {
+  lines.push(
+    `| Stale vintages | — | — | source label ≥2 years old | ${reviewDue.length}: ${reviewDue.join(", ")} |`
   );
 }
 
