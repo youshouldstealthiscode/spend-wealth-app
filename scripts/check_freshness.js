@@ -6,10 +6,13 @@
  * GitHub step summary, and emits ::warning:: annotations for stale or
  * suspicious datasets.
  *
- * IMPORTANT: exits non-zero only when a snapshot is missing or unparseable.
- * A stale-but-valid snapshot must NOT fail the job — if this step fails, the
- * "Commit updated snapshots" step is skipped and the data never refreshes.
- * That exact bug froze the live site for three months.
+ * IMPORTANT: without --strict this exits non-zero only when a snapshot is
+ * missing or unparseable. A stale-but-valid snapshot must NOT fail the job —
+ * if this step fails, the "Commit updated snapshots" step is skipped and the
+ * data never refreshes. That exact bug froze the live site for three months.
+ *
+ * With --strict (run as the final workflow step, after the commit) genuinely
+ * dead datasets DO fail the run, so silent staleness turns into a red build.
  */
 
 const fs = require("node:fs");
@@ -20,6 +23,8 @@ const PEOPLE_PATH = path.join(PROJECT_ROOT, "app", "data", "richest_people.json"
 const ITEMS_PATH = path.join(PROJECT_ROOT, "app", "data", "cpi_items.json");
 
 const MAX_AGE_HOURS = 36; // workflow runs twice daily; anything older is suspicious
+const STRICT = process.argv.includes("--strict");
+const fatal = [];
 
 function readJson(filePath) {
   try {
@@ -67,6 +72,7 @@ lines.push(
 
 if (personList.length === 0) {
   warnings.push("Billionaire dataset has no entries.");
+  fatal.push("Billionaire dataset is empty.");
 } else {
   const top = personList[0];
   lines.push(`| Top-ranked | ${top.name} (#${top.rank}) ${fmtMoney(top.net_worth)} | — | — | ${personList.length} entries |`);
@@ -83,9 +89,13 @@ if (personList.length === 0) {
   if (missingCountry > 0) warnings.push(`${missingCountry}/${personList.length} billionaires have no country.`);
 }
 
-if (people.stale) warnings.push("Billionaire data came from the static fallback — Forbes API was unreachable.");
+if (people.stale) {
+  warnings.push("Billionaire data came from the static fallback — Forbes API was unreachable.");
+  fatal.push("Billionaire data is flagged stale (Forbes API unreachable).");
+}
 if (peopleAge !== null && peopleAge > MAX_AGE_HOURS) {
   warnings.push(`Billionaire data is ${fmtAge(people.last_updated)} old (threshold ${MAX_AGE_HOURS}h).`);
+  fatal.push(`Billionaire data is ${fmtAge(people.last_updated)} old — the pipeline is not refreshing it.`);
 }
 
 // --- Items ------------------------------------------------------------------
@@ -105,10 +115,14 @@ lines.push(
   } curated | — | — | ${stats.needs_manual_review || 0} need review |`
 );
 
-if (itemList.length === 0) warnings.push("Item dataset has no entries.");
+if (itemList.length === 0) {
+  warnings.push("Item dataset has no entries.");
+  fatal.push("Item dataset is empty.");
+}
 if (stats.bls_fresh === false) warnings.push("BLS price data unavailable — items are using fallback prices.");
 if (itemsAge !== null && itemsAge > MAX_AGE_HOURS) {
   warnings.push(`Item data is ${fmtAge(items.last_updated)} old (threshold ${MAX_AGE_HOURS}h).`);
+  fatal.push(`Item data is ${fmtAge(items.last_updated)} old — the pipeline is not refreshing it.`);
 }
 
 // --- Output -----------------------------------------------------------------
@@ -123,3 +137,9 @@ if (process.env.GITHUB_STEP_SUMMARY) {
   fs.appendFileSync(process.env.GITHUB_STEP_SUMMARY, text, "utf8");
 }
 for (const w of warnings) console.log(`::warning::${w}`);
+
+if (STRICT && fatal.length > 0) {
+  for (const f of fatal) console.error(`::error::${f}`);
+  console.error(`::error::Data pipeline is not refreshing. ${fatal.length} fatal condition(s).`);
+  process.exit(1);
+}
