@@ -1,5 +1,5 @@
 {
-  "last_updated": "2026-09-30T21:11:49.677Z",
+  "last_updated": "2026-10-01T11:21:22.207Z",
   "source": "Forbes Real-Time Billionaires (official API)",
   "source_url": "https://www.forbes.com/real-time-billionaires/",
   "stale": false,
@@ -80,7 +80,7 @@
       "id": "amancio-ortega",
       "rank": 10,
       "name": "Amancio Ortega",
-      "net_worth": 141760919000,
+      "net_worth": 141801347000,
       "country": "Spain",
       "company": "Zara"
     }
