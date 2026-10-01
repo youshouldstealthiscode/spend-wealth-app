@@ -1,5 +1,5 @@
 {
-  "last_updated": "2026-10-01T11:21:22.207Z",
+  "last_updated": "2026-10-01T21:33:31.002Z",
   "source": "Forbes Real-Time Billionaires (official API)",
   "source_url": "https://www.forbes.com/real-time-billionaires/",
   "stale": false,
@@ -8,7 +8,7 @@
       "id": "elon-musk",
       "rank": 1,
       "name": "Elon Musk",
-      "net_worth": 933267475000,
+      "net_worth": 918715575000,
       "country": "United States",
       "company": "Tesla, SpaceX"
     },
@@ -16,7 +16,7 @@
       "id": "jeff-bezos",
       "rank": 2,
       "name": "Jeff Bezos",
-      "net_worth": 369094923000,
+      "net_worth": 368281266000,
       "country": "United States",
       "company": "Amazon"
     },
@@ -24,7 +24,7 @@
       "id": "larry-page",
       "rank": 3,
       "name": "Larry Page",
-      "net_worth": 282190690000,
+      "net_worth": 277645449000,
       "country": "United States",
       "company": "Google"
     },
@@ -32,7 +32,7 @@
       "id": "michael-dell",
       "rank": 4,
       "name": "Michael Dell",
-      "net_worth": 266061519000,
+      "net_worth": 265924028000,
       "country": "United States",
       "company": "Dell Technologies"
     },
@@ -40,7 +40,7 @@
       "id": "sergey-brin",
       "rank": 5,
       "name": "Sergey Brin",
-      "net_worth": 259695098000,
+      "net_worth": 255520664000,
       "country": "United States",
       "company": "Google"
     },
@@ -48,7 +48,7 @@
       "id": "mark-zuckerberg",
       "rank": 6,
       "name": "Mark Zuckerberg",
-      "net_worth": 248667380000,
+      "net_worth": 248921165000,
       "country": "United States",
       "company": "Facebook"
     },
@@ -56,7 +56,7 @@
       "id": "jensen-huang",
       "rank": 7,
       "name": "Jensen Huang",
-      "net_worth": 197714574000,
+      "net_worth": 199826964000,
       "country": "United States",
       "company": "Nvidia"
     },
@@ -64,7 +64,7 @@
       "id": "larry-ellison",
       "rank": 8,
       "name": "Larry Ellison",
-      "net_worth": 178696153000,
+      "net_worth": 178905905000,
       "country": "United States",
       "company": "Oracle"
     },
@@ -72,17 +72,17 @@
       "id": "steve-ballmer",
       "rank": 9,
       "name": "Steve Ballmer",
-      "net_worth": 159414748000,
+      "net_worth": 159389466000,
       "country": "United States",
       "company": "Microsoft"
     },
     {
-      "id": "amancio-ortega",
+      "id": "warren-buffett",
       "rank": 10,
-      "name": "Amancio Ortega",
-      "net_worth": 141801347000,
-      "country": "Spain",
-      "company": "Zara"
+      "name": "Warren Buffett",
+      "net_worth": 142402148000,
+      "country": "United States",
+      "company": "Berkshire Hathaway"
     }
   ]
 }
