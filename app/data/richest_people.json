@@ -1,5 +1,5 @@
 {
-  "last_updated": "2026-10-08T21:49:02.577Z",
+  "last_updated": "2026-10-09T11:38:48.842Z",
   "source": "Forbes Real-Time Billionaires (official API)",
   "source_url": "https://www.forbes.com/real-time-billionaires/",
   "stale": false,
@@ -64,7 +64,7 @@
       "id": "larry-ellison",
       "rank": 8,
       "name": "Larry Ellison",
-      "net_worth": 177289638000,
+      "net_worth": 176762147000,
       "country": "United States",
       "company": "Oracle"
     },
