@@ -1,5 +1,5 @@
 {
-  "last_updated": "2026-10-19T21:20:03.208Z",
+  "last_updated": "2026-10-20T09:48:02.336Z",
   "source": "Forbes Real-Time Billionaires (official API)",
   "source_url": "https://www.forbes.com/real-time-billionaires/",
   "stale": false,
@@ -48,7 +48,7 @@
       "id": "michael-dell",
       "rank": 6,
       "name": "Michael Dell",
-      "net_worth": 239027470000,
+      "net_worth": 238842084000,
       "country": "United States",
       "company": "Dell Technologies"
     },
