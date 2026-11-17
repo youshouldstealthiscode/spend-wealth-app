@@ -1,5 +1,5 @@
 {
-  "last_updated": "2026-11-17T00:38:43.156Z",
+  "last_updated": "2026-11-17T14:06:01.150Z",
   "source": "Forbes Real-Time Billionaires (official API)",
   "source_url": "https://www.forbes.com/real-time-billionaires/",
   "stale": false,
@@ -16,7 +16,7 @@
       "id": "jeff-bezos",
       "rank": 2,
       "name": "Jeff Bezos",
-      "net_worth": 376700855000,
+      "net_worth": 376501952000,
       "country": "United States",
       "company": "Amazon"
     },
@@ -77,12 +77,12 @@
       "company": "Oracle"
     },
     {
-      "id": "amancio-ortega",
+      "id": "rob-walton-family",
       "rank": 10,
-      "name": "Amancio Ortega",
-      "net_worth": 152051340000,
-      "country": "Spain",
-      "company": "Zara"
+      "name": "Rob Walton & family",
+      "net_worth": 150799383000,
+      "country": "United States",
+      "company": "Walmart"
     }
   ]
 }
