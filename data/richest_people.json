@@ -1,5 +1,5 @@
 {
-  "last_updated": "2026-11-17T23:43:37.602Z",
+  "last_updated": "2026-11-18T13:39:14.207Z",
   "source": "Forbes Real-Time Billionaires (official API)",
   "source_url": "https://www.forbes.com/real-time-billionaires/",
   "stale": false,
@@ -77,12 +77,12 @@
       "company": "Oracle"
     },
     {
-      "id": "amancio-ortega",
+      "id": "rob-walton-family",
       "rank": 10,
-      "name": "Amancio Ortega",
-      "net_worth": 150305794000,
-      "country": "Spain",
-      "company": "Zara"
+      "name": "Rob Walton & family",
+      "net_worth": 149995146000,
+      "country": "United States",
+      "company": "Walmart"
     }
   ]
 }
