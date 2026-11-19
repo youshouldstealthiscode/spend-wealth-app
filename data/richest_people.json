@@ -1,5 +1,5 @@
 {
-  "last_updated": "2026-11-18T23:15:10.641Z",
+  "last_updated": "2026-11-19T14:06:24.786Z",
   "source": "Forbes Real-Time Billionaires (official API)",
   "source_url": "https://www.forbes.com/real-time-billionaires/",
   "stale": false,
@@ -53,20 +53,20 @@
       "company": "Dell Technologies"
     },
     {
-      "id": "steve-ballmer",
-      "rank": 7,
-      "name": "Steve Ballmer",
-      "net_worth": 158249257000,
-      "country": "United States",
-      "company": "Microsoft"
-    },
-    {
       "id": "warren-buffett",
-      "rank": 8,
+      "rank": 7,
       "name": "Warren Buffett",
       "net_worth": 158124951000,
       "country": "United States",
       "company": "Berkshire Hathaway"
+    },
+    {
+      "id": "steve-ballmer",
+      "rank": 8,
+      "name": "Steve Ballmer",
+      "net_worth": 158001500000,
+      "country": "United States",
+      "company": "Microsoft"
     },
     {
       "id": "larry-ellison",
@@ -77,12 +77,12 @@
       "company": "Oracle"
     },
     {
-      "id": "amancio-ortega",
+      "id": "rob-walton-family",
       "rank": 10,
-      "name": "Amancio Ortega",
-      "net_worth": 149869067000,
-      "country": "Spain",
-      "company": "Zara"
+      "name": "Rob Walton & family",
+      "net_worth": 149850564000,
+      "country": "United States",
+      "company": "Walmart"
     }
   ]
 }
