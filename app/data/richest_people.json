@@ -1,5 +1,5 @@
 {
-  "last_updated": "2026-11-24T03:09:28.616Z",
+  "last_updated": "2026-11-24T15:30:13.834Z",
   "source": "Forbes Real-Time Billionaires (official API)",
   "source_url": "https://www.forbes.com/real-time-billionaires/",
   "stale": false,
@@ -8,7 +8,7 @@
       "id": "elon-musk",
       "rank": 1,
       "name": "Elon Musk",
-      "net_worth": 855803754000,
+      "net_worth": 828505407000,
       "country": "United States",
       "company": "Tesla, SpaceX"
     },
@@ -16,7 +16,7 @@
       "id": "jeff-bezos",
       "rank": 2,
       "name": "Jeff Bezos",
-      "net_worth": 374416564000,
+      "net_worth": 374379805000,
       "country": "United States",
       "company": "Amazon"
     },
@@ -24,7 +24,7 @@
       "id": "larry-page",
       "rank": 3,
       "name": "Larry Page",
-      "net_worth": 234128459000,
+      "net_worth": 233186479000,
       "country": "United States",
       "company": "Google"
     },
@@ -32,7 +32,7 @@
       "id": "sergey-brin",
       "rank": 4,
       "name": "Sergey Brin",
-      "net_worth": 215553753000,
+      "net_worth": 214688546000,
       "country": "United States",
       "company": "Google"
     },
@@ -40,7 +40,7 @@
       "id": "mark-zuckerberg",
       "rank": 5,
       "name": "Mark Zuckerberg",
-      "net_worth": 205496860000,
+      "net_worth": 205957057000,
       "country": "United States",
       "company": "Facebook"
     },
@@ -48,7 +48,7 @@
       "id": "michael-dell",
       "rank": 6,
       "name": "Michael Dell",
-      "net_worth": 200068816000,
+      "net_worth": 188212036000,
       "country": "United States",
       "company": "Dell Technologies"
     },
@@ -56,7 +56,7 @@
       "id": "warren-buffett",
       "rank": 7,
       "name": "Warren Buffett",
-      "net_worth": 157349208000,
+      "net_worth": 159175175000,
       "country": "United States",
       "company": "Berkshire Hathaway"
     },
@@ -64,23 +64,23 @@
       "id": "steve-ballmer",
       "rank": 8,
       "name": "Steve Ballmer",
-      "net_worth": 154257261000,
+      "net_worth": 154786915000,
       "country": "United States",
       "company": "Microsoft"
     },
     {
-      "id": "larry-ellison",
+      "id": "rob-walton-family",
       "rank": 9,
-      "name": "Larry Ellison",
-      "net_worth": 152303566000,
+      "name": "Rob Walton & family",
+      "net_worth": 154269348000,
       "country": "United States",
-      "company": "Oracle"
+      "company": "Walmart"
     },
     {
-      "id": "rob-walton-family",
+      "id": "jim-walton-family",
       "rank": 10,
-      "name": "Rob Walton & family",
-      "net_worth": 151856638000,
+      "name": "Jim Walton & family",
+      "net_worth": 151027482000,
       "country": "United States",
       "company": "Walmart"
     }
